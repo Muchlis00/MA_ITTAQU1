@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('tempat_guru'); // Tempat Lahir
             $table->date('tgl_guru'); // Tanggal Lahir
             $table->enum('jk_guru', ['Laki-Laki', 'Perempuan']); // Jenis Kelamin
-            $table->string('jabatan'); // Jabatan
-            $table->timestamps(); // Kolom created_at & updated_at
+            $table->enum('jabatan', ['Guru', 'Bendahara','Kepsek']); // Jabatan
+            $table->timestamps();
         });
     }
 
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tenaga_pendidik');
+        Schema::dropIfExists('tenagapendidiks');
     }
 };

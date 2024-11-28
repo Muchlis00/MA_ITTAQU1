@@ -4,7 +4,7 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
-use App\Models\tenaga_pendidik;
+use App\Models\TenagaPendidik;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -16,11 +16,13 @@ class TenagaPendidikController extends Controller
     public function index()
     {
         {
-            $tenagaPendidik = tenaga_pendidik::all();
-            return view('tenaga_pendidik.index2', compact('tenagaPendidik'));
+            //lama
+            // $tenagaPendidik = tenaga_pendidik::all();
+            // return view('tenaga_pendidik.index2', compact('tenagaPendidik'));
+            //baru
+            $tenagaPendidik = TenagaPendidik::all(); 
+            return view('tenaga-pendidik.index', compact('tenagaPendidik'));
         }
-
-
         // $tenaga_pendidik = DB::table('tenaga_pendidik')->get();
         // return view('tenaga_pendidik.index2',['tenaga_pendidik' => $tenaga_pendidik]);
     }
@@ -30,7 +32,8 @@ class TenagaPendidikController extends Controller
      */
     public function create()
     {
-        return view('tenaga_pendidik.create');
+        // return view('/tenaga_pendidik/create');
+        return view('tenaga-pendidik.create');
     }
 
     /**
@@ -38,6 +41,17 @@ class TenagaPendidikController extends Controller
      */
     public function store(Request $request)
     {
+        // $request->validate([
+        //     'nip' => 'required|unique:tenaga_pendidik,nip',
+        //     'nama_guru' => 'required|string|max:255',
+        //     'tempat_guru' => 'required|string|max:255',
+        //     'tgl_guru' => 'required|date',
+        //     'jk_guru' => 'required',
+        //     'jabatan' => 'required|string|max:255',
+        // ]);
+        // tenaga_pendidik::create($request->all()); // Menyimpan data
+        // return redirect('tenagapendidik/create')->with('success', 'Data Tenaga Pendidik berhasil ditambahkan!');
+
         $request->validate([
             'nip' => 'required|unique:tenaga_pendidik,nip',
             'nama_guru' => 'required|string|max:255',
@@ -46,50 +60,56 @@ class TenagaPendidikController extends Controller
             'jk_guru' => 'required',
             'jabatan' => 'required|string|max:255',
         ]);
-        TenagaPendidik::create($request->all()); // Menyimpan data
-        return redirect()->route('tenaga_pendidik.index')->with('success', 'Data Tenaga Pendidik berhasil ditambahkan!');
-
+    
+        TenagaPendidik::create($request->all());
+    
+        return redirect()->route('tenaga-pendidik.create')
+                         ->with('success', 'Data tenaga pendidik berhasil ditambahkan.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(tenaga_pendidik $tenaga_pendidik)
+    public function show(TenagaPendidik $tenagaPendidik)
     {
-        return view('tenaga_pendidik.show', compact('tenaga_pendidik'));
+        
+        return view('tenaga-pendidik.show', compact('tenagaPendidik'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(tenaga_pendidik $tenaga_pendidik)
+    public function edit(TenagaPendidik $tenagaPendidik)
     {
-        return view('tenaga_pendidik.edit', compact('tenaga_pendidik'));
+        return view('tenaga-pendidik.edit', compact('tenagaPendidik'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, tenaga_pendidik $tenaga_pendidik)
+    public function update(Request $request, TenagaPendidik $tenagaPendidik)
     {
         $request->validate([
-            'nip' => 'required|unique:gurus,nip,' . $tenaga_pendidik->id_pendidik,
+            'nip' => 'required|unique:tenaga_pendidik,nip,' . $tenagaPendidik->id_pendidik,
             'nama_guru' => 'required|string|max:255',
             'tempat_guru' => 'required|string|max:255',
             'tgl_guru' => 'required|date',
             'jk_guru' => 'required',
             'jabatan' => 'required|string|max:255',
         ]);
-        $tenaga_pendidik->update($request->all()); // Memperbarui data
-        return redirect()->route('tenaga_pendidik.index')->with('success', 'tenaga_pendidik berhasil diperbarui!');
+        $tenagaPendidik->update($request->all()); // Memperbarui data
+        return redirect()->route('tenaga-pendidik.index')
+        ->with('success', 'Data tenaga pendidik berhasil diupdate.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(tenaga_pendidik $tenaga_pendidik)
-    {
-        $tenaga_pendidik->delete();
-        return redirect()->route('tenaga_pendidik.index')->with('success', 'tenaga pendidik berhasil dihapus!');
+    public function destroy(string $id_pendidik)
+    {   
+        $steam = tenaga_pendidik::find($id_pendidik);
+        $steam->delete();
+        return redirect('tenagapendidik')->with('success', 'Data Tenaga Pendidik berhasil diHapus!');
+        // return redirect('tenagapendidik/index')->with('success', 'tenaga pendidik berhasil dihapus!');
     }
 }
