@@ -3,6 +3,7 @@
 
 
 namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\DB;
 use App\Models\TenagaPendidik;
 use Illuminate\Http\Request;
@@ -14,13 +15,12 @@ class TenagaPendidikController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        {
+    { {
             //lama
             // $tenagaPendidik = tenaga_pendidik::all();
             // return view('tenaga_pendidik.index2', compact('tenagaPendidik'));
             //baru
-            $tenagaPendidik = TenagaPendidik::all(); 
+            $tenagaPendidik = TenagaPendidik::all();
             return view('tenaga-pendidik.index', compact('tenagaPendidik'));
         }
         // $tenaga_pendidik = DB::table('tenaga_pendidik')->get();
@@ -60,11 +60,11 @@ class TenagaPendidikController extends Controller
             'jk_guru' => 'required',
             'jabatan' => 'required|string|max:255',
         ]);
-    
+
         TenagaPendidik::create($request->all());
-    
+
         return redirect()->route('tenaga-pendidik.create')
-                         ->with('success', 'Data tenaga pendidik berhasil ditambahkan.');
+            ->with('success', 'Data tenaga pendidik berhasil ditambahkan.');
     }
 
     /**
@@ -72,7 +72,7 @@ class TenagaPendidikController extends Controller
      */
     public function show(TenagaPendidik $tenagaPendidik)
     {
-        
+
         return view('tenaga-pendidik.show', compact('tenagaPendidik'));
     }
 
@@ -99,15 +99,15 @@ class TenagaPendidikController extends Controller
         ]);
         $tenagaPendidik->update($request->all()); // Memperbarui data
         return redirect()->route('tenaga-pendidik.index')
-        ->with('success', 'Data tenaga pendidik berhasil diupdate.');
+            ->with('success', 'Data tenaga pendidik berhasil diupdate.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id_pendidik)
-    {   
-        $steam = tenaga_pendidik::find($id_pendidik);
+    {
+        $steam = TenagaPendidik::find($id_pendidik);
         $steam->delete();
         return redirect('tenagapendidik')->with('success', 'Data Tenaga Pendidik berhasil diHapus!');
         // return redirect('tenagapendidik/index')->with('success', 'tenaga pendidik berhasil dihapus!');

@@ -1,13 +1,12 @@
 <h1>Edit Tenaga Pendidik</h1>
 
+@if(session()->has('success'))
+    <p>sukses</p>
+    @endif 
+
 <form action="{{ route('tenaga-pendidik.update', $tenagaPendidik->id_pendidik) }}" method="POST">
     @csrf
     @method('PUT') 
-
-    <div>
-        <label for="nama">Nama:</label>
-        <input type="text" name="nama" id="nama" value="{{ $tenagaPendidik->nama_guru }}" required>
-    </div>
 
     <div>
         <label for="nip">NIP:</label>
@@ -15,22 +14,40 @@
     </div>
 
     <div>
-        <label for="jenis_kelamin">Jenis Kelamin:</label>
-        <select name="jenis_kelamin" id="jenis_kelamin" required>
-            <option value="L" {{ $tenagaPendidik->jenis_kelamin == 'L' ? 'selected' : '' }}>Laki-laki</option>
-            <option value="P" {{ $tenagaPendidik->jenis_kelamin == 'P' ? 'selected' : '' }}>Perempuan</option>
+        <label for="nama_guru">Nama:</label>
+        <input type="text" name="nama_guru" id="nama_guru" value="{{ $tenagaPendidik->nama_guru }}" required>
+    </div>
+
+    <div>
+        <label for="tempat_guru">Tempat Lahir :</label>
+        <input type="text" name="tempat_guru" id="tempat_guru" value="{{ $tenagaPendidik->tempat_guru }}" required>
+    </div>
+
+    <div>
+            <label for="tgl_guru" class="form-label">Tanggal Lahir Guru</label>
+            <input type="date" name="tgl_guru" id="tgl_guru" value="{{ $tenagaPendidik->tgl_guru }}" required>
+        </div>
+    
+
+    <div>
+        <label for="jk_guru">Jenis Kelamin:</label>
+        <select name="jk_guru" id="jk_guru" required>
+            <option value="Laki-Laki" {{ $tenagaPendidik->jk_guru == 'Laki-Laki' ? 'selected' : '' }}>Laki-laki</option>
+            <option value="Perempuan" {{ $tenagaPendidik->jk_guru == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
         </select>
     </div>
 
     <div>
-        <label for="alamat">Alamat:</label>
-        <textarea name="alamat" id="alamat" required>{{ $tenagaPendidik->alamat }}</textarea>
+        <label for="jabatan">Jabatan :</label>
+        <select name="jabatan" id="jabatan" required>
+            <option value="Guru" {{ $tenagaPendidik->jabatan == 'Guru' ? 'selected' : '' }}>Guru</option>
+            <option value="Bendahara" {{ $tenagaPendidik->jabatan == 'Bendahara' ? 'selected' : '' }}>Bendahara</option>
+            <option value="Kepsek" {{ $tenagaPendidik->jabatan == 'Kepsek' ? 'selected' : '' }}>Kepsek</option>
+        </select>
     </div>
+   
 
-    <div>
-        <label for="mata_pelajaran">Mata Pelajaran:</label>
-        <input type="text" name="mata_pelajaran" id="mata_pelajaran" value="{{ $tenagaPendidik->mata_pelajaran }}" required>
-    </div>
+
 
     <button type="submit">Simpan Perubahan</button>
 </form>
