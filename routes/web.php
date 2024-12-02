@@ -19,4 +19,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('tenaga-pendidik', TenagaPendidikController::class); 
+Route::get('/landing', function () {
+    return view('landingpage');
+});
+
+Route::resource('tenaga-pendidik', TenagaPendidikController::class);

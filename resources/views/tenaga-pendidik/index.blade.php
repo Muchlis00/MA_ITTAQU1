@@ -1,26 +1,21 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>data tenaga pendidik</title>
-</head>
-<body>
-    
+@extends('layouts.navbar')
+@section('content')
 
 <div class="container">
     <h1>Data Tenaga Pendidik</h1>
     <a href="{{ route('tenaga-pendidik.create') }}" class="btn btn-primary">Tambah Guru</a>
     <table class="table table-bordered mt-3">
         <thead>
-        <table border="1">
-            <tr>
-                <th>NIP</th>
-                <th>Nama</th>
-                <th>Tempat Lahir</th>
-                <th>Tanggal Lahir</th>
-                <th>Jenis Kelamin</th>
-                <th>Jabatan</th>
-                <th>Aksi</th>
-            </tr>
+            <table border="1">
+                <tr>
+                    <th>NIP</th>
+                    <th>Nama</th>
+                    <th>Tempat Lahir</th>
+                    <th>Tanggal Lahir</th>
+                    <th>Jenis Kelamin</th>
+                    <th>Jabatan</th>
+                    <th>Aksi</th>
+                </tr>
         </thead>
         <tbody>
             @foreach($tenagaPendidik as $tp)
@@ -45,4 +40,4 @@
         </tbody>
     </table>
 </div>
-</body>
+@endsection

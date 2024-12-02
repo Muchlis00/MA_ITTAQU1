@@ -1,12 +1,12 @@
 <h1>Edit Tenaga Pendidik</h1>
 
 @if(session()->has('success'))
-    <p>sukses</p>
-    @endif 
+<p>sukses</p>
+@endif
 
 <form action="{{ route('tenaga-pendidik.update', $tenagaPendidik->id_pendidik) }}" method="POST">
     @csrf
-    @method('PUT') 
+    @method('PUT')
 
     <div>
         <label for="nip">NIP:</label>
@@ -24,10 +24,10 @@
     </div>
 
     <div>
-            <label for="tgl_guru" class="form-label">Tanggal Lahir Guru</label>
-            <input type="date" name="tgl_guru" id="tgl_guru" value="{{ $tenagaPendidik->tgl_guru }}" required>
-        </div>
-    
+        <label for="tgl_guru" class="form-label">Tanggal Lahir Guru</label>
+        <input type="date" name="tgl_guru" id="tgl_guru" value="{{ $tenagaPendidik->tgl_guru }}" required>
+    </div>
+
 
     <div>
         <label for="jk_guru">Jenis Kelamin:</label>
@@ -45,7 +45,7 @@
             <option value="Kepsek" {{ $tenagaPendidik->jabatan == 'Kepsek' ? 'selected' : '' }}>Kepsek</option>
         </select>
     </div>
-   
+
 
 
 
