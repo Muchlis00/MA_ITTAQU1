@@ -28,10 +28,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth', 'role:kepsek'])->get('/kepsek', function () {
-    return view('admin.dashboard');
-});
+// Route::middleware(['auth', 'role:kepsek'])->get('/kepsek', function () {
+//     return view('admin.dashboard');
+// });
 
+Route::middleware(['auth', 'role:kepsek'])->group(function () {
+    Route::get('/dashboard/kepsek', [TenagaPendidikController::class, 'index'])->name('dashboard.kepala_sekolah');
+});
 
 
 //tambahan 
