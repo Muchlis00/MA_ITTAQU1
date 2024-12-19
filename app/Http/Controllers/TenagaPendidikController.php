@@ -21,7 +21,6 @@ class TenagaPendidikController extends Controller
             // return view('tenaga_pendidik.index2', compact('tenagaPendidik'));
             //baru
             $tenagaPendidik = TenagaPendidik::all(); //->paginate(10) untuk tampil 10
-
             return view('tenaga-pendidik.index', compact('tenagaPendidik'));
         }
         // $tenaga_pendidik = DB::table('tenaga_pendidik')->get();
