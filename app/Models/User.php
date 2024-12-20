@@ -46,23 +46,23 @@ class User extends Authenticatable
     ];
 
     // Set role
-    public function isKepsek()
-    {
-        return $this->role === 'kepsek';
-    }
+    //     public function isKepsek()
+    //     {
+    //         return $this->role === 'kepsek';
+    //     }
 
-    public function isPanitia()
-    {
-        return $this->role === 'panitia';
-    }
+    //     public function isPanitia()
+    //     {
+    //         return $this->role === 'panitia';
+    //     }
 
-    public function isBendahara()
-    {
-        return $this->role === 'bendahara';
-    }
+    //     public function isBendahara()
+    //     {
+    //         return $this->role === 'bendahara';
+    //     }
 
-    public function isPendaftar()
-    {
-        return $this->role === 'pendaftar';
-    }
+    //     public function isPendaftar()
+    //     {
+    //         return $this->role === 'pendaftar';
+    //     }
 }

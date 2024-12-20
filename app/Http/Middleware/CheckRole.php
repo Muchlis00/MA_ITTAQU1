@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Auth;
 
 class CheckRole
 {
@@ -13,11 +14,17 @@ class CheckRole
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next, $roles): Response
+    public function handle(Request $request, Closure $next, $role): Response
     {
-        if (!in_array(auth()->user()->role, $roles)) {
-            return redirect('/tenaga-pendidik');  // Arahkan ke halaman yang sesuai
+        // Mendapatkan peran pengguna yang sedang login
+        $role = Auth()->user()->role;
+
+        // Memeriksa apakah role pengguna sesuai dengan salah satu role yang diizinkan
+        if (in_array($role, ['kepsek', 'panitia', 'bendahara', 'pendaftar'])) {
+            return $next($request); // Lanjutkan permintaan jika role valid
         }
-        return $next($request);
+
+        // Jika role tidak valid, beri respons Unauthorized
+        abort(403, 'Akses ditolak');
     }
 }

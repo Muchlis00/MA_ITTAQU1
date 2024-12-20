@@ -16,15 +16,10 @@ class TenagaPendidikController extends Controller
      */
     public function index()
     { {
-            //lama
-            // $tenagaPendidik = tenaga_pendidik::all();
-            // return view('tenaga_pendidik.index2', compact('tenagaPendidik'));
-            //baru
+
             $tenagaPendidik = TenagaPendidik::all(); //->paginate(10) untuk tampil 10
             return view('tenaga-pendidik.index', compact('tenagaPendidik'));
         }
-        // $tenaga_pendidik = DB::table('tenaga_pendidik')->get();
-        // return view('tenaga_pendidik.index2',['tenaga_pendidik' => $tenaga_pendidik]);
     }
 
     /**
@@ -41,16 +36,6 @@ class TenagaPendidikController extends Controller
      */
     public function store(Request $request)
     {
-        // $request->validate([
-        //     'nip' => 'required|unique:tenaga_pendidik,nip',
-        //     'nama_guru' => 'required|string|max:255',
-        //     'tempat_guru' => 'required|string|max:255',
-        //     'tgl_guru' => 'required|date',
-        //     'jk_guru' => 'required',
-        //     'jabatan' => 'required|string|max:255',
-        // ]);
-        // tenaga_pendidik::create($request->all()); // Menyimpan data
-        // return redirect('tenagapendidik/create')->with('success', 'Data Tenaga Pendidik berhasil ditambahkan!');
 
         $request->validate([
             'nip' => 'required|unique:tenaga_pendidik,nip',
@@ -109,7 +94,7 @@ class TenagaPendidikController extends Controller
     {
         $steam = TenagaPendidik::find($id_pendidik);
         $steam->delete();
-        return redirect('tenagapendidik')->with('success', 'Data Tenaga Pendidik berhasil diHapus!');
+        return redirect('tenaga-pendidik')->with('success', 'Data Tenaga Pendidik berhasil diHapus!');
         // return redirect('tenagapendidik/index')->with('success', 'tenaga pendidik berhasil dihapus!');
     }
 }

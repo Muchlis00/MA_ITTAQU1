@@ -3,6 +3,11 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TenagaPendidikController;
+use App\Http\Controllers\kepsek;
+use App\Http\Controllers\panitia;
+use App\Http\Controllers\bendahara;
+use App\Http\Controllers\pendaftar;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -28,20 +33,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Route::middleware(['auth', 'role:kepsek'])->get('/kepsek', function () {
-//     return view('admin.dashboard');
-// });
 
-Route::middleware(['auth', 'role:kepsek'])->group(function () {
-    Route::get('/dashboard/kepsek', [TenagaPendidikController::class, 'index'])->name('dashboard.kepala_sekolah');
-});
-
-
-//tambahan 
-Route::get('/landing', function () {
-    return view('landingpage');
-});
+//crud tenaga-pendidik
 Route::resource('tenaga-pendidik', TenagaPendidikController::class);
+
 
 
 require __DIR__ . '/auth.php';
