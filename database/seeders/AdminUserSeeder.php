@@ -21,6 +21,7 @@ class AdminUserSeeder extends Seeder
             'email' => 'kepsek@gmail.com',
             'password' => Hash::make('kepsek123'), // Ganti dengan password yang aman
             'role' => 'kepsek',
+            'email_verified_at'=> now(),
         ]);
     }
 }
