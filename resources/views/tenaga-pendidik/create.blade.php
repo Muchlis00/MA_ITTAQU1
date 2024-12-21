@@ -10,6 +10,10 @@
             <input type="text" name="nip" class="form-control" id="nip" required>
         </div>
         <div class="mb-3">
+            <label for="email" class="form-label">email</label>
+            <input type="email" name="email" class="form-control" id="email" required>
+        </div>
+        <div class="mb-3">
             <label for="nama_guru" class="form-label">Nama Guru</label>
             <input type="text" name="nama_guru" class="form-control" id="nama_guru" required>
         </div>
