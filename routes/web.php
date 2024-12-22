@@ -3,10 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TenagaPendidikController;
-use App\Http\Controllers\kepsek;
-use App\Http\Controllers\panitia;
-use App\Http\Controllers\bendahara;
-use App\Http\Controllers\pendaftar;
+use App\Http\Controllers\PeriodePPDBController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +30,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::resource('tenaga-pendidik', TenagaPendidikController::class);
+    Route::resource('periode-ppdb', PeriodePPDBController::class);
+
 });
 
 

@@ -44,7 +44,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-
+    public function periodePpdb()
+    {
+        return $this->belongsToMany(PeriodePpdb::class, 'panitia_ppdb', 'user_id', 'id_periode');
+    }
     // Set role
     //     public function isKepsek()
     //     {

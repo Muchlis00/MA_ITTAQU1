@@ -15,6 +15,31 @@ namespace App\Models{
 /**
  * 
  *
+ * @property int $id_periode
+ * @property string $name
+ * @property string $startDate
+ * @property string $endDate
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $panitia
+ * @property-read int|null $panitia_count
+ * @method static \Illuminate\Database\Eloquent\Builder|PeriodePPDB newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PeriodePPDB newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PeriodePPDB query()
+ * @method static \Illuminate\Database\Eloquent\Builder|PeriodePPDB whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PeriodePPDB whereEndDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PeriodePPDB whereIdPeriode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PeriodePPDB whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PeriodePPDB whereStartDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PeriodePPDB whereUpdatedAt($value)
+ */
+	class PeriodePPDB extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
  * @property int $id_pendidik
  * @property int|null $id
  * @property string $nip
@@ -57,6 +82,8 @@ namespace App\Models{
  * @property string $role
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PeriodePPDB> $periodePpdb
+ * @property-read int|null $periode_ppdb_count
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
