@@ -32,6 +32,8 @@
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger">Hapus</button>
                                 </form>
+                                <a href="{{ route('periode-ppdb.show', $ppdb->id_periode) }}" class="btn btn-warning">Panitia & Bendahara</a>
+
 
                             </td>
                         </tr>

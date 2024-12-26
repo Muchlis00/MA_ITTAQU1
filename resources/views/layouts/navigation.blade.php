@@ -16,12 +16,15 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    @if (Auth::user()->role == 'kepsek')
                     <x-nav-link :href="route('tenaga-pendidik.index')">
                         {{ __('Tenaga Pendidik') }}
                     </x-nav-link>
                     <x-nav-link :href="route('periode-ppdb.index')">
                         {{ __('Periode PPDB') }}
                     </x-nav-link>
+                    @endif
+
                 </div>
 
             </div>
