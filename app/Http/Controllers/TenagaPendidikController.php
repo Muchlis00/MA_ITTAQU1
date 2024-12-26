@@ -52,7 +52,7 @@ class TenagaPendidikController extends Controller
         $user = User::create([
             'name' => $request->nama_guru,
             'email' => $request->email,
-            'password' => Hash::make(bin2hex(openssl_random_pseudo_bytes(8))),
+            'password' => Hash::make('password'),
             'role' => $request->jabatan,
         ]);
         TenagaPendidik::create($request->except('email'));
