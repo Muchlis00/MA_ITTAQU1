@@ -6,19 +6,7 @@ use App\Http\Controllers\TenagaPendidikController;
 use App\Http\Controllers\PeriodePPDBController;
 use App\Http\Controllers\BendaharaPPDBController;
 use App\Http\Controllers\PanitiaPPDBController;
-use App\Http\Controllers\UserController;
-use App\Models\User;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
+use App\Http\Controllers\FormPendaftarController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -28,6 +16,13 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// Route::prefix('dashboard')->group(function () {
+//     Route::get('/data-pendaftar', [FormPendaftarController::class, 'dataPendaftar'])->name('form-pendaftar.data-pendaftar');
+//     Route::post('/data-pendaftar', [FormPendaftarController::class, 'storeDataPendaftar'])->name('form-pendaftar.store-data-pendaftar');
+//     Route::get('/data-orang-tua', [FormPendaftarController::class, 'dataOrangTua'])->name('form-pendaftar.data-orang-tua');
+//     Route::post('/data-orang-tua', [FormPendaftarController::class, 'storeDataOrangTua'])->name('form-pendaftar.store-data-orang-tua');
+// });
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -36,13 +31,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('periode-ppdb', PeriodePPDBController::class);
     Route::resource('panitia-ppdb', PanitiaPPDBController::class);
     Route::resource('bendahara-ppdb', BendaharaPPDBController::class);
+    Route::resource('formulir-ppdb', FormPendaftarController::class);
 
 });
-
-
-//crud tenaga-pendidik
-
-
-
 
 require __DIR__ . '/auth.php';
