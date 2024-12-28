@@ -31,8 +31,16 @@ class PeriodePPDBController extends Controller
 
         $request->validate([
             'startDate' => 'required|date',
-            'endDate' => 'required|date',
+            'endDate' => 'required|date|after_or_equal:startDate',
         ]);
+        $overlappingPeriods = PeriodePPDB::where(function ($query) use ($request) {
+            $query->whereBetween('startDate', [$request->startDate, $request->endDate])
+                ->orWhereBetween('endDate', [$request->startDate, $request->endDate]);
+        })->exists();
+        if ($overlappingPeriods) {
+            return redirect()->back()
+                ->with('error', 'Periode PPDB tumpang tindih dengan periode yang sudah ada.');
+        }
 
         PeriodePPDB::create($request->all());
         return redirect()->route('periode-ppdb.index')

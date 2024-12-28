@@ -25,4 +25,8 @@ class PendaftarPpdb extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function dataDiriPendaftar()
+    {
+        return $this->hasOne(DataDiriPendaftar::class);
+    }
 }

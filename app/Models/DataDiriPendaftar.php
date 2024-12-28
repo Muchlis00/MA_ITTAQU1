@@ -13,13 +13,15 @@ class DataDiriPendaftar extends Model
 
     protected $fillable = [
         'user_id',
-        'telepon',
-        'tempat_lahir',
-        'tgl_lahir',
-        'jenis_kelamin',
+        'gender',
+        'place_of_birth',
+        'date_of_birth',
         'nisn',
-        'asal_sekolah',
-        'alamat_sekolah_asal',
+        'phone',
+        'child_number',
+        'sibling',
+        'previous_school_name',
+        'previous_school_address',
     ];
 
     public function user()

@@ -57,25 +57,27 @@ return new class extends Migration
     Schema::create('data_diri_pendaftar', function (Blueprint $table) {
         $table->id();
         $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-        $table->string('telepon');
-        $table->string('tempat_lahir');
-        $table->date('tgl_lahir');
-        $table->enum('jenis_kelamin', ['Laki-Laki', 'Perempuan']);
-        $table->string('nisn');
-        $table->string('asal_sekolah');
-        $table->string('alamat_sekolah_asal');
+        $table->enum('gender', ['Laki-Laki', 'Perempuan']);
+        $table->string('place_of_birth');
+        $table->date('date_of_birth');
+        $table->string('nisn')->unique();
+        $table->string('phone');
+        $table->string('child_number');
+        $table->string('sibling');
+        $table->string('previous_school_name');
+        $table->string('previous_school_address');
         $table->timestamps();
     });
 
     Schema::create('wali_pendaftar', function (Blueprint $table) {
         $table->id();
-        $table->foreignId('pendaftar_id')->constrained('data_diri_pendaftar')->onDelete('cascade');
-        $table->string('nama');
-        $table->string('alamat');
-        $table->string('telepon');
-        $table->string('tempat_lahir');
-        $table->date('tgl_lahir');
-        $table->enum('jenis_kelamin', ['Laki-Laki', 'Perempuan']);
+        $table->foreignId('data_diri_pendaftar_id')->constrained('data_diri_pendaftar')->onDelete('cascade');
+        $table->string('name');
+        $table->string('address');
+        $table->string('phone');
+        $table->string('place_of_birth');
+        $table->date('date_of_birth');
+        $table->enum('gender', ['Laki-Laki', 'Perempuan']);
         $table->string('pekerjaan');
         $table->string('pendapatan');
         $table->timestamps();

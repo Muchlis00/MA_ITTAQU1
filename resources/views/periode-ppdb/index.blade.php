@@ -1,6 +1,11 @@
 @extends('layouts.navbar')
 @section('content')
 <div class="container-fluid">
+@if (session('error'))
+    <div class="alert alert-danger" role="alert">
+      {{ session('error') }}
+    </div>
+  @endif
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between">
             <h6 class="m-0 font-weight-bold text-primary">Periode PPDB</h6>

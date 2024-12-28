@@ -48,24 +48,11 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsToMany(PeriodePpdb::class, 'panitia_ppdb', 'user_id', 'id_periode');
     }
-    // Set role
-    //     public function isKepsek()
-    //     {
-    //         return $this->role === 'kepsek';
-    //     }
-
-    //     public function isPanitia()
-    //     {
-    //         return $this->role === 'panitia';
-    //     }
-
-    //     public function isBendahara()
-    //     {
-    //         return $this->role === 'bendahara';
-    //     }
-
-    //     public function isPendaftar()
-    //     {
-    //         return $this->role === 'pendaftar';
-    //     }
+    public function hasRole($roles)
+    {
+        if (is_string($roles)) {
+            $roles = explode(',', $roles);
+        }
+        return in_array($this->role, $roles);
+    }
 }

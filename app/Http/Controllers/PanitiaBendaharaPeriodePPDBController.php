@@ -26,16 +26,18 @@ class PanitiaBendaharaPeriodePPDBController extends Controller
             'jabatan' => 'required|in:Panitia,Bendahara',
         ]);
         if ($request->jabatan == 'Panitia') {
-            $panitiaPpdb = PanitiaPpdb::create([
+            PanitiaPpdb::create([
                 'id_periode' => $request->periode_id,
                 'user_id' => $request->user_id,
             ]);
+            User::where('id', $request->user_id)->update(['role' => 'panitia']);
         }
         if ($request->jabatan == 'Bendahara') {
-            $bendaharaPpdb = BendaharaPpdb::create([
+            BendaharaPpdb::create([
                 'id_periode' => $request->periode_id,
                 'user_id' => $request->user_id,
             ]);
+            User::where('id', $request->user_id)->update(['role' => 'bendahara']);
         }
 
         return redirect()->route('periode-ppdb.show', $request->periode_id)

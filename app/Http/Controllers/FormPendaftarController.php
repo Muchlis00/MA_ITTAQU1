@@ -2,31 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DataDiriPendaftar;
 use App\Models\PendaftarPpdb;
+use App\Models\User;
 use App\Models\WaliPendaftar;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\PeriodePPDB;
+use Dflydev\DotAccessData\Data;
 
 class FormPendaftarController extends Controller
 {
 
-    public function index()
-    {
-        return view('form-pendaftar.index');
-    }
-    /**
-     * Show the student registration form
-     */
     public function dataPendaftar()
     {
-        // Check if user already has registration data
-        $pendaftar = PendaftarPpdb::where('user_id', Auth::id())->first();
-        
-        if ($pendaftar) {
-            return redirect()->route('form-pendaftar.data-orang-tua');
-        }
-        
-        return view('form-pendaftar.data-pendaftar');
+        $currentPeriode = PeriodePPDB::where('startDate', '<=', Carbon::now())
+            ->where('endDate', '>=', Carbon::now())
+            ->firstOrFail();
+        $currentUser = Auth::user();
+        $currentDataDiriPendaftar = DataDiriPendaftar::where('user_id', Auth::id())->first();
+
+        return view('form-pendaftar.data-pendaftar', compact('currentPeriode', 'currentUser', 'currentDataDiriPendaftar'));
     }
 
     /**
@@ -34,33 +31,48 @@ class FormPendaftarController extends Controller
      */
     public function storeDataPendaftar(Request $request)
     {
-        $validated = $request->validate([
-            'nama_pendaftar' => 'required|string|max:255',
-            'ttl_pendaftar' => 'required|string|max:255',
-            'nisn' => 'required|string|max:20|unique:pendaftar_ppdb,nisn',
-            'anak_ke' => 'required|integer|min:1',
-            'jumlah_saudara' => 'required|integer|min:0',
-            'sekolah_asal' => 'required|string|max:255',
-            'alamat_sekolah' => 'required|string',
-            'telepon_pendaftar' => 'required|string|max:15'
-        ]);
+        try {
+            // Validate the request data
+            $request->validate([
+                'user_id' => 'required|exists:users,id',
+                'periode_id' => 'required|exists:periode_ppdb,id_periode',
+                'name' => 'required|string|max:255',
+                'gender' => 'required|string|in:Laki-Laki,Perempuan',
+                'place_of_birth' => 'required|string|max:255',
+                'date_of_birth' => 'required|date',
+                'nisn' => 'required|string|max:20|unique:data_diri_pendaftar,nisn,' . $request->user_id . ',user_id',
+                'phone' => 'required|string|max:15',
+                'child_number' => 'required|integer|min:1',
+                'sibling' => 'required|integer|min:0',
+                'previous_school_name' => 'required|string|max:255',
+                'previous_school_address' => 'required|string',
+            ]);
 
-        // Create new pendaftar record
-        PendaftarPpdb::create([
-            'user_id' => Auth::id(),
-            'nama_lengkap' => $validated['nama_pendaftar'],
-            'ttl' => $validated['ttl_pendaftar'],
-            'nisn' => $validated['nisn'],
-            'anak_ke' => $validated['anak_ke'],
-            'jumlah_saudara' => $validated['jumlah_saudara'],
-            'sekolah_asal' => $validated['sekolah_asal'],
-            'alamat_sekolah' => $validated['alamat_sekolah'],
-            'telepon' => $validated['telepon_pendaftar']
-        ]);
+            // Update or create DataDiriPendaftar
+            DataDiriPendaftar::updateOrCreate(
+                ['user_id' => $request->user_id], // Condition
+                $request->except(['periode_id', 'name', '_token']) // Data to update or create
+            );
 
-        return redirect()->route('form-pendaftar.data-orang-tua')
-            ->with('success', 'Data pendaftar berhasil disimpan');
+            // Update the user's name
+            User::find($request->user_id)->update(['name' => $request->name]);
+
+            // Update or create PendaftarPpdb
+            PendaftarPpdb::updateOrCreate(
+                [
+                    'user_id' => $request->user_id,
+                    'id_periode' => $request->periode_id,
+                ]
+            );
+
+            return redirect()->route('formulir-ppdb.dataPendaftar')
+                ->with('success', 'Data pendaftar berhasil disimpan');
+        } catch (\Exception $e) {
+            \Log::error('Form submission error: ' . $e->getMessage());
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
     }
+
 
     /**
      * Show the parent registration form
@@ -69,7 +81,7 @@ class FormPendaftarController extends Controller
     {
         // Check if student data exists
         $pendaftar = PendaftarPpdb::where('user_id', Auth::id())->first();
-        
+
         if (!$pendaftar) {
             return redirect()->route('form-pendaftar.data-pendaftar')
                 ->with('error', 'Silahkan lengkapi data pendaftar terlebih dahulu');
@@ -92,7 +104,7 @@ class FormPendaftarController extends Controller
     public function storeDataOrangTua(Request $request)
     {
         $pendaftar = PendaftarPpdb::where('user_id', Auth::id())->first();
-        
+
         if (!$pendaftar) {
             return redirect()->route('form-pendaftar.data-pendaftar')
                 ->with('error', 'Silahkan lengkapi data pendaftar terlebih dahulu');

@@ -16,23 +16,28 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// Route::prefix('dashboard')->group(function () {
-//     Route::get('/data-pendaftar', [FormPendaftarController::class, 'dataPendaftar'])->name('form-pendaftar.data-pendaftar');
-//     Route::post('/data-pendaftar', [FormPendaftarController::class, 'storeDataPendaftar'])->name('form-pendaftar.store-data-pendaftar');
-//     Route::get('/data-orang-tua', [FormPendaftarController::class, 'dataOrangTua'])->name('form-pendaftar.data-orang-tua');
-//     Route::post('/data-orang-tua', [FormPendaftarController::class, 'storeDataOrangTua'])->name('form-pendaftar.store-data-orang-tua');
-// });
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+Route::middleware(['auth', 'verified', 'role:kepsek'])->group(function () {
     Route::resource('tenaga-pendidik', TenagaPendidikController::class);
     Route::resource('periode-ppdb', PeriodePPDBController::class);
     Route::resource('panitia-ppdb', PanitiaPPDBController::class);
     Route::resource('bendahara-ppdb', BendaharaPPDBController::class);
-    Route::resource('formulir-ppdb', FormPendaftarController::class);
+});
+
+Route::middleware(['auth', 'verified', 'role:pendaftar,guru,kepsek'])->group(function () {
+    Route::get('/formulir-ppdb/data-pendaftar', [FormPendaftarController::class, 'dataPendaftar'])->name('formulir-ppdb.dataPendaftar');
+    Route::post('/formulir-ppdb/data-pendaftar', [FormPendaftarController::class, 'storeDataPendaftar'])->name('formulir-ppdb.storeDataPendaftar');
+    Route::get('/formulir-ppdb/data-orang-tua', [FormPendaftarController::class, 'dataOrangTua'])->name('formulir-ppdb.dataOrangTua');
+    Route::post('/formulir-ppdb/data-orang-tua', [FormPendaftarController::class, 'storeDataOrangTua'])->name('formulir-ppdb.storeDataOrangTua');
 
 });
+
+
+
 
 require __DIR__ . '/auth.php';
