@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\PaymentRejectionMail;
+use App\Mail\PaymentVerifiedMail;
 use App\Models\BendaharaPpdb;
 use App\Models\PeriodePPDB;
 use App\Models\PembayaranPpdb;
@@ -20,8 +21,13 @@ class VerifyPaymentController extends Controller
 
         return view('verify-payment.index', compact('listUserIdPendaftar', 'listBuktiBayar'));
     }
-    public function verify(Request $request){
-
+    public function verify($id,Request $request){
+        $pendaftar = PembayaranPpdb::where('id', $id)->with('user')->first();
+        PembayaranPpdb::where('id', $id)->update(['verifier_id' => Auth::id(), 'verification_status' => 'verified']);
+        Mail::to($pendaftar->user->email)->send(new PaymentVerifiedMail(
+            $pendaftar->user
+        ));
+        return redirect()->back()->with('success', 'Pembayaran berhasil diverifikasi');
     }
 
     public function reject($id,Request $request){

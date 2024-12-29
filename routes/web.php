@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\VerifyFormulirPPDBController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TenagaPendidikController;
 use App\Http\Controllers\PeriodePPDBController;
@@ -53,9 +54,15 @@ Route::middleware(['auth', 'verified', 'role:pendaftar,guru,kepsek'])->group(fun
 // bendahara
 Route::middleware(['auth', 'verified', 'role:bendahara'])->group(function () {
     Route::get('/verify-payment', [VerifyPaymentController::class, 'index'])->name('verify-payment.index');
-    Route::post('/verify-payment', [VerifyPaymentController::class, 'verify'])->name('verify-payment.verify');
+    Route::post('/verify-payment/verify/{id}', [VerifyPaymentController::class, 'verify'])->name('verify-payment.verify');
     Route::post('/verify-payment/reject/{id}', [VerifyPaymentController::class, 'reject'])->name('verify-payment.reject');
 
+});
+
+// panitia
+Route::middleware(['auth', 'verified', 'role:panitia'])->group(function () {
+    Route::get('/verify-formulir', [VerifyFormulirPPDBController::class, 'index'])->name('verify-formulir.index');
+    
 });
 
 

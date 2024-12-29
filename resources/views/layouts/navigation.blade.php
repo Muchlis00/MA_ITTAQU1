@@ -4,11 +4,11 @@
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
-  
+
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                @if (Auth::user()->role != 'pendaftar')
+                    @if (Auth::user()->role != 'pendaftar')
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
@@ -20,9 +20,9 @@
                         {{ __('Periode PPDB') }}
                     </x-nav-link>
                     @endif
-                @endif
+                    @endif
 
-                @if (Auth::user()->role == 'pendaftar')
+                    @if (Auth::user()->role == 'pendaftar')
                     <x-nav-link :href="route('formulir-ppdb.dataPendaftar')" :active="request()->routeIs('formulir-ppdb.dataPendaftar')">
                         Formulir Pendaftaran
                     </x-nav-link>
@@ -34,7 +34,13 @@
                     </x-nav-link>
                     @endif
 
-                    
+                    @if (Auth::user()->role == 'panitia')
+                    <x-nav-link :href="route('verify-formulir.index')" :active="request()->routeIs('verify-formulir.index')">
+                        Verifikasi Formulir PPDB
+                    </x-nav-link>
+                    @endif
+
+
 
                 </div>
 
