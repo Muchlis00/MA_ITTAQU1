@@ -28,6 +28,12 @@
                     </x-nav-link>
                     @endif
 
+                    @if (Auth::user()->role == 'bendahara')
+                    <x-nav-link :href="route('verify-payment.index')" :active="request()->routeIs('verify-payment.index')">
+                        Verifikasi Pembayaran
+                    </x-nav-link>
+                    @endif
+
                     
 
                 </div>

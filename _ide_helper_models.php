@@ -38,12 +38,46 @@ namespace App\Models{
 /**
  * 
  *
- * @property-read \App\Models\User|null $user
+ * @property int $id
+ * @property int $user_id
+ * @property string $gender
+ * @property string $place_of_birth
+ * @property string $date_of_birth
+ * @property string $nisn
+ * @property string $phone
+ * @property string $child_number
+ * @property string $sibling
+ * @property string $previous_school_name
+ * @property string $previous_school_address
+ * @property string|null $ijazah
+ * @property string|null $photo
+ * @property string|null $akte_kelahiran
+ * @property string|null $kip
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User $user
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\WaliPendaftar> $wali
  * @property-read int|null $wali_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DataDiriPendaftar newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DataDiriPendaftar newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DataDiriPendaftar query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DataDiriPendaftar whereAkteKelahiran($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DataDiriPendaftar whereChildNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DataDiriPendaftar whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DataDiriPendaftar whereDateOfBirth($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DataDiriPendaftar whereGender($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DataDiriPendaftar whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DataDiriPendaftar whereIjazah($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DataDiriPendaftar whereKip($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DataDiriPendaftar whereNisn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DataDiriPendaftar wherePhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DataDiriPendaftar wherePhoto($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DataDiriPendaftar wherePlaceOfBirth($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DataDiriPendaftar wherePreviousSchoolAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DataDiriPendaftar wherePreviousSchoolName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DataDiriPendaftar whereSibling($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DataDiriPendaftar whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DataDiriPendaftar whereUserId($value)
  */
 	class DataDiriPendaftar extends \Eloquent {}
 }
@@ -78,7 +112,9 @@ namespace App\Models{
  * @property int $id
  * @property int $id_periode
  * @property int $user_id
- * @property string $bukti_pembayaran
+ * @property int|null $verifier_id
+ * @property string $verification_status
+ * @property string|null $bukti_pembayaran
  * @property string $status_pembayaran
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -95,6 +131,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PembayaranPpdb whereStatusPembayaran($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PembayaranPpdb whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PembayaranPpdb whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PembayaranPpdb whereVerificationStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PembayaranPpdb whereVerifierId($value)
  */
 	class PembayaranPpdb extends \Eloquent {}
 }
@@ -103,12 +141,24 @@ namespace App\Models{
 /**
  * 
  *
+ * @property int $id
+ * @property int $id_periode
+ * @property int $user_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int $ready_to_verify
  * @property-read \App\Models\DataDiriPendaftar|null $dataDiriPendaftar
- * @property-read \App\Models\PeriodePPDB|null $periode
- * @property-read \App\Models\User|null $user
+ * @property-read \App\Models\PeriodePPDB $periode
+ * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PendaftarPpdb newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PendaftarPpdb newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PendaftarPpdb query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PendaftarPpdb whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PendaftarPpdb whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PendaftarPpdb whereIdPeriode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PendaftarPpdb whereReadyToVerify($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PendaftarPpdb whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PendaftarPpdb whereUserId($value)
  */
 	class PendaftarPpdb extends \Eloquent {}
 }
@@ -213,10 +263,38 @@ namespace App\Models{
 /**
  * 
  *
- * @property-read \App\Models\DataDiriPendaftar|null $pendaftar
+ * @property int $id
+ * @property int $data_diri_pendaftar_id
+ * @property string $name
+ * @property string $address
+ * @property string $phone
+ * @property string $place_of_birth
+ * @property string $date_of_birth
+ * @property string $gender
+ * @property string $pekerjaan
+ * @property string $pendapatan
+ * @property string|null $ktp
+ * @property string|null $kartu_keluarga
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\DataDiriPendaftar $pendaftar
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WaliPendaftar newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WaliPendaftar newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WaliPendaftar query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WaliPendaftar whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WaliPendaftar whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WaliPendaftar whereDataDiriPendaftarId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WaliPendaftar whereDateOfBirth($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WaliPendaftar whereGender($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WaliPendaftar whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WaliPendaftar whereKartuKeluarga($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WaliPendaftar whereKtp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WaliPendaftar whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WaliPendaftar wherePekerjaan($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WaliPendaftar wherePendapatan($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WaliPendaftar wherePhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WaliPendaftar wherePlaceOfBirth($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WaliPendaftar whereUpdatedAt($value)
  */
 	class WaliPendaftar extends \Eloquent {}
 }

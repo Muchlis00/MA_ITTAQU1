@@ -14,6 +14,7 @@ class PendaftarPpdb extends Model
     protected $fillable = [
         'id_periode',
         'user_id',
+        'ready_to_verify',
     ];
 
     public function periode()

@@ -22,6 +22,10 @@ class DataDiriPendaftar extends Model
         'sibling',
         'previous_school_name',
         'previous_school_address',
+        'ijazah',
+        'photo',
+        'akte_kelahiran',
+        'kip',
     ];
 
     public function user()

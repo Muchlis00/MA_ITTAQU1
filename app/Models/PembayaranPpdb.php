@@ -15,6 +15,7 @@ class PembayaranPpdb extends Model
         'id_periode',
         'user_id',
         'verifier_id',
+        'verification_status',
         'bukti_pembayaran',
         'status_pembayaran',
     ];
