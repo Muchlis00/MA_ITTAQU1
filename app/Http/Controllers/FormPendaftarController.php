@@ -34,7 +34,7 @@ class FormPendaftarController extends Controller
             ->where('endDate', '>=', Carbon::now())
             ->firstOrFail();
         $currentUser = Auth::user();
-        $currentDataDiriPendaftar = DataDiriPendaftar::where('user_id', Auth::id())->first();
+        $currentDataDiriPendaftar = DataDiriPendaftar::where('user_id', Auth::id())->first() ?? new DataDiriPendaftar();
 
         return view('form-pendaftar.data-pendaftar', compact('currentPeriode', 'currentUser', 'currentDataDiriPendaftar'));
     }
@@ -75,8 +75,7 @@ class FormPendaftarController extends Controller
                 ]
             );
 
-            return redirect()->route('formulir-ppdb.dataOrangTua')
-                ->with('success', 'Data pendaftar berhasil disimpan');
+            return redirect()->back()->with('success', 'Data pendaftar berhasil disimpan');
         } catch (\Exception $e) {
             \Log::error('Form submission error: ' . $e->getMessage());
             return back()->withErrors(['error' => $e->getMessage()]);
@@ -89,9 +88,9 @@ class FormPendaftarController extends Controller
             ->where('endDate', '>=', Carbon::now())
             ->firstOrFail();
         $currentUser = Auth::user();
-        $currentDataDiriPendaftar = DataDiriPendaftar::where('user_id', Auth::id())->first();
-        $currentDataAyah = WaliPendaftar::where(['data_diri_pendaftar_id' => $currentDataDiriPendaftar->id, 'gender' => 'Laki-Laki'])->first();
-        $currentDataIbu = WaliPendaftar::where(['data_diri_pendaftar_id' => $currentDataDiriPendaftar->id, 'gender' => 'Perempuan'])->first();
+        $currentDataDiriPendaftar = DataDiriPendaftar::where('user_id', Auth::id())->first() ?? new DataDiriPendaftar();
+        $currentDataAyah = WaliPendaftar::where(['data_diri_pendaftar_id' => $currentDataDiriPendaftar->id, 'gender' => 'Laki-Laki'])->first() ?? new WaliPendaftar();
+        $currentDataIbu = WaliPendaftar::where(['data_diri_pendaftar_id' => $currentDataDiriPendaftar->id, 'gender' => 'Perempuan'])->first() ?? new WaliPendaftar();
 
         return view(
             'form-pendaftar.data-orang-tua',
@@ -151,8 +150,7 @@ class FormPendaftarController extends Controller
             'pendapatan' => $request->mother_income,
         ]);
 
-        return redirect()->route('formulir-ppdb.dataOrangTua')
-            ->with('success', 'Pendaftaran berhasil diselesaikan');
+        return redirect()->back()->with('success', 'Pendaftaran berhasil diselesaikan');
     }
 
     public function dokumenPendaftar(Request $request)
@@ -253,7 +251,8 @@ class FormPendaftarController extends Controller
             ->with('success', 'Dokumen berhasil disimpan');
     }
 
-    public function pembayaran(Request $request) {
+    public function pembayaran(Request $request)
+    {
         $currentPeriode = PeriodePPDB::where('startDate', '<=', Carbon::now())
             ->where('endDate', '>=', Carbon::now())
             ->firstOrFail();
@@ -264,7 +263,8 @@ class FormPendaftarController extends Controller
         return view('form-pendaftar.pembayaran', compact('currentPeriode', 'currentUser', 'currentDataDiriPendaftar', 'currentPembayaran'));
     }
 
-    public function storePembayaran(Request $request) {
+    public function storePembayaran(Request $request)
+    {
         $request->validate([
             'bukti_pembayaran' => 'required',
         ]);
@@ -281,7 +281,8 @@ class FormPendaftarController extends Controller
             ->with('success', 'Pembayaran berhasil disimpan');
     }
 
-    public function kirimFormulir(Request $request) {
+    public function kirimFormulir(Request $request)
+    {
         PendaftarPpdb::where('user_id', Auth::id())->update([
             'ready_to_verify' => true
         ]);
