@@ -114,7 +114,7 @@ namespace App\Models{
  * @property int $user_id
  * @property int|null $verifier_id
  * @property string $verification_status
- * @property string|null $bukti_pembayaran
+ * @property string $bukti_pembayaran
  * @property string $status_pembayaran
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at

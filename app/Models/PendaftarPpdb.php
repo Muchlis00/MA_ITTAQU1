@@ -15,6 +15,8 @@ class PendaftarPpdb extends Model
         'id_periode',
         'user_id',
         'ready_to_verify',
+        'verification_status',
+        'verifier_id',
     ];
 
     public function periode()

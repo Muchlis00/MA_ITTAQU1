@@ -62,7 +62,8 @@ Route::middleware(['auth', 'verified', 'role:bendahara'])->group(function () {
 // panitia
 Route::middleware(['auth', 'verified', 'role:panitia'])->group(function () {
     Route::get('/verify-formulir', [VerifyFormulirPPDBController::class, 'index'])->name('verify-formulir.index');
-    
+    Route::post('/verify-formulir/verify/{id}', [VerifyFormulirPPDBController::class, 'verify'])->name('verify-formulir.verify');
+    Route::post('/verify-formulir/reject/{id}', [VerifyFormulirPPDBController::class, 'reject'])->name('verify-formulir.reject');
 });
 
 
