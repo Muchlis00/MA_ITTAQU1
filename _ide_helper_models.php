@@ -15,6 +15,19 @@ namespace App\Models{
 /**
  * 
  *
+ * @property-read \App\Models\PeriodePPDB|null $periode
+ * @property-read \App\Models\User|null $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AgreementPpdb newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AgreementPpdb newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AgreementPpdb query()
+ */
+	class AgreementPpdb extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
  * @property int $id
  * @property int $id_periode
  * @property int $user_id
@@ -86,13 +99,38 @@ namespace App\Models{
 /**
  * 
  *
- * @property-read \App\Models\PeriodePPDB|null $periode
- * @property-read \App\Models\User|null $user
+ * @property int $id
+ * @property int $id_periode
+ * @property int $created_by
+ * @property string $detail_pembayaran
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\PeriodePPDB $periode
+ * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InformasiPembayaran newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InformasiPembayaran newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|InformasiPembayaran query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InformasiPembayaran whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InformasiPembayaran whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InformasiPembayaran whereDetailPembayaran($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InformasiPembayaran whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InformasiPembayaran whereIdPeriode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InformasiPembayaran whereUpdatedAt($value)
  */
 	class InformasiPembayaran extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property-read \App\Models\User|null $creator
+ * @property-read \App\Models\PeriodePPDB|null $periode
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Orientasi newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Orientasi newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Orientasi query()
+ */
+	class Orientasi extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -127,7 +165,7 @@ namespace App\Models{
  * @property int $user_id
  * @property int|null $verifier_id
  * @property string $verification_status
- * @property string $bukti_pembayaran
+ * @property string|null $bukti_pembayaran
  * @property string $status_pembayaran
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -192,6 +230,10 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $bendahara
  * @property-read int|null $bendahara_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\InformasiPembayaran> $detail_pembayaran
+ * @property-read int|null $detail_pembayaran_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Orientasi> $orientasi
+ * @property-read int|null $orientasi_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $panitia
  * @property-read int|null $panitia_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PembayaranPpdb> $pembayaran

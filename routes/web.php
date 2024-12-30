@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AgreementPPDBController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VerifyFormulirPPDBController;
 use Illuminate\Support\Facades\Route;
@@ -54,20 +55,21 @@ Route::middleware(['auth', 'verified', 'role:pendaftar,guru,kepsek'])->group(fun
 
 // bendahara
 Route::middleware(['auth', 'verified', 'role:bendahara'])->group(function () {
+    Route::get('/informasi-pembayaran', [InformasiPembayaranController::class, 'index'])->name('informasi-pembayaran.index');
+    Route::post('/informasi-pembayaran', [InformasiPembayaranController::class, 'store'])->name('informasi-pembayaran.store');
+    Route::post('/informasi-pembayaran/{id}', [InformasiPembayaranController::class, 'show'])->name('informasi-pembayaran.show');
+    
     Route::get('/verify-payment', [VerifyPaymentController::class, 'index'])->name('verify-payment.index');
     Route::post('/verify-payment/verify/{id}', [VerifyPaymentController::class, 'verify'])->name('verify-payment.verify');
     Route::post('/verify-payment/reject/{id}', [VerifyPaymentController::class, 'reject'])->name('verify-payment.reject');
-
-    Route::get('/informasi-pembayaran', [InformasiPembayaranController::class, 'index'])->name('informasi-pembayaran.index');
-    Route::post('/informasi-pembayaran', [InformasiPembayaranController::class, 'store'])->name('informasi-pembayaran.store');
-    Route::post('/informasi-pembayaran/show/{id}', [InformasiPembayaranController::class, 'show'])->name('informasi-pembayaran.show');
-
-
-
 });
 
 // panitia
 Route::middleware(['auth', 'verified', 'role:panitia'])->group(function () {
+    Route::get('/agreement', [AgreementPPDBController::class, 'index'])->name('agreement.index');
+    Route::post('/agreement', [AgreementPPDBController::class, 'store'])->name('agreement.store');
+    Route::post('/agreement/{id}', [AgreementPPDBController::class, 'show'])->name('agreement.show');
+
     Route::get('/verify-formulir', [VerifyFormulirPPDBController::class, 'index'])->name('verify-formulir.index');
     Route::post('/verify-formulir/verify/{id}', [VerifyFormulirPPDBController::class, 'verify'])->name('verify-formulir.verify');
     Route::post('/verify-formulir/reject/{id}', [VerifyFormulirPPDBController::class, 'reject'])->name('verify-formulir.reject');

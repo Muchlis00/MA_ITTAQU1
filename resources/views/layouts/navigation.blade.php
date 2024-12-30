@@ -44,7 +44,12 @@
                     <x-nav-link :href="route('verify-formulir.index')" :active="request()->routeIs('verify-formulir.index')">
                         Verifikasi Formulir PPDB
                     </x-nav-link>
+
+                    <x-nav-link :href="route('agreement.index')" :active="request()->routeIs('agreement.index')">
+                        Persyaratan Pendaftaran
+                    </x-nav-link>
                     @endif
+                    
 
 
 

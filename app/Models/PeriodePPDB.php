@@ -42,6 +42,16 @@ class PeriodePPDB extends Model
 
     public function detail_pembayaran()
     {
-        return $this->hasMany(informasi_pembayaran::class, 'id_periode', 'id_periode');
+        return $this->hasMany(InformasiPembayaran::class, 'id_periode', 'id_periode');
+    }
+
+    public function agreement()
+    {
+        return $this->has(AgreementPpdb::class, 'id_periode');
+    }
+
+    public function orientasi()
+    {
+        return $this->hasMany(Orientasi::class, 'id_periode', 'id_periode');
     }
 }

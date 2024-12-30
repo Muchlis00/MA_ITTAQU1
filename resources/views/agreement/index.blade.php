@@ -4,9 +4,9 @@
     <div class="min-h-screen bg-gray-100 py-6 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="bg-white shadow-md rounded-lg p-6">
-                <h2 class="text-2xl font-bold text-gray-900">Informasi Pembayaran PPDB</h2>
+                <h2 class="text-2xl font-bold text-gray-900">Persyaratan Pendaftaran</h2>
                 <div class="bg-gray-50 p-4 rounded-md">
-                    <form class="space-y-6 flex flex-col" method="POST" action="{{ route('informasi-pembayaran.store') }}">
+                    <form class="space-y-6 flex flex-col" method="POST" action="{{ route('agreement.store') }}">
                         @csrf
                         <div class="flex items-center">
                             <label for="id_periode" class="w-32  block text-sm font-medium text-gray-700">Periode PPDB</label>
@@ -18,8 +18,8 @@
                         </div>
 
                         <div class="flex items-center">
-                            <label for="detail_pembayaran" class="w-32  block text-sm font-medium text-gray-700">Rincian Pembayaran</label>
-                            <textarea name="detail_pembayaran" id="detail_pembayaran" class="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:border-blue-500" ></textarea>
+                            <label for="content" class="w-32  block text-sm font-medium text-gray-700">Persyaratan</label>
+                            <textarea name="content" id="content" class="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:border-blue-500" ></textarea>
                         </div>
 
                         
@@ -36,7 +36,7 @@
     <script>
         function handlePeriodeChange() {
             let periodeId = document.querySelector("#id_periode").value
-            let url = "{{ route('informasi-pembayaran.show', ':periodeId') }}".replace(':periodeId', periodeId);
+            let url = "{{ route('agreement.show', ':periodeId') }}".replace(':periodeId', periodeId);
 
             // Data to be sent in the POST request
             const data = {
@@ -60,7 +60,8 @@
                     return response.json();
                 })
                 .then(data => {
-                    document.querySelector("#detail_pembayaran").value = data.detail_pembayaran ?? ""
+                    console.log(data);
+                    document.querySelector("#content").value = data.content ?? ""
                 })
                 .catch(error => {
                     console.error('There was a problem with the fetch operation:', error);

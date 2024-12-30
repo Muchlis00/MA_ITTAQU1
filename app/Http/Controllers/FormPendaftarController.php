@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DataDiriPendaftar;
+use App\Models\InformasiPembayaran;
 use App\Models\PembayaranPpdb;
 use App\Models\PendaftarPpdb;
 use App\Models\User;
@@ -259,8 +260,8 @@ class FormPendaftarController extends Controller
         $currentUser = Auth::user();
         $currentDataDiriPendaftar = DataDiriPendaftar::where('user_id', Auth::id())->first();
         $currentPembayaran = PembayaranPpdb::where(['id_periode' => $currentPeriode->id_periode, 'verification_status' => ['pending', 'verified']])->where('user_id', Auth::id())->get();
-
-        return view('form-pendaftar.pembayaran', compact('currentPeriode', 'currentUser', 'currentDataDiriPendaftar', 'currentPembayaran'));
+        $informasiPembayaran = InformasiPembayaran::where('id_periode', $currentPeriode->id_periode)->first();
+        return view('form-pendaftar.pembayaran', compact('currentPeriode', 'currentUser', 'currentDataDiriPendaftar', 'currentPembayaran', 'informasiPembayaran'));
     }
 
     public function storePembayaran(Request $request)

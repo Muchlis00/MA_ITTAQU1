@@ -2,37 +2,37 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\InformasiPembayaran;
+use App\Models\AgreementPpdb;
+use App\Models\PeriodePPDB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\PeriodePPDB;
 
-class InformasiPembayaranController extends Controller
+
+class AgreementPPDBController extends Controller
 {
     public function index()
     {
         $periodePPDB = PeriodePPDB::all();
-        return view('informasi-pembayaran.index', compact('periodePPDB'));
+        return view('agreement.index', compact('periodePPDB'));
     }
-
     public function store(Request $request)
     {
         $request->validate([
             'id_periode' => 'required|exists:periode_ppdb,id_periode',
-            'detail_pembayaran' => 'required',
+            'content' => 'required',
         ]);
-        InformasiPembayaran::updateOrCreate([
+        AgreementPpdb::updateOrCreate([
             'id_periode' => $request->id_periode
         ], [
             'id_periode' => $request->id_periode,
-            'detail_pembayaran' => $request->detail_pembayaran,
+            'content' => $request->content,
             'created_by' => Auth::id(),
         ]);
-        return redirect()->route('informasi-pembayaran.index')->with('success', 'Informasi Pembayaran berhasil ditambahkan.');
+        return redirect()->route('agreement.index')->with('success', 'Informasi Pembayaran berhasil ditambahkan.');
     }
     public function show($id)
     {
-        $InformasiPembayaran = InformasiPembayaran::where('id_periode', $id)->first();
+        $InformasiPembayaran = AgreementPpdb::where('id_periode', $id)->first();
         return response()->json($InformasiPembayaran);
     }
 }
