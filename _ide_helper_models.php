@@ -86,6 +86,19 @@ namespace App\Models{
 /**
  * 
  *
+ * @property-read \App\Models\PeriodePPDB|null $periode
+ * @property-read \App\Models\User|null $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InformasiPembayaran newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InformasiPembayaran newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InformasiPembayaran query()
+ */
+	class InformasiPembayaran extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
  * @property int $id
  * @property int $id_periode
  * @property int $user_id
@@ -147,6 +160,8 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int $ready_to_verify
+ * @property string $verification_status
+ * @property int|null $verifier_id
  * @property-read \App\Models\DataDiriPendaftar|null $dataDiriPendaftar
  * @property-read \App\Models\PeriodePPDB $periode
  * @property-read \App\Models\User $user
@@ -159,6 +174,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PendaftarPpdb whereReadyToVerify($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PendaftarPpdb whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PendaftarPpdb whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PendaftarPpdb whereVerificationStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PendaftarPpdb whereVerifierId($value)
  */
 	class PendaftarPpdb extends \Eloquent {}
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\PeriodePPDBController;
 use App\Http\Controllers\BendaharaPPDBController;
 use App\Http\Controllers\PanitiaPPDBController;
 use App\Http\Controllers\FormPendaftarController;
+use App\Http\Controllers\InformasiPembayaranController;
 use App\Http\Controllers\VerifyPaymentController;
 Route::get('/', function () {
     return view('welcome');
@@ -56,6 +57,12 @@ Route::middleware(['auth', 'verified', 'role:bendahara'])->group(function () {
     Route::get('/verify-payment', [VerifyPaymentController::class, 'index'])->name('verify-payment.index');
     Route::post('/verify-payment/verify/{id}', [VerifyPaymentController::class, 'verify'])->name('verify-payment.verify');
     Route::post('/verify-payment/reject/{id}', [VerifyPaymentController::class, 'reject'])->name('verify-payment.reject');
+
+    Route::get('/informasi-pembayaran', [InformasiPembayaranController::class, 'index'])->name('informasi-pembayaran.index');
+    Route::post('/informasi-pembayaran', [InformasiPembayaranController::class, 'store'])->name('informasi-pembayaran.store');
+    Route::post('/informasi-pembayaran/show/{id}', [InformasiPembayaranController::class, 'show'])->name('informasi-pembayaran.show');
+
+
 
 });
 

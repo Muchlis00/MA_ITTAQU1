@@ -29,9 +29,15 @@
                     @endif
 
                     @if (Auth::user()->role == 'bendahara')
+                    <x-nav-link :href="route('informasi-pembayaran.index')" :active="request()->routeIs('informasi-pembayaran.index')">
+                        Informasi Pembayaran
+                    </x-nav-link>
+
                     <x-nav-link :href="route('verify-payment.index')" :active="request()->routeIs('verify-payment.index')">
                         Verifikasi Pembayaran
                     </x-nav-link>
+
+                    
                     @endif
 
                     @if (Auth::user()->role == 'panitia')
