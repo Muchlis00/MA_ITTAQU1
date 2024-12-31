@@ -83,6 +83,7 @@
                                     id="name"
                                     onkeyup=""
                                     autocomplete="off" autofill="off"
+                                    placeholder="Cari nama guru"
                                     required>
                                     <div id="nameDropdown" class="dropdown-menu show" style="display: none;">
                                 </div>
@@ -122,7 +123,7 @@
                 return;
             }
 
-            fetch(`{{ route('searchUserByName') }}?name=${encodeURIComponent(name)}`)
+            fetch(`{{ route('searchGuruByName') }}?name=${encodeURIComponent(name)}`)
                 .then((response) => response.json())
                 .then((data) => {
                     console.log(data)

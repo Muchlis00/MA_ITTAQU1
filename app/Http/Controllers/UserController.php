@@ -24,4 +24,18 @@ class UserController extends Controller
         $users = User::where('name', 'like', "%{$name}%")->get();
         return response()->json($users);
     }
+
+    public function searchGuruByName(Request $request): JsonResponse
+    {
+        $name = $request->query('name');
+
+        if (!$name) {
+            return response()->json(['message' => 'Name parameter is missing'], 400);
+        }
+
+        $users = User::where('name', 'like', "%{$name}%")
+            ->where('role', 'guru')
+            ->get();
+        return response()->json($users);
+    }
 }

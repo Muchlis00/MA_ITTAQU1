@@ -1,3 +1,6 @@
+
+@extends('layouts.navbar')
+@section('content')
 <div class="container">
     @if(session()->has('success'))
     <p>sukses</p>
@@ -36,7 +39,6 @@
             <label for="jabatan" class="form-label">jabatan Guru</label>
             <select name="jabatan" id="jabatan" required>
             <option value="Guru">Guru</option>
-            <option value="Bendahara">Bendahara</option>
             <option value="Kepsek">Kepsek</option>
         </select>
         </div>
@@ -44,3 +46,4 @@
         <button type="submit" class="btn btn-primary">Simpan</button>
     </form>
 </div>
+@endsection

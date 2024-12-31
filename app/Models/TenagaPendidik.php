@@ -11,6 +11,7 @@ class TenagaPendidik extends Model
     protected $table = 'tenaga_pendidik';
     protected $primaryKey = 'id_pendidik';
     protected $fillable = [
+        'id',
         'nip',
         'nama_guru',
         'tempat_guru',

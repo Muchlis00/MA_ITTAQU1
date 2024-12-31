@@ -4,16 +4,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Support\Facades\DB;
-use App\Models\PeriodePPDB;
+
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
+use App\Models\TenagaPendidik;
 use App\Models\BendaharaPpdb;
 use App\Models\PanitiaPpdb;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\View\View;
+
 
 class PanitiaBendaharaPeriodePPDBController extends Controller
 {
@@ -31,6 +28,7 @@ class PanitiaBendaharaPeriodePPDBController extends Controller
                 'user_id' => $request->user_id,
             ]);
             User::where('id', $request->user_id)->update(['role' => 'panitia']);
+            TenagaPendidik::where('id', $request->user_id)->update(['jabatan' => 'Panitia']);
         }
         if ($request->jabatan == 'Bendahara') {
             BendaharaPpdb::create([
@@ -38,6 +36,7 @@ class PanitiaBendaharaPeriodePPDBController extends Controller
                 'user_id' => $request->user_id,
             ]);
             User::where('id', $request->user_id)->update(['role' => 'bendahara']);
+            TenagaPendidik::where('id', $request->user_id)->update(['jabatan' => 'Bendahara']);
         }
 
         return redirect()->route('periode-ppdb.show', $request->periode_id)

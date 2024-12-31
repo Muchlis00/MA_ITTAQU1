@@ -137,7 +137,8 @@ namespace App\Models{
  * 
  *
  * @property int $id
- * @property string $datetime
+ * @property string $datetime_start
+ * @property string $datetime_end
  * @property string $kegiatan
  * @property string $keterangan
  * @property int $created_by
@@ -151,7 +152,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Orientasi query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Orientasi whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Orientasi whereCreatedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Orientasi whereDatetime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Orientasi whereDatetimeEnd($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Orientasi whereDatetimeStart($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Orientasi whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Orientasi whereIdPeriode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Orientasi whereKegiatan($value)

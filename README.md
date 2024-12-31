@@ -21,6 +21,9 @@
 use `npm run dev` instead of `npm run build` in development
 > make sure to run mailhog on development to send and receive emails
 
+## Notes
+> default password for `guru`/`tenaga pendidik` is `password`
+
 ## VSCode Extension helper (optional)
 1. PHP Intelephense
 2. Laravel IDE Helper
