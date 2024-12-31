@@ -19,14 +19,16 @@
 
                         <div class="flex items-center">
                             <label for="content" class="w-32  block text-sm font-medium text-gray-700">Persyaratan</label>
-                            <textarea name="content" id="content" class="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:border-blue-500" ></textarea>
+                            <div class="w-full">
+                                <textarea name="content" id="content" class="pell-editor"></textarea>
+                            </div>
                         </div>
 
-                        
-                            <button type="submit" class=" bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                                Simpan
-                            </button>
-                        
+
+                        <button type="submit" class=" bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                            Simpan
+                        </button>
+
                     </form>
                 </div>
 
@@ -35,38 +37,41 @@
     </div>
     <script>
         function handlePeriodeChange() {
-            let periodeId = document.querySelector("#id_periode").value
-            let url = "{{ route('agreement.show', ':periodeId') }}".replace(':periodeId', periodeId);
+    let periodeId = document.querySelector("#id_periode").value;
+    let url = "{{ route('agreement.show', ':periodeId') }}".replace(':periodeId', periodeId);
 
-            // Data to be sent in the POST request
-            const data = {
-                _token: '{{ csrf_token() }}', // CSRF token for Laravel
-            };
+    // Data to be sent in the POST request
+    const data = {
+        _token: '{{ csrf_token() }}', // CSRF token for Laravel
+    };
 
-            // Send POST request using fetch
-            fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token in headers as well
-                    },
-                    body: JSON.stringify(data)
-                })
-                .then(response => {
-                    console.log(response);
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok ' + response.statusText);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log(data);
-                    document.querySelector("#content").value = data.content ?? ""
-                })
-                .catch(error => {
-                    console.error('There was a problem with the fetch operation:', error);
-                });
-        }
+    // Send POST request using fetch
+    fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}', // Include CSRF token in headers
+            },
+            body: JSON.stringify(data),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Set the retrieved content to the Pell editor
+            window.setEditorContent(data.content ?? '');
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+}
+
+// Trigger content update on DOM ready
 document.addEventListener('DOMContentLoaded', handlePeriodeChange);
     </script>
+    @vite('resources/js/pell.js')
+
 </x-app-layout>

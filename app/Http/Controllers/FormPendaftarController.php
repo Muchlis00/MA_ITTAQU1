@@ -8,11 +8,11 @@ use App\Models\PembayaranPpdb;
 use App\Models\PendaftarPpdb;
 use App\Models\User;
 use App\Models\WaliPendaftar;
+use App\Models\AgreementPpdb;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PeriodePPDB;
-use Dflydev\DotAccessData\Data;
 use stdClass;
 
 class FormPendaftarController extends Controller
@@ -36,8 +36,8 @@ class FormPendaftarController extends Controller
             ->firstOrFail();
         $currentUser = Auth::user();
         $currentDataDiriPendaftar = DataDiriPendaftar::where('user_id', Auth::id())->first() ?? new DataDiriPendaftar();
-
-        return view('form-pendaftar.data-pendaftar', compact('currentPeriode', 'currentUser', 'currentDataDiriPendaftar'));
+        $currentAgreement = AgreementPpdb::where('id_periode', $currentPeriode->id_periode)->first();
+        return view('form-pendaftar.data-pendaftar', compact('currentPeriode', 'currentUser', 'currentDataDiriPendaftar', 'currentAgreement'));
     }
 
     public function storeDataPendaftar(Request $request)
