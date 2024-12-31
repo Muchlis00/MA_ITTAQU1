@@ -10,6 +10,8 @@ use App\Http\Controllers\BendaharaPPDBController;
 use App\Http\Controllers\PanitiaPPDBController;
 use App\Http\Controllers\FormPendaftarController;
 use App\Http\Controllers\InformasiPembayaranController;
+use App\Http\Controllers\OrientasiController;
+use App\Http\Controllers\StatusPendaftaranController;
 use App\Http\Controllers\VerifyPaymentController;
 Route::get('/', function () {
     return view('welcome');
@@ -51,6 +53,7 @@ Route::middleware(['auth', 'verified', 'role:pendaftar,guru,kepsek'])->group(fun
     Route::post('/formulir-ppdb/pembayaran', [FormPendaftarController::class, 'storePembayaran'])->name('formulir-ppdb.storePembayaran');
 
     Route::post('/formulir-ppdb/kirim', [FormPendaftarController::class, 'kirimFormulir'])->name('formulir-ppdb.kirimFormulir');
+    Route::get('/status-pendaftaran', [StatusPendaftaranController::class, 'index'])->name('status-pendaftaran.index');
 });
 
 // bendahara
@@ -69,6 +72,13 @@ Route::middleware(['auth', 'verified', 'role:panitia'])->group(function () {
     Route::get('/agreement', [AgreementPPDBController::class, 'index'])->name('agreement.index');
     Route::post('/agreement', [AgreementPPDBController::class, 'store'])->name('agreement.store');
     Route::post('/agreement/{id}', [AgreementPPDBController::class, 'show'])->name('agreement.show');
+
+    Route::get('/orientasi', [OrientasiController::class, 'index'])->name('orientasi.index');
+    Route::get('/orientasi/create', [OrientasiController::class, 'create'])->name('orientasi.create');
+    Route::post('/orientasi', [OrientasiController::class, 'store'])->name('orientasi.store');
+    Route::get('/orientasi/{id}', [OrientasiController::class, 'edit'])->name('orientasi.edit');
+    Route::put('/orientasi/{id}', [OrientasiController::class, 'update'])->name('orientasi.update');
+    Route::delete('/orientasi/{id}', [OrientasiController::class, 'delete'])->name('orientasi.delete');
 
     Route::get('/verify-formulir', [VerifyFormulirPPDBController::class, 'index'])->name('verify-formulir.index');
     Route::post('/verify-formulir/verify/{id}', [VerifyFormulirPPDBController::class, 'verify'])->name('verify-formulir.verify');

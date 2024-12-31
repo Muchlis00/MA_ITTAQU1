@@ -7,9 +7,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Orientasi extends Model
 {
+    protected $table = 'orientasi';
     // The attributes that are mass assignable.
     protected $fillable = [
-        'datetime',
+        'datetime_start',
+        'datetime_end',
         'kegiatan',
         'keterangan',
         'created_by',

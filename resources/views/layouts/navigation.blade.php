@@ -26,6 +26,10 @@
                     <x-nav-link :href="route('formulir-ppdb.dataPendaftar')" :active="request()->routeIs('formulir-ppdb.dataPendaftar')">
                         Formulir Pendaftaran
                     </x-nav-link>
+
+                    <x-nav-link :href="route('status-pendaftaran.index')" :active="request()->routeIs('status-pendaftaran.index')">
+                        Informasi Pendaftaran
+                    </x-nav-link>
                     @endif
 
                     @if (Auth::user()->role == 'bendahara')
@@ -37,7 +41,7 @@
                         Verifikasi Pembayaran
                     </x-nav-link>
 
-                    
+
                     @endif
 
                     @if (Auth::user()->role == 'panitia')
@@ -48,8 +52,12 @@
                     <x-nav-link :href="route('agreement.index')" :active="request()->routeIs('agreement.index')">
                         Persyaratan Pendaftaran
                     </x-nav-link>
+
+                    <x-nav-link :href="route('orientasi.index')" :active="request()->routeIs('orientasi.index')">
+                        Orientasi
+                    </x-nav-link>
                     @endif
-                    
+
 
 
 

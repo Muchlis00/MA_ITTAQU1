@@ -32,19 +32,15 @@ document.addEventListener('DOMContentLoaded', () => {
             'strikethrough',
             'heading1',
             'heading2',
-            'olist',
-            'ulist',
-            'quote',
-            'code',
             'line',
             'link',
             'image',
         ],
         classes: {
-            actionbar: 'pell-actionbar',
-            button: 'pell-button',
-            content: 'pell-content',
-            selected: 'pell-button-selected',
+            actionbar: 'pell-actionbar bg-gray-100 border-b border-gray-300', // Tailwind for toolbar
+            button: 'pell-button hover:bg-gray-200', // Tailwind for buttons
+            content: 'pell-content p-2 text-gray-800 focus:outline-none', // Tailwind for content area
+            selected: 'pell-button-selected bg-gray-300',
         },
     });
 
@@ -60,9 +56,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to dynamically set the content of the editor
     window.setEditorContent = (content) => {
-        editor.content.innerHTML = content || '<p>Start typing...</p>';
+        editor.content.innerHTML = content || '';
     };
 
     // Set initial content
-    editor.content.innerHTML = '<p>Start typing...</p>';
+    editor.content.innerHTML = '';
 });

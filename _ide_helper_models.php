@@ -15,11 +15,23 @@ namespace App\Models{
 /**
  * 
  *
- * @property-read \App\Models\PeriodePPDB|null $periode
- * @property-read \App\Models\User|null $user
+ * @property int $id
+ * @property int $id_periode
+ * @property int $created_by
+ * @property string $content
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\PeriodePPDB $periode
+ * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AgreementPpdb newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AgreementPpdb newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AgreementPpdb query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AgreementPpdb whereContent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AgreementPpdb whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AgreementPpdb whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AgreementPpdb whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AgreementPpdb whereIdPeriode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AgreementPpdb whereUpdatedAt($value)
  */
 	class AgreementPpdb extends \Eloquent {}
 }
@@ -124,11 +136,27 @@ namespace App\Models{
 /**
  * 
  *
- * @property-read \App\Models\User|null $creator
- * @property-read \App\Models\PeriodePPDB|null $periode
+ * @property int $id
+ * @property string $datetime
+ * @property string $kegiatan
+ * @property string $keterangan
+ * @property int $created_by
+ * @property int $id_periode
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User $creator
+ * @property-read \App\Models\PeriodePPDB $periode
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Orientasi newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Orientasi newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Orientasi query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Orientasi whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Orientasi whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Orientasi whereDatetime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Orientasi whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Orientasi whereIdPeriode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Orientasi whereKegiatan($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Orientasi whereKeterangan($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Orientasi whereUpdatedAt($value)
  */
 	class Orientasi extends \Eloquent {}
 }
