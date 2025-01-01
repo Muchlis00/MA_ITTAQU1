@@ -10,6 +10,7 @@ use App\Models\TenagaPendidik;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class TenagaPendidikController extends Controller
@@ -52,10 +53,19 @@ class TenagaPendidikController extends Controller
         $user = User::create([
             'name' => $request->nama_guru,
             'email' => $request->email,
-            'password' => Hash::make(bin2hex(openssl_random_pseudo_bytes(8))),
+            'password' => Hash::make('password'),
             'role' => $request->jabatan,
         ]);
-        TenagaPendidik::create($request->except('email'));
+        $userId = $user->id;
+        TenagaPendidik::create([
+            'id' => $userId, 
+            'nip' => $request->nip,
+            'nama_guru' => $request->nama_guru,
+            'tempat_guru' => $request->tempat_guru,
+            'tgl_guru' => $request->tgl_guru,
+            'jk_guru' => $request->jk_guru,
+            'jabatan' => $request->jabatan,
+        ]);
         event(new Registered($user));
 
 

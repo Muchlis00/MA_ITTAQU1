@@ -15,10 +15,14 @@
     php artisan key:generate
     php artisan migrate
     php artisan db:seed
+    php artisan storage:link
     php artisan serve
 ```
 use `npm run dev` instead of `npm run build` in development
 > make sure to run mailhog on development to send and receive emails
+
+## Notes
+> default password for `guru`/`tenaga pendidik` is `password`
 
 ## VSCode Extension helper (optional)
 1. PHP Intelephense

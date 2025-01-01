@@ -18,7 +18,40 @@ class PeriodePPDB extends Model
     ];
     public function panitia()
     {
-        return $this->belongsToMany(User::class, 'panitia_ppdb', 'id_periode', 'user_id');
+        return $this->belongsToMany(User::class, 'panitia_ppdb', 'id_periode', 'user_id')
+            ->withPivot('id');
+    }
+    public function bendahara()
+    {
+        return $this->belongsToMany(User::class, 'bendahara_ppdb', 'id_periode', 'user_id')
+            ->withPivot('id')
+            ->withTimestamps();
+    }
+
+    // Relationship with pembayaran_ppdb
+    public function pembayaran()
+    {
+        return $this->hasMany(PembayaranPPDB::class, 'id_periode', 'id_periode');
+    }
+
+    // Relationship with pendaftar_ppdb
+    public function pendaftar()
+    {
+        return $this->hasMany(PendaftarPPDB::class, 'id_periode', 'id_periode');
+    }
+
+    public function detail_pembayaran()
+    {
+        return $this->hasMany(InformasiPembayaran::class, 'id_periode', 'id_periode');
+    }
+
+    public function agreement()
+    {
+        return $this->has(AgreementPpdb::class, 'id_periode');
+    }
+
+    public function orientasi()
+    {
+        return $this->hasMany(Orientasi::class, 'id_periode', 'id_periode');
     }
 }
-
