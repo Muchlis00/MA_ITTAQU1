@@ -18741,6 +18741,155 @@ namespace Illuminate\Support\Facades {
             }
     }
 
+namespace IcehouseVentures\LaravelChartjs\Facades {
+            /**
+     * 
+     *
+     */        class Chartjs {
+                    /**
+         * 
+         *
+         * @return \IcehouseVentures\LaravelChartjs\Builder 
+         * @static 
+         */        public static function build()
+        {
+                        /** @var \IcehouseVentures\LaravelChartjs\Builder $instance */
+                        return $instance->build();
+        }
+                    /**
+         * 
+         *
+         * @return \IcehouseVentures\LaravelChartjs\Builder 
+         * @static 
+         */        public static function name($name)
+        {
+                        /** @var \IcehouseVentures\LaravelChartjs\Builder $instance */
+                        return $instance->name($name);
+        }
+                    /**
+         * 
+         *
+         * @return \IcehouseVentures\LaravelChartjs\Builder 
+         * @static 
+         */        public static function livewire()
+        {
+                        /** @var \IcehouseVentures\LaravelChartjs\Builder $instance */
+                        return $instance->livewire();
+        }
+                    /**
+         * 
+         *
+         * @return \IcehouseVentures\LaravelChartjs\Builder 
+         * @static 
+         */        public static function model($model)
+        {
+                        /** @var \IcehouseVentures\LaravelChartjs\Builder $instance */
+                        return $instance->model($model);
+        }
+                    /**
+         * 
+         *
+         * @return \IcehouseVentures\LaravelChartjs\Builder 
+         * @static 
+         */        public static function element($element)
+        {
+                        /** @var \IcehouseVentures\LaravelChartjs\Builder $instance */
+                        return $instance->element($element);
+        }
+                    /**
+         * 
+         *
+         * @return \IcehouseVentures\LaravelChartjs\Builder 
+         * @static 
+         */        public static function labels($labels)
+        {
+                        /** @var \IcehouseVentures\LaravelChartjs\Builder $instance */
+                        return $instance->labels($labels);
+        }
+                    /**
+         * 
+         *
+         * @return \IcehouseVentures\LaravelChartjs\Builder 
+         * @static 
+         */        public static function datasets($datasets)
+        {
+                        /** @var \IcehouseVentures\LaravelChartjs\Builder $instance */
+                        return $instance->datasets($datasets);
+        }
+                    /**
+         * 
+         *
+         * @return \IcehouseVentures\LaravelChartjs\Builder 
+         * @static 
+         */        public static function type($type)
+        {
+                        /** @var \IcehouseVentures\LaravelChartjs\Builder $instance */
+                        return $instance->type($type);
+        }
+                    /**
+         * 
+         *
+         * @param array $size
+         * @return \IcehouseVentures\LaravelChartjs\Builder 
+         * @static 
+         */        public static function size($size)
+        {
+                        /** @var \IcehouseVentures\LaravelChartjs\Builder $instance */
+                        return $instance->size($size);
+        }
+                    /**
+         * 
+         *
+         * @return \IcehouseVentures\LaravelChartjs\Builder 
+         * @static 
+         */        public static function options($options)
+        {
+                        /** @var \IcehouseVentures\LaravelChartjs\Builder $instance */
+                        return $instance->options($options);
+        }
+                    /**
+         * 
+         *
+         * @return \IcehouseVentures\LaravelChartjs\Builder 
+         * @static 
+         */        public static function optionsRaw($optionsRaw)
+        {
+                        /** @var \IcehouseVentures\LaravelChartjs\Builder $instance */
+                        return $instance->optionsRaw($optionsRaw);
+        }
+                    /**
+         * 
+         *
+         * @return mixed 
+         * @static 
+         */        public static function render()
+        {
+                        /** @var \IcehouseVentures\LaravelChartjs\Builder $instance */
+                        return $instance->render();
+        }
+                    /**
+         * 
+         *
+         * @return mixed 
+         * @static 
+         */        public static function get($key)
+        {
+                        /** @var \IcehouseVentures\LaravelChartjs\Builder $instance */
+                        return $instance->get($key);
+        }
+                    /**
+         * 
+         *
+         * @return \IcehouseVentures\LaravelChartjs\Builder 
+         * @static 
+         */        public static function set($key, $value)
+        {
+                        /** @var \IcehouseVentures\LaravelChartjs\Builder $instance */
+                        return $instance->set($key, $value);
+        }
+            }
+    }
+
 namespace Spatie\LaravelIgnition\Facades {
             /**
      * 
@@ -22888,6 +23037,7 @@ namespace  {
             class Validator extends \Illuminate\Support\Facades\Validator {}
             class View extends \Illuminate\Support\Facades\View {}
             class Vite extends \Illuminate\Support\Facades\Vite {}
+            class Chartjs extends \IcehouseVentures\LaravelChartjs\Facades\Chartjs {}
             class Flare extends \Spatie\LaravelIgnition\Facades\Flare {}
     }
 
