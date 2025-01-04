@@ -195,12 +195,12 @@ class FormPendaftarController extends Controller
         $currentWali->father = WaliPendaftar::where([
             'data_diri_pendaftar_id' => $currentDataDiriPendaftar->id,
             'gender' => 'Laki-Laki'
-        ])->first();
+        ])->first() ?? new WaliPendaftar();
 
         $currentWali->mother = WaliPendaftar::where([
             'data_diri_pendaftar_id' => $currentDataDiriPendaftar->id,
             'gender' => 'Perempuan'
-        ])->first();
+        ])->first() ?? new WaliPendaftar();
 
         return view('form-pendaftar.dokumen-orang-tua', compact('currentPeriode', 'currentUser', 'currentDataDiriPendaftar', 'currentWali'));
     }
