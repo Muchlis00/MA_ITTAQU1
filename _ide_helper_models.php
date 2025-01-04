@@ -233,6 +233,8 @@ namespace App\Models{
  * @property-read \App\Models\DataDiriPendaftar|null $dataDiriPendaftar
  * @property-read \App\Models\PeriodePPDB $periode
  * @property-read \App\Models\User $user
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\WaliPendaftar> $wali
+ * @property-read int|null $wali_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PendaftarPpdb newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PendaftarPpdb newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PendaftarPpdb query()
