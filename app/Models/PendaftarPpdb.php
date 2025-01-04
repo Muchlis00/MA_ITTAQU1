@@ -30,6 +30,17 @@ class PendaftarPpdb extends Model
     }
     public function dataDiriPendaftar()
     {
-        return $this->hasOne(DataDiriPendaftar::class);
+        return $this->hasOne(DataDiriPendaftar::class, 'user_id', 'user_id');
+    }
+    public function wali()
+    {
+        return $this->hasManyThrough(
+            WaliPendaftar::class,
+            DataDiriPendaftar::class,
+            'user_id',
+            'data_diri_pendaftar_id',
+            'user_id',
+            'id'
+        );
     }
 }
