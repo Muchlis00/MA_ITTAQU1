@@ -17,7 +17,6 @@
                     <td class="border px-4 py-2">{{$item->periode->name}} ({{Carbon\Carbon::parse($item->datetime_start)->format('d-m-Y')}} - {{Carbon\Carbon::parse($item->datetime_end)->format('d-m-Y')}})</td>
                     <td class="border px-4 py-2">{{$item->ready_to_verify ? 'Sudah kirim' : 'Belum kirim'}} </td>
                     <td class="border px-4 py-2">{{$item->verification_status}}</td>
-                    
                 </tr>
                 @endforeach
             </tbody>

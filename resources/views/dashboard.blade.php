@@ -1,6 +1,6 @@
 <x-app-layout>
 
-    <p>Welcome</p>
+    
 
 
 
