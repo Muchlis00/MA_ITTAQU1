@@ -6,8 +6,8 @@
                 <tr>
                     <th class="px-4 py-2">Nama</th>
                     <th class="px-4 py-2">Periode</th>
-                    <th class="px-4 py-2">Status Formulir</th>
-                    <th class="px-4 py-2">Status Pendaftarn</th>
+                    <th class="px-4 py-2">Tipe Pembayaran</th>
+                    <th class="px-4 py-2">Status Pembayaran</th>
                 </tr>
             </thead>
             <tbody>
@@ -15,7 +15,7 @@
                 <tr>
                     <td class="border px-4 py-2">{{$item->user->name}}</td>
                     <td class="border px-4 py-2">{{$item->periode->name}} ({{Carbon\Carbon::parse($item->datetime_start)->format('d-m-Y')}} - {{Carbon\Carbon::parse($item->datetime_end)->format('d-m-Y')}})</td>
-                    <td class="border px-4 py-2">{{$item->ready_to_verify ? 'Sudah kirim' : 'Belum kirim'}} </td>
+                    <td class="border px-4 py-2">{{$item->status_pembayaran ? 'belum lunas' : 'lunas'}} </td>
                     <td class="border px-4 py-2">{{$item->verification_status}}</td>
                 </tr>
                 @endforeach

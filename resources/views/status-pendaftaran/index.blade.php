@@ -119,7 +119,7 @@
                                                     @endif
                                                 </p>
                                                 <p class="mt-1 text-xs text-gray-500">
-                                                    Status Pembayaran: {{ $pembayaran->status_pembayaran }}
+                                                    Status Pembayaran: lunas
                                                 </p>
                                             </div>
                                             <div class="whitespace-nowrap text-right text-sm text-gray-500">

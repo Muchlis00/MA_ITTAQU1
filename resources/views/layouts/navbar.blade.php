@@ -69,17 +69,12 @@
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="{{ route('periode-ppdb.index') }}">Periode PPDB</a>
-                        <a class="collapse-item" href="#">Penentuan Panitia <br> dan Bendahara</a>
+                        <!-- <a class="collapse-item" href="#">Penentuan Panitia <br> dan Bendahara</a> -->
                     </div>
                 </div>
             </li>
 
-            <!-- Nav Item - Tables -->
-            <li class="nav-item">
-                <a class="nav-link" href="tables.html">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Tables</span></a>
-            </li>
+            
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">

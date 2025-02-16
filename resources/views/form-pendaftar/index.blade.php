@@ -1,4 +1,9 @@
 <x-app-layout>
+@if(session()->has('success'))
+    <script>
+        alert("Data berhasil disimpan!"); // Ganti dengan pesan yang sesuai
+    </script>
+    @endif
     @php
     $steps = [
     ['name'=> 'Data Pendaftar', 'route' => 'formulir-ppdb.dataPendaftar'],
