@@ -3,14 +3,16 @@
 @section('content')
 <div class="container">
     @if(session()->has('success'))
-    <p>sukses</p>
+    <script>
+        alert("Data berhasil disimpan!"); // Ganti dengan pesan yang sesuai
+    </script>
     @endif
     <h1>Tambah Guru</h1>
     <form action="{{ route('tenaga-pendidik.store') }}" method="POST">
         @csrf
         <div class="mb-3">
             <label for="nip" class="form-label">NIP</label>
-            <input type="text" name="nip" class="form-control" id="nip" required>
+            <input type="number" name="nip" class="form-control" id="nip" maxlength="16" minlength="16" required>
         </div>
         <div class="mb-3">
             <label for="email" class="form-label">email</label>
@@ -18,7 +20,7 @@
         </div>
         <div class="mb-3">
             <label for="nama_guru" class="form-label">Nama Guru</label>
-            <input type="text" name="nama_guru" class="form-control" id="nama_guru" required>
+            <input type="text" text-transform="lowercase" name="nama_guru" class="form-control" id="nama_guru" required>
         </div>
         <div class="mb-3">
             <label for="tempat_guru" class="form-label">Tempat Lahir Guru</label>
@@ -26,7 +28,7 @@
         </div>
         <div class="mb-3">
             <label for="tgl_guru" class="form-label">Tanggal Lahir Guru</label>
-            <input type="date" name="tgl_guru" class="form-control" id="tgl_guru" required>
+            <input type="date" name="tgl_guru" class="form-control" id="tgl_guru" min="1990-07-01" required>
         </div>
         <div class="mb-3">
             <label for="jk_guru">jk Guru</label>
@@ -46,4 +48,24 @@
         <button type="submit" class="btn btn-primary">Simpan</button>
     </form>
 </div>
+
+<script>
+const tglGuruInput = document.getElementById('tgl_guru');
+tglGuruInput.value = '2000-01-01'; // Atur ke 1 Januari 1999
+
+const numberInput = document.getElementById('nip');
+numberInput.addEventListener('input', function() {
+    let value = this.value;
+
+    // Hapus semua karakter non-angka
+    value = value.replace(/[^0-9]/g, '');
+
+    // Batasi panjang input menjadi 16 digit
+    value = value.slice(0, 16);
+
+    // Update nilai input
+    this.value = value;
+  });
+</script>
 @endsection
+
