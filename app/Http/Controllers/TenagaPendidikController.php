@@ -115,6 +115,7 @@ class TenagaPendidikController extends Controller
     {
         $steam = TenagaPendidik::find($id_pendidik);
         $steam->delete();
+        
         return redirect('tenaga-pendidik')->with('success', 'Data Tenaga Pendidik berhasil diHapus!');
         // return redirect('tenagapendidik/index')->with('success', 'tenaga pendidik berhasil dihapus!');
     }

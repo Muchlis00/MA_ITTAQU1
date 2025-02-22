@@ -275,6 +275,7 @@ class FormPendaftarController extends Controller
         PembayaranPpdb::create([
             'id_periode' => $currentPeriode->id_periode,
             'user_id' => Auth::id(),
+            
             'bukti_pembayaran' => $this->storeFile($request, 'bukti_pembayaran')
         ]);
 
