@@ -5,7 +5,6 @@
             <div class="flex">
                 <!-- Logo -->
 
-
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     @if (Auth::user()->role != 'pendaftar')
@@ -23,9 +22,12 @@
                     @endif
 
                     @if (Auth::user()->role == 'pendaftar')
+                    @if (!App\Http\Controllers\DashboardController::isUserVerified())
                     <x-nav-link :href="route('formulir-ppdb.dataPendaftar')" :active="request()->routeIs('formulir-ppdb.dataPendaftar')">
                         Formulir Pendaftaran
                     </x-nav-link>
+                    @endif
+                    
 
                     <x-nav-link :href="route('status-pendaftaran.index')" :active="request()->routeIs('status-pendaftaran.index')">
                         Informasi Pendaftaran

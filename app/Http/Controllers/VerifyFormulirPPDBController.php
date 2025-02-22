@@ -20,7 +20,7 @@ class VerifyFormulirPPDBController extends Controller
     }
     public function verify( $id,Request $request){
         $userPendaftar = PendaftarPpdb::find($id)->with('user')->first();
-        PendaftarPpdb::where('id', $id)->update(['verifier_id' => Auth::id(), 'verification_status' => 'verified']);
+        PendaftarPpdb::where('id', $id)->update(['verifier_id' => Auth::id(), 'verification_status' => 'verified', 'ready_to_verify' => false]);
         Mail::to($userPendaftar->user->email)->send(new FormulirVerifiedMail(
             $userPendaftar->user
         ));

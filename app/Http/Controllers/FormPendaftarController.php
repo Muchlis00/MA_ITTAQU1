@@ -286,7 +286,11 @@ class FormPendaftarController extends Controller
     public function kirimFormulir(Request $request)
     {
         PendaftarPpdb::where('user_id', Auth::id())->update([
-            'ready_to_verify' => true
+            'ready_to_verify' => true,
+            'verification_status' => 'pending'
+        ]);
+        PembayaranPpdb::where('user_id', Auth::id())->update([
+            'verification_status' => 'pending'
         ]);
         return redirect()->route('formulir-ppdb.pembayaran')
             ->with('success', 'Pembayaran berhasil disimpan');
