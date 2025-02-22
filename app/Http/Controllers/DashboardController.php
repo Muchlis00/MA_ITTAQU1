@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PembayaranPpdb;
 use App\Models\PendaftarPpdb;
 use App\Models\User;
 use App\Models\WaliPendaftar;
@@ -12,11 +13,28 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
+    public static function isUserVerified()
+    {
+        $formulir = PendaftarPpdb::where('user_id', Auth::user()->id)->where('verification_status', 'verified')->exists();
+        $pembayaran = PembayaranPpdb::where('id', Auth::user()->id)
+            ->where('verification_status', 'verified')
+            ->exists();
+        if ($formulir && $pembayaran) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     public function dashboard()
     {
         $role = Auth::user()->role;
 
         if ($role == 'pendaftar') {
+            if ($this->isUserVerified()) {
+                return redirect()->route('status-pendaftaran.index');
+            }
+
+
             return redirect()->route('formulir-ppdb.dataPendaftar');
         }
 
@@ -26,7 +44,6 @@ class DashboardController extends Controller
 
         $pendaftar = PendaftarPpdb::with('user', 'periode', 'dataDiriPendaftar', 'wali')->get();
         $accountWithRolePendaftar = User::where('role', 'pendaftar')->get();
-        $waliPendaftar = WaliPendaftar::with('pendaftar')->get();
 
 
         $charts = [
@@ -214,9 +231,9 @@ class DashboardController extends Controller
             ->type("doughnut")
             ->size(["width" => 400, "height" => 200])
             ->labels($labels)
-            ->datasets([[ 
+            ->datasets([[
                 "label" => "Jumlah Pendaftar",
-                "backgroundColor" => $backgroundColors, 
+                "backgroundColor" => $backgroundColors,
                 "borderColor" => "rgba(0, 0, 0, 0.1)",
                 "data" => $data
             ]])
@@ -285,20 +302,20 @@ class DashboardController extends Controller
 
     private function createKipDistributionChart($pendaftar)
     {
-       
+
         $kipCounts = collect($pendaftar)
             ->pluck('dataDiriPendaftar.kip')
             ->map(function ($kip) {
-                return $kip ? 'Memiliki KIP' : 'Tidak Memiliki KIP'; 
+                return $kip ? 'Memiliki KIP' : 'Tidak Memiliki KIP';
             })
             ->countBy();
-      
+
         $labels = $kipCounts->keys()->toArray();
         $data = $kipCounts->values()->toArray();
 
         $backgroundColors = [
             'rgba(75, 192, 192, 0.7)',
-            'rgba(255, 99, 132, 0.7)' 
+            'rgba(255, 99, 132, 0.7)'
         ];
 
         return Chartjs::build()
@@ -308,7 +325,7 @@ class DashboardController extends Controller
             ->labels($labels)
             ->datasets([[
                 "label" => "Jumlah Pendaftar",
-                "backgroundColor" => $backgroundColors, 
+                "backgroundColor" => $backgroundColors,
                 "borderColor" => "rgba(0, 0, 0, 0.1)",
                 "data" => $data
             ]])

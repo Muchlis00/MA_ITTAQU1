@@ -14,6 +14,7 @@
 
     $prevStep = $currentStepIndex > 0 ? $steps[$currentStepIndex - 1] : null;
     $nextStep = $currentStepIndex < count($steps) - 1 ? $steps[$currentStepIndex + 1] : null;
+
         @endphp
 
         <div class="min-h-screen bg-gray-100 py-6 px-4 sm:px-6 lg:px-8">
