@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PeriodePPDB;
 use stdClass;
+use Illuminate\Support\Facades\Log;
 
 class FormPendaftarController extends Controller
 {
@@ -43,6 +44,7 @@ class FormPendaftarController extends Controller
     public function storeDataPendaftar(Request $request)
     {
         try {
+            Log::info('Data Pendaftar:', $request->all());
             // Validate the request data
             $request->validate([
                 'user_id' => 'required|exists:users,id',
