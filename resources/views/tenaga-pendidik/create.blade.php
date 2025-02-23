@@ -51,13 +51,19 @@
 
 <script>
 const tglGuruInput = document.getElementById('tgl_guru');
-tglGuruInput.value = '2000-01-01'; 
+tglGuruInput.value = '2000-01-01'; // Atur ke 1 Januari 1999
 
 const numberInput = document.getElementById('nip');
 numberInput.addEventListener('input', function() {
     let value = this.value;
+
+    // Hapus semua karakter non-angka
     value = value.replace(/[^0-9]/g, '');
+
+    // Batasi panjang input menjadi 16 digit
     value = value.slice(0, 16);
+
+    // Update nilai input
     this.value = value;
   });
 </script>
