@@ -47,7 +47,7 @@ class PeriodePPDB extends Model
 
     public function agreement()
     {
-        return $this->has(AgreementPpdb::class, 'id_periode');
+        return $this->hasMany(AgreementPpdb::class, 'id_periode');
     }
 
     public function orientasi()

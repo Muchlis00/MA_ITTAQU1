@@ -66,9 +66,9 @@
                 <form action={{ route('formulir-ppdb.kirimFormulir') }} method="POST">
                     @csrf
                     <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
-                    Kirim Formulir
+                        Kirim Formulir
                     </button>
-                    
+
                 </form>
                 @endif
             </div>

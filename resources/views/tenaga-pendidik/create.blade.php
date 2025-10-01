@@ -1,4 +1,3 @@
-
 @extends('layouts.navbar')
 @section('content')
 <div class="container">
@@ -23,8 +22,21 @@
             <input type="text" text-transform="lowercase" name="nama_guru" class="form-control" id="nama_guru" required>
         </div>
         <div class="mb-3">
-            <label for="tempat_guru" class="form-label">Tempat Lahir Guru</label>
-            <input type="text" name="tempat_guru" class="form-control" id="tempat_guru" required>
+            <label for="tempat_guru">Tempat Lahir</label>
+            <input
+                type="text"
+                id="tempat_guru"
+                name="tempat_guru"
+                class="form-control"
+                placeholder="Ketik nama kota"
+                list="cityList"
+                autocomplete="off">
+            <datalist id="cityList">
+                @foreach($cities as $city)
+                <option value="{{ $city['city_name'] }}"> {{ $city['type'] }} ({{ $city['province'] }})
+                </option>
+                @endforeach
+            </datalist>
         </div>
         <div class="mb-3">
             <label for="tgl_guru" class="form-label">Tanggal Lahir Guru</label>
@@ -40,9 +52,9 @@
         <div class="mb-3">
             <label for="jabatan" class="form-label">jabatan Guru</label>
             <select name="jabatan" id="jabatan" required>
-            <option value="Guru">Guru</option>
-            <option value="Kepsek">Kepsek</option>
-        </select>
+                <option value="Guru">Guru</option>
+                <option value="Kepsek">Kepsek</option>
+            </select>
         </div>
         <!-- Tambahkan input untuk tempat_lahir_guru, tgl_lahir_guru, jeniskelamin_guru, jabatan -->
         <button type="submit" class="btn btn-primary">Simpan</button>
@@ -67,5 +79,6 @@ numberInput.addEventListener('input', function() {
     this.value = value;
   });
 </script>
-@endsection
 
+
+@endsection

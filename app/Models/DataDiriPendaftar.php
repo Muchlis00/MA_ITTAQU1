@@ -37,4 +37,5 @@ class DataDiriPendaftar extends Model
     {
         return $this->hasMany(WaliPendaftar::class, 'data_diri_pendaftar_id');
     }
+    
 }

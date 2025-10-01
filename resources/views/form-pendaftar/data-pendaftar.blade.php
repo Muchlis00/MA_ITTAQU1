@@ -5,12 +5,15 @@
 <div>
     @if ($currentAgreement && $currentAgreement->content)
     <div class="bg-gray-50 p-4 rounded-md">
-        <span>
-            Dengan mengisi formulir ini, saya menyatakan bahwa:
-        </span>
         <p>
         {!! $currentAgreement->content !!}
         </p>
+        <br>
+        <strong>
+        <span>
+            Dengan mengisi formulir ini, saya menyatakan bahwa:
+        </span>
+        </strong>
     </div>
     @endif
     <form action={{ route('formulir-ppdb.storeDataPendaftar') }} method="POST" class="space-y-6">
@@ -84,6 +87,24 @@
                 </div>
             </div>
         </div>
+        <div class="bg-gray-50 p-4 rounded-md">
+            <strong>
+            <span>
+                Untuk di didik sebagai Peserta Didik di Madrasah Aliyah ITTAQU Surabaya. Dan saya menyatakan
+bahwa : 
+            </span>    
+            </strong>
+            <p>
+                1. Menyetujui putra / putri kami untuk di beri materi Pendidikan Agama Islam sesuai dengan kurikulum
+Kementerian Agama Republik Indonesia <br>
+2. Taat dengan segala bentuk peraturan dan ketentuan yang di keluarkan oleh Madrasah Aliyah dan Yayasan
+Pendidikan ITTAQU Surabaya <br>
+3. Memenuhi seluruh kewajiban dan kebutuhan Madrash serta bekerjasama dengan pihak Madrasah atau
+Yayasan dalam hal pengawasan serta pendidikan putra  / putri kami <br>
+4. Hal-hal yang belum tercantum di dalam formulir, akan di tetapkan lebih lanjut oleh pihak Madrasah 
+            </p>
+        </div>
+
 
         <div class="flex justify-end">
             <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">

@@ -5,11 +5,12 @@
 <div>
     <div class="bg-gray-50 p-4 rounded-md flex flex-col gap-6">
         <div>
-        <h2 class="text-2xl font-bold leading-tight text-gray-900">Rincian Pembayaran</h2>
-        <div>Periode PPDB: {{ date('F Y', strtotime($currentPeriode->startDate)) . ' - ' . date('F Y', strtotime($currentPeriode->endDate)) }}</div>
+            <h2 class="text-2xl font-bold leading-tight text-gray-900">Rincian Pembayaran</h2>
+            <div>Periode PPDB: {{ date('F Y', strtotime($currentPeriode->startDate)) . ' - ' . date('F Y', strtotime($currentPeriode->endDate)) }}</div>
         </div>
         <div>
-            {{ $informasiPembayaran->detail_pembayaran }}
+            {{!! $informasiPembayaran->detail_pembayaran ?? null !!}}
+            {{-- {{ optional($informasiPembayaran)->detail_pembayaran }} --}}
         </div>
     </div>
     <form action={{ route('formulir-ppdb.storePembayaran') }} enctype="multipart/form-data" method="POST" class="space-y-6">
@@ -26,7 +27,7 @@
                 <div class="flex flex-row items-center gap-4">
                     <label for="bukti_pembayaran" class="w-48 whitespace-nowrap text-sm font-medium text-gray-700">Bukti Pembayaran</label>
                     <input type="file" accept="image/*" name="bukti_pembayaran" id="bukti_pembayaran"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
 
                 </div>
 

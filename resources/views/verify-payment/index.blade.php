@@ -17,8 +17,10 @@
                             <tr>
                                 <td class="border px-4 py-2">{{ $buktiBayar->user->name }}</td>
                                 <td class="border px-4 py-2">
-                                    <img src={{ asset('storage/' . $buktiBayar->bukti_pembayaran) }}
-                                        alt="Bukti Bayar" class="max-w-32 max-h-32 mx-auto">
+                                    <img src="{{ asset('storage/' . $buktiBayar->bukti_pembayaran) }}"
+                                        alt="Bukti Bayar"
+                                        class="max-w-32 max-h-32 mx-auto w-auto object-cover rounded shadow-sm hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+                                        onclick="window.open(this.src, '_blank')">
                                 </td>
                                 <td class="border px-4 py-2">
                                     <div class="flex justify-around">
@@ -29,8 +31,8 @@
                                                 Verifikasi
                                             </button>
                                         </form>
-                                        <button 
-                                        data-id="{{ $buktiBayar->id }}"
+                                        <button
+                                            data-id="{{ $buktiBayar->id }}"
                                             onclick="openModal(this.dataset.id)"
                                             class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
                                             Tolak
@@ -46,5 +48,6 @@
         </div>
     </div>
 
-   @include('verify-payment.payment-rejection-modal')
+    @include('verify-payment.payment-rejection-modal')
+    @vite('resources/js/simple-datatables.js')
 </x-app-layout>

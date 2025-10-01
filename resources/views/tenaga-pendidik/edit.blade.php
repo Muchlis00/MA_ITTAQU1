@@ -23,9 +23,25 @@
             <input type="text" name="nama_guru" class="form-control" id="nama_guru" value="{{ $tenagaPendidik->nama_guru }}" required>
         </div>
 
+
         <div class="mb-3">
-            <label for="tempat_guru" class="form-label">Tempat Lahir Guru</label>
-            <input type="text" name="tempat_guru" class="form-control" id="tempat_guru" value="{{ $tenagaPendidik->tempat_guru }}" required>
+            <label for="tempat_guru">Tempat Lahir</label>
+            <input
+                type="text"
+                id="tempat_guru"
+                name="tempat_guru"
+                class="form-control"
+                placeholder="Ketik nama kota"
+                list="cityList"
+                autocomplete="off"
+                value="{{ $tenagaPendidik->tempat_guru }}">
+            <datalist id="cityList">
+                @foreach($cities as $city)
+                <option value="{{ $city['city_name'] }}">
+                    {{ $city['type'] }} ({{ $city['province'] }})
+                </option>
+                @endforeach
+            </datalist>
         </div>
 
         <div class="mb-3">
@@ -55,4 +71,5 @@
         </div>
     </form>
 </div>
+
 @endsection

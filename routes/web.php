@@ -11,16 +11,15 @@ use App\Http\Controllers\BendaharaPPDBController;
 use App\Http\Controllers\PanitiaPPDBController;
 use App\Http\Controllers\FormPendaftarController;
 use App\Http\Controllers\InformasiPembayaranController;
+use App\Http\Controllers\LandingpageController;
 use App\Http\Controllers\OrientasiController;
 use App\Http\Controllers\StatusPendaftaranController;
 use App\Http\Controllers\VerifyPaymentController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
 
+Route::get('/',[LandingpageController::class,'welcome'])->name('welcome');
 
 Route::get('/dashboard', [DashboardController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -36,6 +35,7 @@ Route::middleware(['auth', 'verified', 'role:kepsek'])->group(function () {
     Route::resource('periode-ppdb', PeriodePPDBController::class);
     Route::resource('panitia-ppdb', PanitiaPPDBController::class);
     Route::resource('bendahara-ppdb', BendaharaPPDBController::class);
+    Route::get('/periode-ppdb/exportPdf/{id}', [PeriodePPDBController::class, 'exportPdf'])->name('periode-ppdb.exportPdf');
 });
 
 // pendaftar
@@ -57,6 +57,7 @@ Route::middleware(['auth', 'verified', 'role:pendaftar,guru,kepsek'])->group(fun
 
     Route::post('/formulir-ppdb/kirim', [FormPendaftarController::class, 'kirimFormulir'])->name('formulir-ppdb.kirimFormulir');
     Route::get('/status-pendaftaran', [StatusPendaftaranController::class, 'index'])->name('status-pendaftaran.index');
+    Route::get('/status-pendaftaran/tandaBukti', [StatusPendaftaranController::class, 'tandaBukti'])->name('status-pendaftaran.tandaBukti');
 });
 
 // bendahara
@@ -64,7 +65,7 @@ Route::middleware(['auth', 'verified', 'role:bendahara'])->group(function () {
     Route::get('/informasi-pembayaran', [InformasiPembayaranController::class, 'index'])->name('informasi-pembayaran.index');
     Route::post('/informasi-pembayaran', [InformasiPembayaranController::class, 'store'])->name('informasi-pembayaran.store');
     Route::post('/informasi-pembayaran/{id}', [InformasiPembayaranController::class, 'show'])->name('informasi-pembayaran.show');
-    
+
     Route::get('/verify-payment', [VerifyPaymentController::class, 'index'])->name('verify-payment.index');
     Route::post('/verify-payment/verify/{id}', [VerifyPaymentController::class, 'verify'])->name('verify-payment.verify');
     Route::post('/verify-payment/reject/{id}', [VerifyPaymentController::class, 'reject'])->name('verify-payment.reject');
@@ -86,6 +87,7 @@ Route::middleware(['auth', 'verified', 'role:panitia'])->group(function () {
     Route::get('/verify-formulir', [VerifyFormulirPPDBController::class, 'index'])->name('verify-formulir.index');
     Route::post('/verify-formulir/verify/{id}', [VerifyFormulirPPDBController::class, 'verify'])->name('verify-formulir.verify');
     Route::post('/verify-formulir/reject/{id}', [VerifyFormulirPPDBController::class, 'reject'])->name('verify-formulir.reject');
+    Route::get('/verify-formulir/show/{id}', [VerifyFormulirPPDBController::class, 'show'])->name('verify-formulir.show');
 });
 
 

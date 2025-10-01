@@ -20,8 +20,16 @@
                 <label for="father_place_of_birth" class="block text-sm font-medium text-gray-700">Tempat Lahir Ayah</label>
                 <input type="text" name="father_place_of_birth" id="father_place_of_birth"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    maxlength="255" value="{{$currentDataAyah->place_of_birth}}" required>
+                    maxlength="255" value="{{$currentDataAyah->place_of_birth}}" placeholder="Ketik nama kota"
+                    list="cityList" autocomplete="off" required>
+                <datalist id="cityList">
+                    @foreach($cities as $city)
+                    <option value="{{ $city['city_name'] }}"> {{ $city['type'] }} ({{ $city['province'] }})
+                    </option>
+                    @endforeach
+                </datalist>
             </div>
+
             <div>
                 <label for="father_date_of_birth" class="block text-sm font-medium text-gray-700">Tanggal Lahir Ayah</label>
                 <input type="date" name="father_date_of_birth" id="father_date_of_birth"
@@ -50,8 +58,6 @@
         </div>
 
         <div class="bg-gray-50 grid grid-cols-1 md:grid-cols-2 gap-6 p-4 rounded-md mb-6">
-
-
             <div class="md:col-span-2">
                 <label for="mother_name" class="block text-sm font-medium text-gray-700">Nama Ibu</label>
                 <input type="text" name="mother_name" id="mother_name"
@@ -59,12 +65,18 @@
                     maxlength="255" value="{{$currentDataIbu->name}}" required>
             </div>
 
-
             <div>
                 <label for="mother_place_of_birth" class="block text-sm font-medium text-gray-700">Tempat Lahir Ibu</label>
                 <input type="text" name="mother_place_of_birth" id="mother_place_of_birth"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    maxlength="255" value="{{$currentDataIbu->place_of_birth}}" required>
+                    maxlength="255" value="{{$currentDataIbu->place_of_birth}}" placeholder="Ketik nama kota"
+                    list="cityList" autocomplete="off" required>
+                <datalist id="cityList">
+                    @foreach($cities as $city)
+                    <option value="{{ $city['city_name'] }}"> {{ $city['type'] }} ({{ $city['province'] }})
+                    </option>
+                    @endforeach
+                </datalist>
             </div>
 
             <div>
