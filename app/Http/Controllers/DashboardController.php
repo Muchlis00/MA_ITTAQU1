@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\PembayaranPpdb;
 use App\Models\PendaftarPpdb;
+use App\Models\PeriodePPDB;
 use App\Models\User;
 use App\Models\WaliPendaftar;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use IcehouseVentures\LaravelChartjs\Facades\Chartjs;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
@@ -25,7 +27,8 @@ class DashboardController extends Controller
 
         return $formulir && $pembayaran;
     }
-    public function dashboard()
+
+    public function dashboard(Request $request)
     {
         $role = Auth::user()->role;
 
@@ -33,8 +36,6 @@ class DashboardController extends Controller
             if ($this->isUserVerified()) {
                 return redirect()->route('status-pendaftaran.index');
             }
-
-
             return redirect()->route('formulir-ppdb.dataPendaftar');
         }
 
@@ -42,41 +43,123 @@ class DashboardController extends Controller
             return view('dashboard');
         }
 
-        $pendaftar = PendaftarPpdb::with('user', 'periode', 'dataDiriPendaftar', 'wali')->get();
-        $pembayaran = PembayaranPpdb::with('user')->get();
-        $accountWithRolePendaftar = User::where('role', 'pendaftar', 'pembayaran')->get();
+        // Ambil periode aktif (yang sedang berjalan)
+        $periodeAktif = $this->getPeriodeAktif();
+        
+        // Set default ke periode aktif atau 'all'
+        $periodeFilter = $request->get('periode', $periodeAktif ? $periodeAktif->id_periode : 'all');
 
-
+        // Data untuk dropdown
+        $periodeList = PeriodePPDB::orderBy('startDate', 'desc')->get();
 
         $charts = [
-            'PendaftarChart' => $this->createRegistrationTrendChart(),
-            'uncompleteRegistrationChart' => $this->createVerificationStatusChart($pendaftar, $accountWithRolePendaftar),
-            'genderChart' => $this->createGenderDistributionChart($pendaftar, $accountWithRolePendaftar),
-            'previousSchoolChart' => $this->createPreviousSchoolDistributionChart($pendaftar),
-            'averageIncomeChart' => $this->createAverageIncomeChart($pendaftar),
-            'kipChart' => $this->createKipDistributionChart($pendaftar),
+            'PendaftarChart' => $this->createRegistrationTrendChart($periodeFilter),
+            'uncompleteRegistrationChart' => $this->createVerificationStatusChart($periodeFilter),
+            'genderChart' => $this->createGenderDistributionChart($periodeFilter),
+            'previousSchoolChart' => $this->createPreviousSchoolDistributionChart($periodeFilter),
+            'averageIncomeChart' => $this->createAverageIncomeChart($periodeFilter),
+            'kipChart' => $this->createKipDistributionChart($periodeFilter),
         ];
 
-        return view("dashboard.{$role}", array_merge(['pendaftar' => $pendaftar, 'pembayaran' => $pembayaran], $charts));
+        return view("dashboard.{$role}", array_merge([
+            'periodeList' => $periodeList,
+            'selectedPeriode' => $periodeFilter,
+            'periodeAktif' => $periodeAktif
+        ], $charts));
     }
 
-    private function getPendaftarPerDay()
+    private function getPeriodeAktif()
     {
-        $start = Carbon::parse(PendaftarPpdb::min("created_at"));
-        $end = Carbon::now();
+        $today = Carbon::now();
+        
+        return PeriodePPDB::where('startDate', '<=', $today)
+            ->where('endDate', '>=', $today)
+            ->first();
+    }
+
+    private function getFilteredPendaftar($periodeFilter)
+    {
+        $query = PendaftarPpdb::with('user', 'periode', 'dataDiriPendaftar', 'wali');
+
+        if ($periodeFilter !== 'all') {
+            $query->where('id_periode', $periodeFilter);
+        }
+
+        return $query->get();
+    }
+
+    private function getFilteredPembayaran($periodeFilter)
+    {
+        $query = PembayaranPpdb::with('user');
+
+        if ($periodeFilter !== 'all') {
+            $query->where('id_periode', $periodeFilter);
+        }
+
+        return $query->get();
+    }
+
+    private function getFilteredUsers($periodeFilter)
+    {
+        $query = User::where('role', 'pendaftar');
+
+        if ($periodeFilter !== 'all') {
+            $query->whereHas('pendaftarPpdb', function($q) use ($periodeFilter) {
+                $q->where('id_periode', $periodeFilter);
+            });
+        }
+
+        return $query->get();
+    }
+
+    private function getPendaftarPerDay($periodeFilter)
+    {
+        $query = PendaftarPpdb::query();
+
+        if ($periodeFilter !== 'all') {
+            $query->where('id_periode', $periodeFilter);
+            
+            // Jika filter periode spesifik, batasi tanggal berdasarkan periode tersebut
+            $periode = PeriodePPDB::find($periodeFilter);
+            if ($periode) {
+                $start = Carbon::parse($periode->startDate);
+                $end = Carbon::parse($periode->endDate);
+                
+                // Pastikan end date tidak melebihi hari ini
+                if ($end->gt(Carbon::now())) {
+                    $end = Carbon::now();
+                }
+            } else {
+                $start = Carbon::parse($query->min("created_at") ?? Carbon::now());
+                $end = Carbon::now();
+            }
+        } else {
+            $start = Carbon::parse($query->min("created_at") ?? Carbon::now());
+            $end = Carbon::now();
+        }
+
         $period = CarbonPeriod::create($start, "1 day", $end);
 
-        return collect($period)->map(function ($date) {
+        return collect($period)->map(function ($date) use ($query) {
             return [
-                "count" => PendaftarPpdb::whereDate("created_at", $date->format("Y-m-d"))->count(),
+                "count" => (clone $query)->whereDate("created_at", $date->format("Y-m-d"))->count(),
                 "date" => $date->format("Y-m-d")
             ];
         });
     }
 
-    private function createRegistrationTrendChart()
+    private function createRegistrationTrendChart($periodeFilter = 'all')
     {
-        $pendaftarPerDay = $this->getPendaftarPerDay();
+        $pendaftarPerDay = $this->getPendaftarPerDay($periodeFilter);
+
+        // Tentukan judul berdasarkan filter
+        $judul = 'Pendaftar PPDB Per Hari';
+        if ($periodeFilter !== 'all') {
+            $periode = PeriodePPDB::find($periodeFilter);
+            if ($periode) {
+                $judul = 'Pendaftar PPDB Per Hari - ' . $periode->name;
+            }
+        }
 
         return Chartjs::build()
             ->name("UserRegistrationsChart")
@@ -110,121 +193,135 @@ class DashboardController extends Controller
                 'plugins' => [
                     'title' => [
                         'display' => true,
-                        'text' => 'Pendaftar PPDB Per Hari'
+                        'text' => $judul
                     ]
                 ]
             ]);
     }
 
-    private function createVerificationStatusChart($pendaftar, $accountWithRolePendaftar)
-{
-
-    $usersWithoutPendaftarPpdb = $accountWithRolePendaftar->filter(function ($user) use ($pendaftar) {
-        return !$pendaftar->contains('user_id', $user->id); 
-    })->count();
-
-    
-    $statusCount = collect($pendaftar)
-        ->groupBy('verification_status')
-        ->map(function ($group) {
-            return $group->count();  
-        })
-        ->pipe(function ($counts) use ($usersWithoutPendaftarPpdb) {
-           
-            return [
-                'pending' => $counts['pending'] ?? 0,
-                'verified' => $counts['verified'] ?? 0,
-                'rejected' => $counts['rejected'] ?? 0,
-                'tidak_ada_di_pendaftar' => $usersWithoutPendaftarPpdb 
-            ];
-        });
-
-    
-    return Chartjs::build()
-        ->name("uncompleteRegistrationChart")
-        ->type("doughnut") 
-        ->size(["width" => 200, "height" => 200])
-        ->labels(['Menunggu Di Verifikasi', 'Pendaftaran Selesai', 'Formulir perlu perbaikan', 'Belum mengisi Formulir']) 
-        ->datasets([[
-            "label" => "Jumlah Pendaftar",
-            "backgroundColor" => [
-                "rgba(255, 206, 86, 0.7)",  
-                "rgba(75, 192, 192, 0.7)",  
-                "rgba(255, 99, 132, 0.7)",  
-                "rgba(201, 203, 207, 0.7)"  
-            ],
-            "borderColor" => [
-                "rgba(255, 206, 86, 1)",
-                "rgba(75, 192, 192, 1)",
-                "rgba(255, 99, 132, 1)",
-                "rgba(201, 203, 207, 1)"
-            ],
-            "data" => array_values($statusCount)  
-        ]])
-        ->options([
-            'plugins' => [
-                'title' => [
-                    'display' => true,
-                    'text' => 'Statistik Status Pendaftaran Pendaftar'
-                ]
-            ]
-        ]);
-}
-
-   private function createGenderDistributionChart($pendaftar, $accountWithRolePendaftar)
-{
-
-    $usersWithoutPendaftarPpdb = $accountWithRolePendaftar->filter(function ($user) use ($pendaftar) {
-        return !$pendaftar->contains('user_id', $user->id); 
-    })->count();
-
-    $genderCount = collect($pendaftar)
-        ->map(function ($item) {
-            return $item["dataDiriPendaftar"]->gender ?? null; 
-        })
-        ->filter() 
-        ->groupBy(fn($gender) => $gender)
-        ->map(function ($group) {
-            return $group->count(); 
-        });
-
-    
-    $genderCount = [
-        'Laki-Laki' => $genderCount['Laki-Laki'] ?? 0,
-        'Perempuan' => $genderCount['Perempuan'] ?? 0
-    ];
-
-    
-    return Chartjs::build()
-        ->name("genderChart")
-        ->type("doughnut")
-        ->size(["width" => 200, "height" => 200])
-        ->labels(['Laki-Laki', 'Perempuan']) 
-        ->datasets([[
-            "label" => "Jumlah Pendaftar",
-            "backgroundColor" => [
-                "rgba(54, 162, 235, 0.7)", 
-                "rgba(255, 99, 132, 0.7)"  
-            ],
-            "borderColor" => [
-                "rgba(54, 162, 235, 1)", 
-                "rgba(255, 99, 132, 1)"  
-            ],
-            "data" => array_values($genderCount) 
-        ]])
-        ->options([
-            'plugins' => [
-                'title' => [
-                    'display' => true,
-                    'text' => 'Statistik Gender Pendaftar PPDB'
-                ]
-            ]
-        ]);
-}
-
-
-    private function createPreviousSchoolDistributionChart($pendaftar)
+    private function createVerificationStatusChart($periodeFilter = 'all')
     {
+        $pendaftar = $this->getFilteredPendaftar($periodeFilter);
+        $accountWithRolePendaftar = $this->getFilteredUsers($periodeFilter);
+
+        $usersWithoutPendaftarPpdb = $accountWithRolePendaftar->filter(function ($user) use ($pendaftar) {
+            return !$pendaftar->contains('user_id', $user->id); 
+        })->count();
+
+        $statusCount = collect($pendaftar)
+            ->groupBy('verification_status')
+            ->map(function ($group) {
+                return $group->count();  
+            })
+            ->pipe(function ($counts) use ($usersWithoutPendaftarPpdb) {
+                return [
+                    'pending' => $counts['pending'] ?? 0,
+                    'verified' => $counts['verified'] ?? 0,
+                    'rejected' => $counts['rejected'] ?? 0,
+                    'tidak_ada_di_pendaftar' => $usersWithoutPendaftarPpdb 
+                ];
+            });
+
+        // Tentukan judul berdasarkan filter
+        $judul = 'Statistik Status Pendaftaran Pendaftar';
+        if ($periodeFilter !== 'all') {
+            $periode = PeriodePPDB::find($periodeFilter);
+            if ($periode) {
+                $judul = 'Status Pendaftaran - ' . $periode->name;
+            }
+        }
+
+        return Chartjs::build()
+            ->name("uncompleteRegistrationChart")
+            ->type("doughnut") 
+            ->size(["width" => 200, "height" => 200])
+            ->labels(['Menunggu Di Verifikasi', 'Pendaftaran Selesai', 'Formulir perlu perbaikan', 'Belum mengisi Formulir']) 
+            ->datasets([[
+                "label" => "Jumlah Pendaftar",
+                "backgroundColor" => [
+                    "rgba(255, 206, 86, 0.7)",  
+                    "rgba(75, 192, 192, 0.7)",  
+                    "rgba(255, 99, 132, 0.7)",  
+                    "rgba(201, 203, 207, 0.7)"  
+                ],
+                "borderColor" => [
+                    "rgba(255, 206, 86, 1)",
+                    "rgba(75, 192, 192, 1)",
+                    "rgba(255, 99, 132, 1)",
+                    "rgba(201, 203, 207, 1)"
+                ],
+                "data" => array_values($statusCount)  
+            ]])
+            ->options([
+                'plugins' => [
+                    'title' => [
+                        'display' => true,
+                        'text' => $judul
+                    ]
+                ]
+            ]);
+    }
+
+    private function createGenderDistributionChart($periodeFilter = 'all')
+    {
+        $pendaftar = $this->getFilteredPendaftar($periodeFilter);
+        $accountWithRolePendaftar = $this->getFilteredUsers($periodeFilter);
+
+        $genderCount = collect($pendaftar)
+            ->map(function ($item) {
+                return $item["dataDiriPendaftar"]->gender ?? null; 
+            })
+            ->filter() 
+            ->groupBy(fn($gender) => $gender)
+            ->map(function ($group) {
+                return $group->count(); 
+            });
+
+        $genderCount = [
+            'Laki-Laki' => $genderCount['Laki-Laki'] ?? 0,
+            'Perempuan' => $genderCount['Perempuan'] ?? 0
+        ];
+
+        // Tentukan judul berdasarkan filter
+        $judul = 'Statistik Gender Pendaftar PPDB';
+        if ($periodeFilter !== 'all') {
+            $periode = PeriodePPDB::find($periodeFilter);
+            if ($periode) {
+                $judul = 'Distribusi Gender - ' . $periode->name;
+            }
+        }
+
+        return Chartjs::build()
+            ->name("genderChart")
+            ->type("doughnut")
+            ->size(["width" => 200, "height" => 200])
+            ->labels(['Laki-Laki', 'Perempuan']) 
+            ->datasets([[
+                "label" => "Jumlah Pendaftar",
+                "backgroundColor" => [
+                    "rgba(54, 162, 235, 0.7)", 
+                    "rgba(255, 99, 132, 0.7)"  
+                ],
+                "borderColor" => [
+                    "rgba(54, 162, 235, 1)", 
+                    "rgba(255, 99, 132, 1)"  
+                ],
+                "data" => array_values($genderCount) 
+            ]])
+            ->options([
+                'plugins' => [
+                    'title' => [
+                        'display' => true,
+                        'text' => $judul
+                    ]
+                ]
+            ]);
+    }
+
+    private function createPreviousSchoolDistributionChart($periodeFilter = 'all')
+    {
+        $pendaftar = $this->getFilteredPendaftar($periodeFilter);
+
         $previousSchoolCounts = collect($pendaftar)
             ->pluck('dataDiriPendaftar.previous_school_name')
             ->filter()
@@ -243,6 +340,15 @@ class DashboardController extends Controller
             );
         }, $labels);
 
+        // Tentukan judul berdasarkan filter
+        $judul = 'Statistik Sekolah Asal Pendaftar';
+        if ($periodeFilter !== 'all') {
+            $periode = PeriodePPDB::find($periodeFilter);
+            if ($periode) {
+                $judul = 'Sekolah Asal - ' . $periode->name;
+            }
+        }
+
         return Chartjs::build()
             ->name("previousSchoolChart")
             ->type("doughnut")
@@ -258,14 +364,16 @@ class DashboardController extends Controller
                 'plugins' => [
                     'title' => [
                         'display' => true,
-                        'text' => 'Statistik Sekolah Asal Pendaftar'
+                        'text' => $judul
                     ]
                 ],
             ]);
     }
 
-    private function createAverageIncomeChart($pendaftar)
+    private function createAverageIncomeChart($periodeFilter = 'all')
     {
+        $pendaftar = $this->getFilteredPendaftar($periodeFilter);
+
         $fathersIncome = collect();
         $mothersIncome = collect();
 
@@ -284,6 +392,15 @@ class DashboardController extends Controller
 
         $labels = ['Ayah', 'Ibu'];
         $data = [$averageFatherIncome, $averageMotherIncome];
+
+        // Tentukan judul berdasarkan filter
+        $judul = 'Rata-Rata Pendapatan Ayah dan Ibu';
+        if ($periodeFilter !== 'all') {
+            $periode = PeriodePPDB::find($periodeFilter);
+            if ($periode) {
+                $judul = 'Rata-Rata Pendapatan Orang Tua - ' . $periode->name;
+            }
+        }
 
         return Chartjs::build()
             ->name("averageIncomeChart")
@@ -306,19 +423,24 @@ class DashboardController extends Controller
                 'plugins' => [
                     'title' => [
                         'display' => true,
-                        'text' => 'Rata-Rata Pendapatan Ayah dan Ibu'
+                        'text' => $judul
                     ]
                 ],
                 'scales' => [
                     'y' => [
-                        'beginAtZero' => true
+                        'beginAtZero' => true,
+                        'title' => [
+                            'display' => true,
+                            'text' => 'Rupiah'
+                        ]
                     ]
                 ]
             ]);
     }
 
-    private function createKipDistributionChart($pendaftar)
+    private function createKipDistributionChart($periodeFilter = 'all')
     {
+        $pendaftar = $this->getFilteredPendaftar($periodeFilter);
 
         $kipCounts = collect($pendaftar)
             ->pluck('dataDiriPendaftar.kip')
@@ -335,6 +457,15 @@ class DashboardController extends Controller
             'rgba(255, 99, 132, 0.7)'
         ];
 
+        // Tentukan judul berdasarkan filter
+        $judul = 'Statistik KIP Pendaftar';
+        if ($periodeFilter !== 'all') {
+            $periode = PeriodePPDB::find($periodeFilter);
+            if ($periode) {
+                $judul = 'Penerima KIP - ' . $periode->name;
+            }
+        }
+
         return Chartjs::build()
             ->name("kipChart")
             ->type("doughnut")
@@ -350,7 +481,7 @@ class DashboardController extends Controller
                 'plugins' => [
                     'title' => [
                         'display' => true,
-                        'text' => 'Statistik KIP Pendaftar'
+                        'text' => $judul
                     ]
                 ],
             ]);
