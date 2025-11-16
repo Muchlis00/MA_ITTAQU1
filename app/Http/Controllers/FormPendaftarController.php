@@ -14,6 +14,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PeriodePPDB;
 use stdClass;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class FormPendaftarController extends Controller
 {
@@ -37,12 +39,14 @@ class FormPendaftarController extends Controller
         $currentUser = Auth::user();
         $currentDataDiriPendaftar = DataDiriPendaftar::where('user_id', Auth::id())->first() ?? new DataDiriPendaftar();
         $currentAgreement = AgreementPpdb::where('id_periode', $currentPeriode->id_periode)->first();
-        return view('form-pendaftar.data-pendaftar', compact('currentPeriode', 'currentUser', 'currentDataDiriPendaftar', 'currentAgreement'));
+        $cities = $this->getCities();
+        return view('form-pendaftar.data-pendaftar', compact('currentPeriode', 'currentUser', 'currentDataDiriPendaftar', 'currentAgreement', 'cities'));
     }
 
     public function storeDataPendaftar(Request $request)
     {
         try {
+            Log::info('Data Pendaftar:', $request->all());
             // Validate the request data
             $request->validate([
                 'user_id' => 'required|exists:users,id',
@@ -92,10 +96,10 @@ class FormPendaftarController extends Controller
         $currentDataDiriPendaftar = DataDiriPendaftar::where('user_id', Auth::id())->first() ?? new DataDiriPendaftar();
         $currentDataAyah = WaliPendaftar::where(['data_diri_pendaftar_id' => $currentDataDiriPendaftar->id, 'gender' => 'Laki-Laki'])->first() ?? new WaliPendaftar();
         $currentDataIbu = WaliPendaftar::where(['data_diri_pendaftar_id' => $currentDataDiriPendaftar->id, 'gender' => 'Perempuan'])->first() ?? new WaliPendaftar();
-
+        $cities = $this->getCities();
         return view(
             'form-pendaftar.data-orang-tua',
-            compact('currentPeriode', 'currentUser', 'currentDataDiriPendaftar', 'currentDataAyah', 'currentDataIbu')
+            compact('currentPeriode', 'currentUser', 'currentDataDiriPendaftar', 'currentDataAyah', 'currentDataIbu', 'cities')
         );
     }
 
@@ -266,29 +270,61 @@ class FormPendaftarController extends Controller
 
     public function storePembayaran(Request $request)
     {
+        // Validasi: file tidak wajib, tapi jika ada harus file
         $request->validate([
-            'bukti_pembayaran' => 'required',
+            'bukti_pembayaran' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048'
         ]);
+
         $currentPeriode = PeriodePPDB::where('startDate', '<=', Carbon::now())
             ->where('endDate', '>=', Carbon::now())
             ->firstOrFail();
-        PembayaranPpdb::create([
+
+        // Cek apakah user sudah pernah mengisi pembayaran untuk periode ini
+        $existingPembayaran = PembayaranPpdb::where('id_periode', $currentPeriode->id_periode)
+            ->where('user_id', Auth::id())
+            ->first();
+
+        $dataToSave = [
             'id_periode' => $currentPeriode->id_periode,
             'user_id' => Auth::id(),
-            
-            'bukti_pembayaran' => $this->storeFile($request, 'bukti_pembayaran')
-        ]);
+        ];
 
-        return redirect()->route('formulir-ppdb.pembayaran')
+        // Jika user upload file baru, simpan path-nya
+        if ($request->hasFile('bukti_pembayaran')) {
+            $dataToSave['bukti_pembayaran'] = $this->storeFile($request, 'bukti_pembayaran');
+        }
+
+        if ($existingPembayaran) {
+            // Jika ada data dan ada file baru, update
+            if (isset($dataToSave['bukti_pembayaran'])) {
+                $existingPembayaran->update($dataToSave);
+            }
+        } else {
+            // Insert baru
+            PembayaranPpdb::create($dataToSave);
+        }
+
+        return redirect()
+            ->route('formulir-ppdb.pembayaran')
             ->with('success', 'Pembayaran berhasil disimpan');
     }
 
     public function kirimFormulir(Request $request)
     {
         PendaftarPpdb::where('user_id', Auth::id())->update([
-            'ready_to_verify' => true
+            'ready_to_verify' => true,
+            'verification_status' => 'pending'
+        ]);
+        PembayaranPpdb::where('user_id', Auth::id())->update([
+            'verification_status' => 'pending',
+            'status_pembayaran' => 'Belum Lunas'
         ]);
         return redirect()->route('formulir-ppdb.pembayaran')
             ->with('success', 'Pembayaran berhasil disimpan');
+    }
+    private function getCities()
+    {
+        $json = Storage::get('cities.json');
+        return json_decode($json, true);
     }
 }

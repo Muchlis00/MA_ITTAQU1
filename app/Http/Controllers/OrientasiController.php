@@ -53,7 +53,7 @@ class OrientasiController extends Controller
         return view('orientasi.edit', compact('orientasi', 'periodePPDB'));
     }
 
-    public function update( $id, Request $request)
+    public function update($id, Request $request)
     {
         $request->validate([
             'id_periode' => 'required',
@@ -73,7 +73,7 @@ class OrientasiController extends Controller
         return redirect()->route('orientasi.index')->with('success', 'Informasi orientasi berhasil diperbarui.');
     }
 
-    public function delete($id,Orientasi $orientasi)
+    public function delete($id, Orientasi $orientasi)
     {
         $orientasi = Orientasi::find($id)->first();
         $orientasi->delete();

@@ -1,10 +1,9 @@
-
 @extends('layouts.navbar')
 @section('content')
 <div class="container">
     @if(session()->has('success'))
     <script>
-        alert("Data berhasil disimpan!"); // Ganti dengan pesan yang sesuai
+        alert("Data berhasil disimpan!");
     </script>
     @endif
     <h1>Tambah Guru</h1>
@@ -23,12 +22,25 @@
             <input type="text" text-transform="lowercase" name="nama_guru" class="form-control" id="nama_guru" required>
         </div>
         <div class="mb-3">
-            <label for="tempat_guru" class="form-label">Tempat Lahir Guru</label>
-            <input type="text" name="tempat_guru" class="form-control" id="tempat_guru" required>
+            <label for="tempat_guru">Tempat Lahir</label>
+            <input
+                type="text"
+                id="tempat_guru"
+                name="tempat_guru"
+                class="form-control"
+                placeholder="Ketik nama kota"
+                list="cityList"
+                autocomplete="off">
+            <datalist id="cityList">
+                @foreach($cities as $city)
+                <option value="{{ $city['city_name'] }}"> {{ $city['type'] }} ({{ $city['province'] }})
+                </option>
+                @endforeach
+            </datalist>
         </div>
         <div class="mb-3">
             <label for="tgl_guru" class="form-label">Tanggal Lahir Guru</label>
-            <input type="date" name="tgl_guru" class="form-control" id="tgl_guru" min="1990-07-01" required>
+            <input type="date" name="tgl_guru" class="form-control" id="tgl_guru" required>
         </div>
         <div class="mb-3">
             <label for="jk_guru">jk Guru</label>
@@ -40,32 +52,27 @@
         <div class="mb-3">
             <label for="jabatan" class="form-label">jabatan Guru</label>
             <select name="jabatan" id="jabatan" required>
-            <option value="Guru">Guru</option>
-            <option value="Kepsek">Kepsek</option>
-        </select>
+                <option value="Guru">Guru</option>
+                <option value="Kepsek">Kepsek</option>
+            </select>
         </div>
-        <!-- Tambahkan input untuk tempat_lahir_guru, tgl_lahir_guru, jeniskelamin_guru, jabatan -->
+
         <button type="submit" class="btn btn-primary">Simpan</button>
     </form>
 </div>
 
 <script>
-const tglGuruInput = document.getElementById('tgl_guru');
-tglGuruInput.value = '2000-01-01'; // Atur ke 1 Januari 1999
+    const tglGuruInput = document.getElementById('tgl_guru');
+    tglGuruInput.value = '2000-01-01';
 
-const numberInput = document.getElementById('nip');
-numberInput.addEventListener('input', function() {
-    let value = this.value;
-
-    // Hapus semua karakter non-angka
-    value = value.replace(/[^0-9]/g, '');
-
-    // Batasi panjang input menjadi 16 digit
-    value = value.slice(0, 16);
-
-    // Update nilai input
-    this.value = value;
-  });
+    const numberInput = document.getElementById('nip');
+    numberInput.addEventListener('input', function() {
+        let value = this.value;
+        value = value.replace(/[^0-9]/g, '');
+        value = value.slice(0, 16);
+        this.value = value;
+    });
 </script>
-@endsection
 
+
+@endsection

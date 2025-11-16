@@ -38,8 +38,26 @@
                                     <button type="submit" class="btn btn-danger">Hapus</button>
                                 </form>
                                 <a href="{{ route('periode-ppdb.show', $ppdb->id_periode) }}" class="btn btn-warning">Panitia & Bendahara</a>
+                                <a href="{{ route('periode-ppdb.exportPdf', $ppdb->id_periode) }}" class="btn btn-primary">Export PDF</a>
 
+                            </td>
+                            <td>
+                                @php
+                        $now = \Carbon\Carbon::now();
+                        $start = \Carbon\Carbon::parse($ppdb->startDate);
+                        $end = \Carbon\Carbon::parse($ppdb->endDate);
+                    @endphp
 
+                   @if ($now->lt($start))
+    <i class="fas fa-file-contract text-primary me-2"> Belum Aktif</i>
+@elseif ($now->between($start, $end))
+  
+    <i class="fas fa-check-circle text-success me-1"> Aktif</i> 
+</span>
+@else
+
+    <i class="fas fa-exclamation-circle text-danger fs-4 me-3 mt-1"> Expired</i>
+@endif
                             </td>
                         </tr>
                         @endforeach

@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Storage;
 
 class TenagaPendidikController extends Controller
 {
@@ -31,8 +32,8 @@ class TenagaPendidikController extends Controller
      */
     public function create()
     {
-        // return view('/tenaga_pendidik/create');
-        return view('tenaga-pendidik.create');
+        $cities = $this->getCities();
+        return view('tenaga-pendidik.create',  compact('cities'));
     }
 
     /**
@@ -58,7 +59,7 @@ class TenagaPendidikController extends Controller
         ]);
         $userId = $user->id;
         TenagaPendidik::create([
-            'id' => $userId, 
+            'id' => $userId,
             'nip' => $request->nip,
             'nama_guru' => $request->nama_guru,
             'tempat_guru' => $request->tempat_guru,
@@ -87,7 +88,8 @@ class TenagaPendidikController extends Controller
      */
     public function edit(TenagaPendidik $tenagaPendidik)
     {
-        return view('tenaga-pendidik.edit', compact('tenagaPendidik'));
+        $cities = $this->getCities();
+        return view('tenaga-pendidik.edit', compact('tenagaPendidik', 'cities'));
     }
 
     /**
@@ -115,8 +117,13 @@ class TenagaPendidikController extends Controller
     {
         $steam = TenagaPendidik::find($id_pendidik);
         $steam->delete();
-        
+
         return redirect('tenaga-pendidik')->with('success', 'Data Tenaga Pendidik berhasil diHapus!');
         // return redirect('tenagapendidik/index')->with('success', 'tenaga pendidik berhasil dihapus!');
+    }
+    private function getCities()
+    {
+        $json = Storage::get('cities.json');
+        return json_decode($json, true);
     }
 }

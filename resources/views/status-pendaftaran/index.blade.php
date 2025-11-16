@@ -35,7 +35,7 @@
                     </table>
                 </div>
             </div>
-            
+
             <div class="bg-white shadow-md rounded-lg p-6">
                 <!-- Registration Status Section -->
                 <div class="mb-8">
@@ -143,7 +143,58 @@
                         </ul>
                     </div>
                 </div>
+                
+            </div>
+            @if ($isVerified)
+            <div class="bg-white shadow-md rounded-lg p-6">
+                 <h3 class="text-xl font-semibold text-gray-800 mb-4">Tanda Bukti Bahwa Telah Diterima</h3>
+                  <a href="{{ route('status-pendaftaran.tandaBukti' )}}" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md"> Download PDF </a>
+            </div>    
+            @endif
+            
+        </div>
+    </div>
+    <div id="popupModal" class="hidden fixed inset-0 z-50">
+        
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75"></div>
+
+       
+        <div class="fixed inset-0 z-50 overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4">
+                <div class="relative bg-white rounded-lg shadow-xl w-full max-w-lg">
+                    
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900">
+                            Pengumuman
+                        </h3>
+                    </div>
+
+                   
+                    <div class="px-6 py-4">
+                        selamat anda telah diterima, Silahkan lihat Tanda Bukti anda Telah diterima
+                    </div>
+
+                   
+                    <div class="px-6 py-4 bg-gray-50 rounded-b-lg flex justify-end space-x-4">
+
+                        <button
+                            onclick="closeModal()"
+                            class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-500 focus:outline-none">
+                            Ok
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+    @if($isVerified)
+    <script>
+        const modal = document.getElementById('popupModal');
+
+        function closeModal() {
+            modal.classList.add('hidden');
+        }
+        modal.classList.remove('hidden');
+    </script>
+    @endif
 </x-app-layout>

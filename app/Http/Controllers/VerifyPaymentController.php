@@ -16,21 +16,30 @@ class VerifyPaymentController extends Controller
 {
     public function index(Request $request)
     {
-        $listUserIdPendaftar = PendaftarPpdb::where('ready_to_verify', true)->get('user_id');
-        $listBuktiBayar = PembayaranPpdb::where(['user_id' => $listUserIdPendaftar->toArray(), 'verification_status' => 'pending'])->with('user')->get();
-
-        return view('verify-payment.index', compact('listUserIdPendaftar', 'listBuktiBayar'));
+        // $listUserIdPendaftar = PendaftarPpdb::where('ready_to_verify', true)->get('user_id');
+        // $listBuktiBayar = PembayaranPpdb::where(['user_id' => $listUserIdPendaftar->toArray(), 'verification_status' => 'pending'])->with('user')->get();
+        // // dd($listBuktiBayar);
+        // return view('verify-payment.index', compact('listUserIdPendaftar', 'listBuktiBayar'));
+        $listBuktiBayar = PembayaranPpdb::where('verification_status', 'pending') ->where('status_pembayaran', 'Belum Lunas')
+            ->with('user') 
+            ->get();
+        //dd($listBuktiBayar);
+        return view('verify-payment.index', compact('listBuktiBayar'));
     }
-    public function verify($id,Request $request){
+    public function verify($id, Request $request)
+    {
         $pendaftar = PembayaranPpdb::where('id', $id)->with('user')->first();
-        PembayaranPpdb::where('id', $id)->update(['verifier_id' => Auth::id(), 'verification_status' => 'verified']);
+        PembayaranPpdb::where('id', $id)
+            ->update(['verifier_id' => Auth::id(), 'verification_status' => 'verified', 'status_pembayaran' => 'Lunas']);
+
         Mail::to($pendaftar->user->email)->send(new PaymentVerifiedMail(
             $pendaftar->user
         ));
         return redirect()->back()->with('success', 'Pembayaran berhasil diverifikasi');
     }
 
-    public function reject($id,Request $request){
+    public function reject($id, Request $request)
+    {
         $pendaftar = PembayaranPpdb::where('id', $id)->with('user')->first();
         PembayaranPpdb::where('id', $id)->update(['verifier_id' => Auth::id(), 'verification_status' => 'rejected']);
         // \Log::info($pendaftar);

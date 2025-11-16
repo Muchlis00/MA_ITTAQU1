@@ -69,7 +69,7 @@
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="{{ route('periode-ppdb.index') }}">Periode PPDB</a>
-                        <a class="collapse-item" href="#">Penentuan Panitia <br> dan Bendahara</a>
+                        <!-- <a class="collapse-item" href="#">Penentuan Panitia <br> dan Bendahara</a> -->
                     </div>
                 </div>
             </li>
@@ -157,7 +157,7 @@
                 <footer class="sticky-footer bg-white">
                     <div class="container my-auto">
                         <div class="copyright text-center my-auto">
-                            <span>Copyright &copy; Your Website 2021</span>
+                            <span>Copyright &copy; Your Website 2025</span>
                         </div>
                     </div>
                 </footer>

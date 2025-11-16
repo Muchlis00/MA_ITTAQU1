@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PembayaranPpdb;
 use App\Models\PendaftarPpdb;
 use App\Models\User;
 use App\Models\WaliPendaftar;
@@ -12,11 +13,28 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
+    public static function isUserVerified()
+    {
+        $formulir = PendaftarPpdb::where('user_id', Auth::user()->id)
+            ->where('verification_status', 'verified')
+            ->exists();
+
+        $pembayaran = PembayaranPpdb::where('user_id', Auth::user()->id)
+            ->where('verification_status', 'verified')
+            ->exists();
+
+        return $formulir && $pembayaran;
+    }
     public function dashboard()
     {
         $role = Auth::user()->role;
 
         if ($role == 'pendaftar') {
+            if ($this->isUserVerified()) {
+                return redirect()->route('status-pendaftaran.index');
+            }
+
+
             return redirect()->route('formulir-ppdb.dataPendaftar');
         }
 
@@ -25,8 +43,9 @@ class DashboardController extends Controller
         }
 
         $pendaftar = PendaftarPpdb::with('user', 'periode', 'dataDiriPendaftar', 'wali')->get();
-        $accountWithRolePendaftar = User::where('role', 'pendaftar')->get();
-        $waliPendaftar = WaliPendaftar::with('pendaftar')->get();
+        $pembayaran = PembayaranPpdb::with('user')->get();
+        $accountWithRolePendaftar = User::where('role', 'pendaftar', 'pembayaran')->get();
+
 
 
         $charts = [
@@ -38,7 +57,7 @@ class DashboardController extends Controller
             'kipChart' => $this->createKipDistributionChart($pendaftar),
         ];
 
-        return view("dashboard.{$role}", array_merge(['pendaftar' => $pendaftar], $charts));
+        return view("dashboard.{$role}", array_merge(['pendaftar' => $pendaftar, 'pembayaran' => $pembayaran], $charts));
     }
 
     private function getPendaftarPerDay()
@@ -80,7 +99,12 @@ class DashboardController extends Controller
                         'title' => [
                             'display' => true,
                             'text' => 'Jumlah Pendaftar'
-                        ]
+                        ],
+                        'ticks' => [
+                            'stepSize' => 1,
+                            'precision' => 0
+                        ],
+                        'beginAtZero'=> true
                     ]
                 ],
                 'plugins' => [
@@ -93,101 +117,111 @@ class DashboardController extends Controller
     }
 
     private function createVerificationStatusChart($pendaftar, $accountWithRolePendaftar)
-    {
-        $usersWithoutPendaftarPpdb = $accountWithRolePendaftar->filter(function ($user) use ($pendaftar) {
-            return !$pendaftar->contains('user_id', $user->id);
-        })->count();
-        $statusCount = collect($pendaftar)
-            ->groupBy('verification_status')
-            ->map(function ($group) {
-                return $group->count();
-            })
-            ->pipe(function ($counts) use ($usersWithoutPendaftarPpdb) {
-                return [
-                    'pending' => ($counts['pending'] ?? 0) + $usersWithoutPendaftarPpdb,
-                    'verified' => $counts['verified'] ?? 0,
-                    'rejected' => $counts['rejected'] ?? 0
-                ];
-            });
+{
 
-        return Chartjs::build()
-            ->name("uncompleteRegistrationChart")
-            ->type("doughnut")
-            ->size(["width" => 200, "height" => 200])
-            ->labels(['Hanya Daftar Akun', 'Pendaftaran Selesai', 'Formulir perlu perbaikan'])
-            ->datasets([[
-                "label" => "Jumlah Pendaftar",
-                "backgroundColor" => [
-                    "rgba(255, 206, 86, 0.7)",
-                    "rgba(75, 192, 192, 0.7)",
-                    "rgba(255, 99, 132, 0.7)",
-                ],
-                "borderColor" => [
-                    "rgba(255, 206, 86, 1)",
-                    "rgba(75, 192, 192, 1)",
-                    "rgba(255, 99, 132, 1)",
-                ],
-                "data" => array_values($statusCount)
-            ]])
-            ->options([
-                'plugins' => [
-                    'title' => [
-                        'display' => true,
-                        'text' => 'Statistik hanya daftar akun dan yang melakukan pendaftaran PPDB'
-                    ]
+    $usersWithoutPendaftarPpdb = $accountWithRolePendaftar->filter(function ($user) use ($pendaftar) {
+        return !$pendaftar->contains('user_id', $user->id); 
+    })->count();
+
+    
+    $statusCount = collect($pendaftar)
+        ->groupBy('verification_status')
+        ->map(function ($group) {
+            return $group->count();  
+        })
+        ->pipe(function ($counts) use ($usersWithoutPendaftarPpdb) {
+           
+            return [
+                'pending' => $counts['pending'] ?? 0,
+                'verified' => $counts['verified'] ?? 0,
+                'rejected' => $counts['rejected'] ?? 0,
+                'tidak_ada_di_pendaftar' => $usersWithoutPendaftarPpdb 
+            ];
+        });
+
+    
+    return Chartjs::build()
+        ->name("uncompleteRegistrationChart")
+        ->type("doughnut") 
+        ->size(["width" => 200, "height" => 200])
+        ->labels(['Menunggu Di Verifikasi', 'Pendaftaran Selesai', 'Formulir perlu perbaikan', 'Belum mengisi Formulir']) 
+        ->datasets([[
+            "label" => "Jumlah Pendaftar",
+            "backgroundColor" => [
+                "rgba(255, 206, 86, 0.7)",  
+                "rgba(75, 192, 192, 0.7)",  
+                "rgba(255, 99, 132, 0.7)",  
+                "rgba(201, 203, 207, 0.7)"  
+            ],
+            "borderColor" => [
+                "rgba(255, 206, 86, 1)",
+                "rgba(75, 192, 192, 1)",
+                "rgba(255, 99, 132, 1)",
+                "rgba(201, 203, 207, 1)"
+            ],
+            "data" => array_values($statusCount)  
+        ]])
+        ->options([
+            'plugins' => [
+                'title' => [
+                    'display' => true,
+                    'text' => 'Statistik Status Pendaftaran Pendaftar'
                 ]
-            ]);
-    }
+            ]
+        ]);
+}
 
-    private function createGenderDistributionChart($pendaftar, $accountWithRolePendaftar)
-    {
-        $usersWithoutPendaftarPpdb = $accountWithRolePendaftar->filter(function ($user) use ($pendaftar) {
-            return !$pendaftar->contains('user_id', $user->id);
-        })->count();
-        $genderCount = collect($pendaftar)
-            ->map(function ($item) {
-                return $item["dataDiriPendaftar"]->gender ?? 'Belum di isi';
-            })
-            ->groupBy(fn($gender) => $gender)
-            ->map(function ($group) {
-                return $group->count();
-            })
-            ->pipe(function ($counts) use ($usersWithoutPendaftarPpdb) {
-                return [
-                    'Laki-Laki' => $counts['Laki-Laki'] ?? 0,
-                    'Perempuan' => $counts['Perempuan'] ?? 0,
-                    'Belum di isi' => ($counts['Belum di isi'] ?? 0) + $usersWithoutPendaftarPpdb
-                ];
-            });
+   private function createGenderDistributionChart($pendaftar, $accountWithRolePendaftar)
+{
 
-        return Chartjs::build()
-            ->name("genderChart")
-            ->type("doughnut")
-            ->size(["width" => 200, "height" => 200])
-            ->labels(['Laki-Laki', 'Perempuan', 'Belum di isi'])
-            ->datasets([[
-                "label" => "Jumlah Pendaftar",
-                "backgroundColor" => [
-                    "rgba(54, 162, 235, 0.7)",
-                    "rgba(255, 99, 132, 0.7)",
-                    "rgba(201, 203, 207, 0.7)"
-                ],
-                "borderColor" => [
-                    "rgba(54, 162, 235, 1)",
-                    "rgba(255, 99, 132, 1)",
-                    "rgba(201, 203, 207, 1)"
-                ],
-                "data" => array_values($genderCount)
-            ]])
-            ->options([
-                'plugins' => [
-                    'title' => [
-                        'display' => true,
-                        'text' => 'Statistik Gender Pendaftar PPDB'
-                    ]
+    $usersWithoutPendaftarPpdb = $accountWithRolePendaftar->filter(function ($user) use ($pendaftar) {
+        return !$pendaftar->contains('user_id', $user->id); 
+    })->count();
+
+    $genderCount = collect($pendaftar)
+        ->map(function ($item) {
+            return $item["dataDiriPendaftar"]->gender ?? null; 
+        })
+        ->filter() 
+        ->groupBy(fn($gender) => $gender)
+        ->map(function ($group) {
+            return $group->count(); 
+        });
+
+    
+    $genderCount = [
+        'Laki-Laki' => $genderCount['Laki-Laki'] ?? 0,
+        'Perempuan' => $genderCount['Perempuan'] ?? 0
+    ];
+
+    
+    return Chartjs::build()
+        ->name("genderChart")
+        ->type("doughnut")
+        ->size(["width" => 200, "height" => 200])
+        ->labels(['Laki-Laki', 'Perempuan']) 
+        ->datasets([[
+            "label" => "Jumlah Pendaftar",
+            "backgroundColor" => [
+                "rgba(54, 162, 235, 0.7)", 
+                "rgba(255, 99, 132, 0.7)"  
+            ],
+            "borderColor" => [
+                "rgba(54, 162, 235, 1)", 
+                "rgba(255, 99, 132, 1)"  
+            ],
+            "data" => array_values($genderCount) 
+        ]])
+        ->options([
+            'plugins' => [
+                'title' => [
+                    'display' => true,
+                    'text' => 'Statistik Gender Pendaftar PPDB'
                 ]
-            ]);
-    }
+            ]
+        ]);
+}
+
 
     private function createPreviousSchoolDistributionChart($pendaftar)
     {
@@ -214,9 +248,9 @@ class DashboardController extends Controller
             ->type("doughnut")
             ->size(["width" => 400, "height" => 200])
             ->labels($labels)
-            ->datasets([[ 
+            ->datasets([[
                 "label" => "Jumlah Pendaftar",
-                "backgroundColor" => $backgroundColors, 
+                "backgroundColor" => $backgroundColors,
                 "borderColor" => "rgba(0, 0, 0, 0.1)",
                 "data" => $data
             ]])
@@ -285,20 +319,20 @@ class DashboardController extends Controller
 
     private function createKipDistributionChart($pendaftar)
     {
-       
+
         $kipCounts = collect($pendaftar)
             ->pluck('dataDiriPendaftar.kip')
             ->map(function ($kip) {
-                return $kip ? 'Memiliki KIP' : 'Tidak Memiliki KIP'; 
+                return $kip ? 'Memiliki KIP' : 'Tidak Memiliki KIP';
             })
             ->countBy();
-      
+
         $labels = $kipCounts->keys()->toArray();
         $data = $kipCounts->values()->toArray();
 
         $backgroundColors = [
             'rgba(75, 192, 192, 0.7)',
-            'rgba(255, 99, 132, 0.7)' 
+            'rgba(255, 99, 132, 0.7)'
         ];
 
         return Chartjs::build()
@@ -308,7 +342,7 @@ class DashboardController extends Controller
             ->labels($labels)
             ->datasets([[
                 "label" => "Jumlah Pendaftar",
-                "backgroundColor" => $backgroundColors, 
+                "backgroundColor" => $backgroundColors,
                 "borderColor" => "rgba(0, 0, 0, 0.1)",
                 "data" => $data
             ]])

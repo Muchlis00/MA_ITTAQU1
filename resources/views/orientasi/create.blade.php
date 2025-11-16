@@ -1,7 +1,7 @@
 <x-app-layout>
 @if(session()->has('success'))
     <script>
-        alert("Data berhasil disimpan!"); // Ganti dengan pesan yang sesuai
+        alert("Data berhasil disimpan!"); 
     </script>
     @endif
     <div class="min-h-screen bg-gray-100 py-6 px-4 sm:px-6 lg:px-8">
