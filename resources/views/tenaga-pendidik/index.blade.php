@@ -1,10 +1,6 @@
 @extends('layouts.navbar')
 @section('content')
-@if(session()->has('success'))
-    <script>
-        alert("Data berhasil dihapus!"); // Ganti dengan pesan yang sesuai
-    </script>
-    @endif
+
 <div class="container-fluid">
     <h1 class="h3 mb-2 text-gray-800">Tenaga Pendidik</h1>
     <a href="{{ route('tenaga-pendidik.create') }}" class="btn btn-primary">Tambah Guru</a>
@@ -66,6 +62,10 @@
             </div>
         </div>
     </div>
-
+@if(session('success'))
+<script>
+    alert("{{ session('success') }}");
+</script>
+@endif
 </div>
 @endsection

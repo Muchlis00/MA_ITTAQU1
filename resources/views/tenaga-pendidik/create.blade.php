@@ -3,7 +3,7 @@
 <div class="container">
     @if(session()->has('success'))
     <script>
-        alert("Data berhasil disimpan!"); // Ganti dengan pesan yang sesuai
+        alert("Data berhasil disimpan!"); 
     </script>
     @endif
     <h1>Tambah Guru</h1>
@@ -14,11 +14,11 @@
             <input type="number" name="nip" class="form-control" id="nip" maxlength="16" minlength="16" required>
         </div>
         <div class="mb-3">
-            <label for="email" class="form-label">email</label>
+            <label for="email" class="form-label">Email</label>
             <input type="email" name="email" class="form-control" id="email" required>
         </div>
         <div class="mb-3">
-            <label for="nama_guru" class="form-label">Nama Guru</label>
+            <label for="nama_guru" class="form-label">Nama </label>
             <input type="text" text-transform="lowercase" name="nama_guru" class="form-control" id="nama_guru" required>
         </div>
         <div class="mb-3">
@@ -29,29 +29,23 @@
                 name="tempat_guru"
                 class="form-control"
                 placeholder="Ketik nama kota"
-                list="cityList"
                 autocomplete="off">
-            <datalist id="cityList">
-                @foreach($cities as $city)
-                <option value="{{ $city['city_name'] }}"> {{ $city['type'] }} ({{ $city['province'] }})
-                </option>
-                @endforeach
-            </datalist>
+            <div id="city-suggestions" class="suggestions"></div>
         </div>
         <div class="mb-3">
-            <label for="tgl_guru" class="form-label">Tanggal Lahir Guru</label>
+            <label for="tgl_guru" class="form-label">Tanggal Lahir </label>
             <input type="date" name="tgl_guru" class="form-control" id="tgl_guru" min="1990-07-01" required>
         </div>
         <div class="mb-3">
-            <label for="jk_guru">jk Guru</label>
-            <select name="jk_guru" id="jk_guru" required>
+            <label for="jk_guru">Jenis Kelamin </label>
+            <select class="form-control" name="jk_guru" id="jk_guru" required>
                 <option value="Laki-Laki">Laki-laki</option>
                 <option value="Perempuan">Perempuan</option>
             </select>
         </div>
         <div class="mb-3">
-            <label for="jabatan" class="form-label">jabatan Guru</label>
-            <select name="jabatan" id="jabatan" required>
+            <label for="jabatan" class="form-label">jabatan </label>
+            <select class="form-control" name="jabatan" id="jabatan" required>
                 <option value="Guru">Guru</option>
                 <option value="Kepsek">Kepsek</option>
             </select>
@@ -63,22 +57,61 @@
 
 <script>
 const tglGuruInput = document.getElementById('tgl_guru');
-tglGuruInput.value = '2000-01-01'; // Atur ke 1 Januari 1999
+tglGuruInput.value = '2000-01-01'; 
 
 const numberInput = document.getElementById('nip');
 numberInput.addEventListener('input', function() {
     let value = this.value;
 
-    // Hapus semua karakter non-angka
+    
     value = value.replace(/[^0-9]/g, '');
 
-    // Batasi panjang input menjadi 16 digit
+    
     value = value.slice(0, 16);
 
-    // Update nilai input
+
     this.value = value;
   });
 </script>
 
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    
+    const cities = [
+        @foreach($cities as $city)
+            {name: "{{ $city['city_name'] }}", type: "{{ $city['type'] }}", province: "{{ $city['province'] }}" },
+        @endforeach
+    ];
+
+    const input = document.getElementById('tempat_guru');
+    const suggestionsContainer = document.getElementById('city-suggestions');
+
+    input.addEventListener('input', function() {
+        const value = this.value.toLowerCase();
+        suggestionsContainer.innerHTML = '';
+
+        if (!value) return;
+
+        const filtered = cities.filter(city => city.name.toLowerCase().includes(value));
+
+        filtered.forEach(city => {
+            const div = document.createElement('div');
+            div.textContent = `${city.type} ${city.name} (${city.province})`;
+            div.addEventListener('click', function() {
+                input.value = city.name;
+                suggestionsContainer.innerHTML = '';
+            });
+            suggestionsContainer.appendChild(div);
+        });
+    });
+
+    
+    document.addEventListener('click', function(e) {
+        if (e.target !== input) {
+            suggestionsContainer.innerHTML = '';
+        }
+    });
+});
+</script>
 
 @endsection

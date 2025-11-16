@@ -26,22 +26,16 @@
 
         <div class="mb-3">
             <label for="tempat_guru">Tempat Lahir</label>
+            <label for="tempat_guru">Tempat Lahir</label>
             <input
                 type="text"
                 id="tempat_guru"
                 name="tempat_guru"
                 class="form-control"
                 placeholder="Ketik nama kota"
-                list="cityList"
-                autocomplete="off"
-                value="{{ $tenagaPendidik->tempat_guru }}">
-            <datalist id="cityList">
-                @foreach($cities as $city)
-                <option value="{{ $city['city_name'] }}">
-                    {{ $city['type'] }} ({{ $city['province'] }})
-                </option>
-                @endforeach
-            </datalist>
+                value="{{ $tenagaPendidik->tempat_guru }}"
+                autocomplete="off">
+            <div id="city-suggestions" class="suggestions"></div>
         </div>
 
         <div class="mb-3">
@@ -51,7 +45,7 @@
 
         <div class="mb-3">
             <label for="jk_guru" class="form-label">Jenis Kelamin Guru</label>
-            <select name="jk_guru" id="jk_guru" class="form-select" required>
+            <select name="jk_guru" id="jk_guru" class="form-control" required>
                 <option value="Laki-Laki" {{ $tenagaPendidik->jk_guru == 'Laki-Laki' ? 'selected' : '' }}>Laki-laki</option>
                 <option value="Perempuan" {{ $tenagaPendidik->jk_guru == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
             </select>
@@ -59,7 +53,7 @@
 
         <div class="mb-3">
             <label for="jabatan" class="form-label">Jabatan Guru</label>
-            <select name="jabatan" id="jabatan" class="form-select" required>
+            <select name="jabatan" id="jabatan" class="form-control" required>
                 <option value="Guru" {{ $tenagaPendidik->jabatan == 'Guru' ? 'selected' : '' }}>Guru</option>
                 <option value="Kepsek" {{ $tenagaPendidik->jabatan == 'Kepsek' ? 'selected' : '' }}>Kepsek</option>
             </select>
@@ -71,5 +65,63 @@
         </div>
     </form>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    
+    const cities = [
+        @foreach($cities as $city)
+            {name: "{{ $city['city_name'] }}", type: "{{ $city['type'] }}", province: "{{ $city['province'] }}" },
+        @endforeach
+    ];
+
+    const input = document.getElementById('tempat_guru');
+    const suggestionsContainer = document.getElementById('city-suggestions');
+
+    input.addEventListener('input', function() {
+        const value = this.value.toLowerCase();
+        suggestionsContainer.innerHTML = '';
+
+        if (!value) return;
+
+        const filtered = cities.filter(city => city.name.toLowerCase().includes(value));
+
+        filtered.forEach(city => {
+            const div = document.createElement('div');
+            div.textContent = `${city.type} ${city.name} (${city.province})`;
+            div.addEventListener('click', function() {
+                input.value = city.name;
+                suggestionsContainer.innerHTML = '';
+            });
+            suggestionsContainer.appendChild(div);
+        });
+    });
+
+    
+    document.addEventListener('click', function(e) {
+        if (e.target !== input) {
+            suggestionsContainer.innerHTML = '';
+        }
+    });
+});
+</script>
+
+<script>
+
+
+const numberInput = document.getElementById('nip');
+numberInput.addEventListener('input', function() {
+    let value = this.value;
+
+    
+    value = value.replace(/[^0-9]/g, '');
+
+    
+    value = value.slice(0, 16);
+
+
+    this.value = value;
+  });
+</script>
 
 @endsection

@@ -20,7 +20,7 @@
                                         {{ $periode->name }} 
                                         ({{ \Carbon\Carbon::parse($periode->startDate)->format('d M Y') }} - {{ \Carbon\Carbon::parse($periode->endDate)->format('d M Y') }})
                                         @if($periodeAktif && $periodeAktif->id_periode == $periode->id_periode)
-                                            ⭐ Aktif
+                                             Aktif
                                         @endif
                                     </option>
                                 @endforeach
@@ -47,7 +47,7 @@
                     Periode: {{ $periodeTerpilih->name ?? 'Tidak Diketahui' }}
                     ({{ \Carbon\Carbon::parse($periodeTerpilih->startDate)->format('d M Y') }} - {{ \Carbon\Carbon::parse($periodeTerpilih->endDate)->format('d M Y') }})
                     @if($periodeAktif && $periodeAktif->id_periode == $selectedPeriode)
-                        <span class="ml-2 px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">⭐ Periode Aktif</span>
+                        <span class="ml-2 px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Periode Aktif</span>
                     @endif
                 </p>
             </div>

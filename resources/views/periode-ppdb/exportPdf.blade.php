@@ -4,19 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Export Pdf</title>
-    <script src="https://cdn.tailwindcss.com"></script> 
+   @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
-    <!-- Kop Surat Container -->
+    
     <div class="max-w-4xl mx-auto border-b-2 border-black pb-4 mb-8">
-        <!-- Header Kop Surat -->
         <div class="flex items-center justify-between mb-2">
-            <!-- Logo Kiri -->
             <div class="w-32 h-32 flex items-center justify-center">
                 <img src="{{ asset('img/maittaqu.png') }}" alt="Ma ittaqu" class="max-w-full max-h-full object-contain">
             </div>
             
-            <!-- Informasi Perusahaan -->
             <div class="text-center flex-1 px-4">
                 <h2 class="text-lg md:text-xl font-semibold">YAYASAN PENDIDIKAN ITTAQU SURABAYA</h2>
                 <h1 class="text-xl md:text-2xl font-bold uppercase">MADRASAH ALIYAH ITTAQU</h1>
@@ -31,7 +28,6 @@
         <div class="border-t-2 border-black mt-2"></div>
     </div>
     
-    <!-- Konten Surat -->
     <div class="max-w-4xl mx-auto px-4">
         <div class="mb-4">
             <p class="text-right">Surabaya, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
@@ -39,38 +35,31 @@
         </div>
         
         <div class="mb-4">
-            <p>Nomor: 001/DP/VI/ {{ \Carbon\Carbon::now()->translatedFormat('Y') }} </p>
+            <p>Nomor: 001/DP/VI/{{ \Carbon\Carbon::now()->translatedFormat('Y') }} </p>
             <p>Lampiran: -</p>
             <p>Perihal: Hasil PPDB Tahun Ajaran {{ date('Y') }}/{{ date('Y')+1 }} </p>
             
         </div>
-    
+    <br>
+    <br>
         
         <div class="mb-8">
-            <p>Berhubung dilaksanakannya kegiatan PPDB TAHUN AJARAN {{ date('Y') }}/{{ date('Y')+1 }} pada Tanggal {{ date('d/m/Y', strtotime($periode->startDate)) }}
-                dan berakhir pada Tanggal {{ date('d/m/Y', strtotime($periode->endDate)) }}. dengan rincian sebagai berikut :
+            <p>Sehubungan dengan pelaksanaan kegiatan PPDB Tahun Ajaran {{ date('Y') }}/{{ date('Y')+1 }} yang dilaksanakan mulai tanggal {{ date('d/m/Y', strtotime($periode->startDate)) }}
+                sampai dengan {{ date('d/m/Y', strtotime($periode->endDate)) }}, berikut kami sampaikan hasil pelaksanaannya:
         </p>
         <br>
-            <p class="text-justify indent-8">
-                1. Total Pendaftar berjumlah = {{ $totalPendaftar }}           </p>
-                <p class="text-justify indent-8">
-                2. Total Pendaftar yang tidak melanjutkan perbaikan berjumlah = {{ $totalRejec }}           </p>
-            <p class="text-justify indent-8">
-                3. Total Pendaftar yang menunggu verifikasi berjumlah = {{ $totalPend }}           </p>
-                <p class="text-justify indent-8">
-                4. Total Pendaftar yang hanya daftar akun berjumlah = {{ $totalaccount }}           </p>
-                <p class="text-justify indent-8">
-                5. Total Pendaftar memiliki KIP berjumlah = {{ $kip }}           </p>
-                <p class="text-justify indent-8">
-                6. Total Pendaftar yang tidak memiliki KIP berjumlah = {{ $nokip }}           </p>
-                <p class="text-justify indent-8">
-                7. Total Pendaftar Laki-Laki = {{ $genL }}           </p>
-                <p class="text-justify indent-8">
-                8. Total Pendaftar Perempuan = {{ $genP }}           </p>
+            <p>1. Total Pendaftar berjumlah = {{ $totalPendaftar }}           </p>
+            <p>2. Total Pendaftar yang tidak melanjutkan perbaikan berjumlah = {{ $totalRejec }}           </p>
+            <p>3. Total Pendaftar yang menunggu verifikasi berjumlah = {{ $totalPend }}           </p>
+            <p>4. Total Pendaftar yang hanya daftar akun berjumlah = {{ $totalaccount }}           </p>
+            <p>5. Total Pendaftar memiliki KIP berjumlah = {{ $kip }}           </p>
+            <p>6. Total Pendaftar yang tidak memiliki KIP berjumlah = {{ $nokip }}           </p>
+            <p>7. Total Pendaftar Laki-Laki = {{ $genL }}           </p>
+            <p>8. Total Pendaftar Perempuan = {{ $genP }}           </p>
 
-                <br>
+        <br>
             <p class="mb-8">
-                Demikian surat ini kami sampaikan, atas perhatian dan kerjasamanya kami ucapkan terima kasih.
+                Demikian surat ini kami sampaikan. Atas perhatian dan kerja samanya kami ucapkan terima kasih.
             </p>
         </div>
         

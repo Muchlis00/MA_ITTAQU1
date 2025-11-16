@@ -98,7 +98,7 @@ class TenagaPendidikController extends Controller
     public function update(Request $request, TenagaPendidik $tenagaPendidik)
     {
         $request->validate([
-            'nip' => 'required|unique:tenaga_pendidik,nip,' . $tenagaPendidik->id_pendidik,
+            'nip' => 'required|unique:tenaga_pendidik,nip,' . $tenagaPendidik->id,
             'nama_guru' => 'required|string|max:255',
             'tempat_guru' => 'required|string|max:255',
             'tgl_guru' => 'required|date',
