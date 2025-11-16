@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PPDB MA ITTAQU - Pendaftaran Peserta Didik Baru</title>
     <meta name="description" content="Pendaftaran Peserta Didik Baru Madrasah Aliyah ITTAQU - Pendidikan Islam Berkualitas">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}">
     <link rel="icon" href="{{ asset('img/favicon.ico') }}" type="image/x-icon">
 </head>
 <body class="bg-gray-50 font-sans antialiased">
