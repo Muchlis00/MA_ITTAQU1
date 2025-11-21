@@ -20,7 +20,7 @@ class VerifyPaymentController extends Controller
         // $listBuktiBayar = PembayaranPpdb::where(['user_id' => $listUserIdPendaftar->toArray(), 'verification_status' => 'pending'])->with('user')->get();
         // // dd($listBuktiBayar);
         // return view('verify-payment.index', compact('listUserIdPendaftar', 'listBuktiBayar'));
-        $listBuktiBayar = PembayaranPpdb::where('verification_status', 'pending') ->where('status_pembayaran', 'Belum Lunas')
+        $listBuktiBayar = PembayaranPpdb::where('verification_status', 'pending') ->where('status_pembayaran', 'Lunas')
             ->with('user') 
             ->get();
         //dd($listBuktiBayar);

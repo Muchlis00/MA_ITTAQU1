@@ -130,4 +130,76 @@
         </button>
     </div>
 </form>
+
+<script>
+ const fatherInput = document.getElementById('father_date_of_birth');
+    const motherInput = document.getElementById('mother_date_of_birth');
+
+    // Tanggal hari ini
+    const today = new Date();
+
+    // Minimal usia 34 tahun → tanggal maksimal lahir = hari ini - 34 tahun
+    const minParentDate = new Date(today.getFullYear() - 34, today.getMonth(), today.getDate());
+
+    // Format ke yyyy-MM-DD
+    const formatDate = (date) => date.toISOString().split('T')[0];
+
+    // Set atribut max untuk input
+    fatherInput.max = formatDate(minParentDate);
+    motherInput.max = formatDate(minParentDate);
+
+
+ </script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const cities = [
+        @foreach($cities as $city)
+            { name: "{{ $city['city_name'] }}", type: "{{ $city['type'] }}", province: "{{ $city['province'] }}" },
+        @endforeach
+    ];
+
+    function setupAutocomplete(inputId, suggestionBoxId) {
+        const input = document.getElementById(inputId);
+        const suggestions = document.getElementById(suggestionBoxId);
+
+        input.addEventListener('input', function() {
+            const value = this.value.toLowerCase();
+            suggestions.innerHTML = '';
+
+            if (!value) return;
+
+            const filtered = cities.filter(city =>
+                city.name.toLowerCase().includes(value)
+            );
+
+            filtered.forEach(city => {
+                const div = document.createElement('div');
+                div.textContent = `${city.type} ${city.name} (${city.province})`;
+                div.classList.add("suggestion-item");
+
+                div.addEventListener('click', function() {
+                    input.value = city.name;
+                    suggestions.innerHTML = '';
+                });
+
+                suggestions.appendChild(div);
+            });
+        });
+
+        // Tutup saat klik di luar
+        document.addEventListener('click', function(e) {
+            if (e.target !== input) {
+                suggestions.innerHTML = '';
+            }
+        });
+    }
+
+    // Terapkan autocomplete pada 2 input
+    setupAutocomplete('father_place_of_birth', 'father-suggestions');
+    setupAutocomplete('mother_place_of_birth', 'mother-suggestions');
+});
+</script>
+
+
 @endsection

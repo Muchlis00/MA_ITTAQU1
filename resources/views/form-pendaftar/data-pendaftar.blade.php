@@ -15,7 +15,7 @@
         </strong>
     </div>
     @endif
-    <form action={{ route('formulir-ppdb.storeDataPendaftar') }} method="POST" class="space-y-6">
+    <form action="{{ route('formulir-ppdb.storeDataPendaftar') }}" method="POST" class="space-y-6">
         @csrf
         @if (session('error'))
         <div class="alert alert-danger" role="alert">
@@ -39,7 +39,7 @@
                     </select>
                 </div>
 
-                <div>
+                <!-- <div>
                     <label for="place_of_birth" class="block text-sm font-medium text-gray-700">Tempat Lahir</label>
                     <input
                         type="text"
@@ -58,8 +58,21 @@
                         </option>
                         @endforeach
                     </datalist>
-                </div>
-
+                </div> -->
+            <div class="mb-3">
+            <label for="place_of_birth">Tempat Lahir</label>
+            <input
+                type="text"
+                id="place_of_birth"
+                name="place_of_birth"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                placeholder="Ketik nama kota"
+                
+                autocomplete="off"
+                value="{{$currentDataDiriPendaftar->place_of_birth}}"
+                >
+            <div id="city-suggestions" class="suggestions"></div>
+             </div>
                 <div>
                     <label for="date_of_birth" class="block text-sm font-medium text-gray-700">Tanggal Lahir</label>
                     <input value="{{$currentDataDiriPendaftar->date_of_birth}}" autocomplete="off" type="date" name="date_of_birth" id="date_of_birth" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" min="{{ now()->subYears(21)->format('Y-m-d')}}">
@@ -67,12 +80,12 @@
 
                 <div>
                     <label for="nisn" class="block text-sm font-medium text-gray-700">Nomor NISN</label>
-                    <input value="{{$currentDataDiriPendaftar->nisn}}" autocomplete="off" type="text" name="nisn" id="nisn" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <input value="{{$currentDataDiriPendaftar->nisn}}" autocomplete="off" type="text" maxlength="10" name="nisn" id="nisn" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                 </div>
 
                 <div>
                     <label for="phone" class="block text-sm font-medium text-gray-700">No. Telepon Pendaftar</label>
-                    <input value="{{$currentDataDiriPendaftar->phone}}" autocomplete="off" type="tel" name="phone" id="phone" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <input value="{{$currentDataDiriPendaftar->phone}}" autocomplete="off" type="tel" maxlength="13" name="phone" id="phone" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                 </div>
 
                 <div>
@@ -128,7 +141,45 @@ Yayasan dalam hal pengawasan serta pendidikan putra  / putri kami <br>
     </form>
 </div>
 
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    
+    const cities = [
+        @foreach($cities as $city)
+            {name: "{{ $city['city_name'] }}", type: "{{ $city['type'] }}", province: "{{ $city['province'] }}" },
+        @endforeach
+    ];
 
+    const input = document.getElementById('place_of_birth');
+    const suggestionsContainer = document.getElementById('city-suggestions');
+
+    input.addEventListener('input', function() {
+        const value = this.value.toLowerCase();
+        suggestionsContainer.innerHTML = '';
+
+        if (!value) return;
+
+        const filtered = cities.filter(city => city.name.toLowerCase().includes(value));
+
+        filtered.forEach(city => {
+            const div = document.createElement('div');
+            div.textContent = `${city.type} ${city.name} (${city.province})`;
+            div.addEventListener('click', function() {
+                input.value = city.name;
+                suggestionsContainer.innerHTML = '';
+            });
+            suggestionsContainer.appendChild(div);
+        });
+    });
+
+    
+    document.addEventListener('click', function(e) {
+        if (e.target !== input) {
+            suggestionsContainer.innerHTML = '';
+        }
+    });
+});
+</script>
 
 <script>
     const schoolNameInput = document.getElementById('previous_school_name');
@@ -189,5 +240,40 @@ Yayasan dalam hal pengawasan serta pendidikan putra  / putri kami <br>
             schoolSuggestions.classList.remove('hidden');
         }
     });
+</script>
+<script>
+const tanggalInput = document.getElementById('date_of_birth');
+const today = new Date();
+
+const maxDate = new Date(today.getFullYear() - 13, today.getMonth(), today.getDate());
+
+const minDate = new Date(today.getFullYear() - 21, today.getMonth(), today.getDate());
+
+const formatDate = (date) => date.toISOString().split('T')[0];
+
+tanggalInput.min = formatDate(minDate); 
+tanggalInput.max = formatDate(maxDate); 
+
+
+ </script>
+
+
+<script>
+    
+const minInput = document.getElementById("child_number");
+const maxInput = document.getElementById("sibling");
+
+minInput.addEventListener("input", function() {
+    if (parseInt(this.value) > parseInt(maxInput.value)) {
+        maxInput.value = this.value; 
+    }
+});
+
+maxInput.addEventListener("input", function() {
+    if (parseInt(this.value) < parseInt(minInput.value)) {
+        minInput.value = this.value; 
+    }
+});
+
 </script>
 @endsection
