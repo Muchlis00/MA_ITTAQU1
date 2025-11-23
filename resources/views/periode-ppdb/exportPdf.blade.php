@@ -52,21 +52,21 @@
         </p>
         <br>
             <p class="text-justify indent-8">
-                1. Total Pendaftar berjumlah = {{ $totalPendaftar }}           </p>
+                1. Total Pendaftar berjumlah  {{ $totalPendaftar }} siswa           </p>
                 <p class="text-justify indent-8">
-                2. Total Pendaftar yang tidak melanjutkan perbaikan berjumlah = {{ $totalRejec }}           </p>
+                2. Total Pendaftar yang tidak melanjutkan perbaikan berjumlah {{ $totalRejec }} siswa           </p>
             <p class="text-justify indent-8">
-                3. Total Pendaftar yang menunggu verifikasi berjumlah = {{ $totalPend }}           </p>
+                3. Total Pendaftar yang menunggu verifikasi berjumlah {{ $totalPend }} siswa           </p>
                 <p class="text-justify indent-8">
-                4. Total Pendaftar yang hanya daftar akun berjumlah = {{ $totalaccount }}           </p>
+                4. Total Pendaftar yang hanya daftar akun berjumlah  {{ $totalaccount }} siswa           </p>
                 <p class="text-justify indent-8">
-                5. Total Pendaftar memiliki KIP berjumlah = {{ $kip }}           </p>
+                5. Total Pendaftar memiliki KIP berjumlah {{ $kip }}  siswa         </p>
                 <p class="text-justify indent-8">
-                6. Total Pendaftar yang tidak memiliki KIP berjumlah = {{ $nokip }}           </p>
+                6. Total Pendaftar yang tidak memiliki KIP berjumlah {{ $nokip }} siswa           </p>
                 <p class="text-justify indent-8">
-                7. Total Pendaftar Laki-Laki = {{ $genL }}           </p>
+                7. Total Pendaftar Laki-Laki {{ $genL }} siswa          </p>
                 <p class="text-justify indent-8">
-                8. Total Pendaftar Perempuan = {{ $genP }}           </p>
+                8. Total Pendaftar Perempuan {{ $genP }} siswa          </p>
 
                 <br>
             <p class="mb-8">

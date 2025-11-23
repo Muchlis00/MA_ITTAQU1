@@ -317,7 +317,7 @@ class FormPendaftarController extends Controller
         ]);
         PembayaranPpdb::where('user_id', Auth::id())->update([
             'verification_status' => 'pending',
-            'status_pembayaran' => 'Belum Lunas'
+            'status_pembayaran' => 'Lunas'
         ]);
         return redirect()->route('formulir-ppdb.pembayaran')
             ->with('success', 'Pembayaran berhasil disimpan');
