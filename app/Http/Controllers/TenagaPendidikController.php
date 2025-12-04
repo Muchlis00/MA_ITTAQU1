@@ -98,14 +98,20 @@ class TenagaPendidikController extends Controller
     public function update(Request $request, TenagaPendidik $tenagaPendidik)
     {
         $request->validate([
-            'nip' => 'required|unique:tenaga_pendidik,nip,' . $tenagaPendidik->id_pendidik,
+            'nip' => 'required|unique:tenaga_pendidik,nip,' . $tenagaPendidik->id_pendidik.',id_pendidik',
             'nama_guru' => 'required|string|max:255',
             'tempat_guru' => 'required|string|max:255',
             'tgl_guru' => 'required|date',
             'jk_guru' => 'required',
             'jabatan' => 'required|string|max:255',
         ]);
-        $tenagaPendidik->update($request->all()); // Memperbarui data
+        $tenagaPendidik->update($request->all());
+        $user = user::find($tenagaPendidik->id);
+        if ($user){
+            $user->update([
+                'name'=> $request->nama_guru,
+            ]);
+        }
         return redirect()->route('tenaga-pendidik.index')
             ->with('success', 'Data tenaga pendidik berhasil diupdate.');
     }

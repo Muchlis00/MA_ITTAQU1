@@ -28,7 +28,7 @@ class PanitiaBendaharaPeriodePPDBController extends Controller
                 'user_id' => $request->user_id,
             ]);
             User::where('id', $request->user_id)->update(['role' => 'panitia']);
-            TenagaPendidik::where('id', $request->user_id)->update(['jabatan' => 'Panitia']);
+             TenagaPendidik::where('id', $request->user_id)->update(['jabatan' => 'Panitia']);
         }
         if ($request->jabatan == 'Bendahara') {
             BendaharaPpdb::create([
@@ -36,7 +36,7 @@ class PanitiaBendaharaPeriodePPDBController extends Controller
                 'user_id' => $request->user_id,
             ]);
             User::where('id', $request->user_id)->update(['role' => 'bendahara']);
-            TenagaPendidik::where('id', $request->user_id)->update(['jabatan' => 'Bendahara']);
+             TenagaPendidik::where('id', $request->user_id)->update(['jabatan' => 'Bendahara']);
         }
 
         return redirect()->route('periode-ppdb.show', $request->periode_id)
