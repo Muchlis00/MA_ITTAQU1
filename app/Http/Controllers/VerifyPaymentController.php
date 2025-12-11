@@ -28,7 +28,7 @@ class VerifyPaymentController extends Controller
     }
     public function verify($id, Request $request)
     {
-        $pendaftar = PembayaranPpdb::where('id', $id)->with('user')->first();
+        $pendaftar = PembayaranPpdb::with('user')->findOrFail($id);
         PembayaranPpdb::where('id', $id)
             ->update(['verifier_id' => Auth::id(), 'verification_status' => 'verified', 'status_pembayaran' => 'Lunas']);
 
@@ -40,7 +40,7 @@ class VerifyPaymentController extends Controller
 
     public function reject($id, Request $request)
     {
-        $pendaftar = PembayaranPpdb::where('id', $id)->with('user')->first();
+        $pendaftar = PembayaranPpdb::with('user')->findOrFail();
         PembayaranPpdb::where('id', $id)->update(['verifier_id' => Auth::id(), 'verification_status' => 'rejected']);
         // \Log::info($pendaftar);
         // PendaftarPpdb::where('user_id', $pendaftar->user_id)->update(['ready_to_verify' => false]);

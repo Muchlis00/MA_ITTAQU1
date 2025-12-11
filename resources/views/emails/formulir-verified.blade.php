@@ -8,7 +8,7 @@
     
     <p>Halo {{ $user->name }},</p>
     
-    <p>Formulir PPDB Anda telah kami verifikasi.</p>
+    <p>Formulir PPDB Anda telah kami verifikasi. silahkan cek status pendaftaran anda</p>
     
     <p>Terima kasih.</p>
 </body>

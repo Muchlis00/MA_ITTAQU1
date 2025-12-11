@@ -29,14 +29,28 @@ class UserController extends Controller
     public function searchGuruByName(Request $request): JsonResponse
     {
         $name = $request->query('name');
+        $periodeId = $request->query('periode_id');
 
         if (!$name) {
             return response()->json(['message' => 'Name parameter is missing'], 400);
         }
 
-        $users = User::where('name', 'like', "%{$name}%")
-            ->where('role', 'guru')
-            ->get();
+        // ✅ Query dasar: cari guru by name
+        $query = User::where('name', 'like', "%{$name}%")
+            ->where('role', 'guru');
+
+        // ✅ Jika ada periode_id, exclude guru yang sudah jadi panitia/bendahara di periode tersebut
+        if ($periodeId) {
+            $query->whereDoesntHave('panitiaPpdb', function($q) use ($periodeId) {
+                $q->where('id_periode', $periodeId);
+            })
+            ->whereDoesntHave('bendaharaPpdb', function($q) use ($periodeId) {
+                $q->where('id_periode', $periodeId);
+            });
+        }
+
+        $users = $query->get();
+        
         return response()->json($users);
     }
 }

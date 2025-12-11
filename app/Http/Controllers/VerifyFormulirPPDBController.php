@@ -24,7 +24,7 @@ class VerifyFormulirPPDBController extends Controller
     }
     public function verify($id, Request $request)
     {
-        $userPendaftar = PendaftarPpdb::find($id)->with('user')->first();
+        $userPendaftar = PendaftarPpdb::with('user')->findOrFail($id);
         PendaftarPpdb::where('id', $id)->update(['verifier_id' => Auth::id(), 'verification_status' => 'verified', 'ready_to_verify' => false]);
         Mail::to($userPendaftar->user->email)->send(new FormulirVerifiedMail(
             $userPendaftar->user
@@ -34,7 +34,7 @@ class VerifyFormulirPPDBController extends Controller
 
     public function reject($id, Request $request)
     {
-        $userPendaftar = PendaftarPpdb::find($id)->with('user')->first();
+        $userPendaftar = PendaftarPpdb::with('user')->findOrFail($id);
         PendaftarPpdb::where('id', $id)->update(['verifier_id' => Auth::id(), 'verification_status' => 'rejected', 'ready_to_verify' => true]);
         Mail::to($userPendaftar->user->email)->send(new FormulirRejectionMail(
             $request->rejection_reason,

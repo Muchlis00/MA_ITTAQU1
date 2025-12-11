@@ -33,7 +33,7 @@
                     </x-nav-link>
                     @endif
 
-                    @if (Auth::user()->role == 'bendahara')
+                    @if (Auth::user()->getEffectiveRole() == 'bendahara')
                     <x-nav-link :href="route('informasi-pembayaran.index')" :active="request()->routeIs('informasi-pembayaran.index')">
                         Informasi Pembayaran
                     </x-nav-link>
@@ -45,7 +45,7 @@
 
                     @endif
 
-                    @if (Auth::user()->role == 'panitia')
+                    @if (Auth::user()->getEffectiveRole() == 'panitia')
                     <x-nav-link :href="route('verify-formulir.index')" :active="request()->routeIs('verify-formulir.index')">
                         Verifikasi Formulir PPDB
                     </x-nav-link>

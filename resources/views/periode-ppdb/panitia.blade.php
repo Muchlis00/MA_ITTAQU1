@@ -25,7 +25,7 @@
                                     @csrf
                                     @method('DELETE')
                                     <input type="hidden" name="id_periode" value="{{$periode->id_periode}}"/>
-                                    <button type="submit" class="btn btn-danger">Hapus</button>
+                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Yakin ingin menghapus bendahara ini?')">Hapus</button>
                                 </form>
                             </td>
                         </tr>
@@ -33,7 +33,6 @@
 
                     @foreach ($periode->panitia as $panitia)
                         <tr>
-                            
                             <td>{{$panitia->name}}</td>
                             <td>Panitia</td>
                             <td>
@@ -41,7 +40,7 @@
                                     @csrf
                                     @method('DELETE')
                                     <input type="hidden" name="id_periode" value="{{$periode->id_periode}}"/>
-                                    <button type="submit" class="btn btn-danger">Hapus</button>
+                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Yakin ingin menghapus panitia ini?')">Hapus</button>
                                 </form>
                             </td>
                         </tr>
@@ -73,33 +72,40 @@
                             @csrf
                             <input id="user_id" type="hidden" name="user_id" value="">
                             <input type="hidden" name="periode_id" value="{{$periode->id_periode}}">
-                            <div class="form-group mb-3 d-flex" style="gap: 1em">
-                                <label for="name" class="form-label">Nama</label>
-                                <div class="dropdown">
-                                <input
-                                    type="text"
-                                    name="name"
-                                    class="form-control"
-                                    id="name"
-                                    onkeyup=""
-                                    autocomplete="off" autofill="off"
-                                    placeholder="Cari nama guru"
-                                    required>
-                                    <div id="nameDropdown" class="dropdown-menu show" style="display: none;">
-                                </div>
-                                </div>
                             
-                                
+                            <div class="form-group mb-3">
+                                <label for="name" class="form-label">Nama Guru</label>
+                                <div class="dropdown">
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        class="form-control"
+                                        id="name"
+                                        autocomplete="off" 
+                                        placeholder="Ketik minimal 3 huruf untuk mencari guru..."
+                                        required>
+                                    <div id="nameDropdown" class="dropdown-menu" style="display: none; width: 100%;">
+                                        <!-- Dropdown items akan muncul di sini -->
+                                    </div>
+                                </div>
+                                <small class="form-text text-muted">
+                                    Hanya guru yang belum menjadi panitia/bendahara di periode ini yang akan muncul
+                                </small>
                             </div>
                             
-                            <div class="form-group mb-3 d-flex" style="gap: 1em">
+                            <div class="form-group mb-3">
                                 <label for="jabatan" class="form-label">Jabatan</label>
                                 <select name="jabatan" id="jabatan" class="form-control" required>
+                                    <option value="">-- Pilih Jabatan --</option>
                                     <option value="Panitia">Panitia</option>
                                     <option value="Bendahara">Bendahara</option>
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-primary">Simpan</button>
+                            
+                            <div class="d-flex justify-content-end" style="gap: 10px;">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-primary" id="submitBtn" disabled>Simpan</button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -114,65 +120,113 @@
         const nameDropdown = document.getElementById("nameDropdown");
         const jabatanInput = document.getElementById("jabatan");
         const userId = document.getElementById("user_id");
+        const submitBtn = document.getElementById("submitBtn");
+        const periodeId = "{{$periode->id_periode}}"; // ✅ Ambil periode ID
 
-        // Function to search and display user suggestions
+        // ✅ Function to search and display user suggestions
         function searchByName(name) {
             if (name.length < 3) {
-                // Hide dropdown if input is too short
                 nameDropdown.style.display = "none";
+                nameDropdown.innerHTML = "";
+                submitBtn.disabled = true; // Disable submit jika belum pilih
                 return;
             }
 
-            fetch(`{{ route('searchGuruByName') }}?name=${encodeURIComponent(name)}`)
+            // ✅ Tambahkan periode_id ke query
+            fetch(`{{ route('searchGuruByName') }}?name=${encodeURIComponent(name)}&periode_id=${periodeId}`)
                 .then((response) => response.json())
                 .then((data) => {
-                    console.log(data)
+                    console.log('Hasil pencarian:', data);
                     nameDropdown.innerHTML = ""; // Clear previous results
+                    
                     if (data.length > 0) {
                         data.forEach((user) => {
-                            // Create a dropdown item for each user
                             const item = document.createElement("a");
                             item.classList.add("dropdown-item");
                             item.href = "#";
                             item.textContent = `${user.name} (${user.email})`;
+                            item.style.cursor = "pointer";
+                            item.style.padding = "10px";
+                            
                             item.onclick = function (e) {
                                 e.preventDefault();
-                                selectUser(user.name, user.jabatan, user.id);
+                                selectUser(user.name, user.id);
                             };
+                            
                             nameDropdown.appendChild(item);
                         });
 
-                        nameDropdown.style.display = "flex"; // Show the dropdown
-                        nameDropdown.style.flexDirection = "column";
-                        nameDropdown.style.gap = "1em";
+                        nameDropdown.style.display = "block";
                     } else {
-                        nameDropdown.style.display = "none"; // Hide dropdown if no users found
+                        // ✅ Tampilkan pesan jika tidak ada guru yang tersedia
+                        const noResult = document.createElement("div");
+                        noResult.classList.add("dropdown-item", "text-muted");
+                        noResult.textContent = "Tidak ada guru yang tersedia (sudah menjadi panitia/bendahara)";
+                        noResult.style.cursor = "default";
+                        nameDropdown.appendChild(noResult);
+                        nameDropdown.style.display = "block";
                     }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    nameDropdown.innerHTML = "";
+                    const errorItem = document.createElement("div");
+                    errorItem.classList.add("dropdown-item", "text-danger");
+                    errorItem.textContent = "Terjadi kesalahan saat mencari data";
+                    nameDropdown.appendChild(errorItem);
+                    nameDropdown.style.display = "block";
                 });
         }
 
-        // Function to select a user from the dropdown
-        function selectUser(name, jabatan, id) {
-            nameInput.value = name; // Set selected user's name
-            jabatanInput.value = jabatan; // Set selected user's jabatan
-            nameDropdown.style.display = "none"; // Hide the dropdown
+        // ✅ Function to select a user from the dropdown
+        function selectUser(name, id) {
+            nameInput.value = name;
+            nameDropdown.style.display = "none";
             userId.value = id;
-
+            submitBtn.disabled = false; // ✅ Enable submit setelah pilih user
+            
+            console.log('User dipilih:', { name, id });
         }
 
-        // Add event listener to name input for keyup
+        // ✅ Add event listener to name input for keyup
         nameInput.addEventListener("keyup", function () {
+            userId.value = ""; // Reset user_id saat user mengetik lagi
+            submitBtn.disabled = true; // Disable submit
             searchByName(nameInput.value);
         });
 
-        // Hide dropdown if clicked outside
+        // ✅ Reset form saat modal dibuka
+        $('#tambahPanitiaModal').on('show.bs.modal', function () {
+            nameInput.value = "";
+            jabatanInput.value = "";
+            userId.value = "";
+            nameDropdown.style.display = "none";
+            nameDropdown.innerHTML = "";
+            submitBtn.disabled = true;
+        });
+
+        // ✅ Hide dropdown if clicked outside
         document.addEventListener("click", function (event) {
             if (!nameInput.contains(event.target) && !nameDropdown.contains(event.target)) {
                 nameDropdown.style.display = "none";
             }
         });
+
+        // ✅ Validasi sebelum submit
+        document.querySelector('form').addEventListener('submit', function(e) {
+            if (!userId.value) {
+                e.preventDefault();
+                alert('Silakan pilih guru dari dropdown terlebih dahulu!');
+                return false;
+            }
+            
+            if (!jabatanInput.value) {
+                e.preventDefault();
+                alert('Silakan pilih jabatan!');
+                return false;
+            }
+        });
     });
-</script>
+    </script>
 
-
-    @endsection
+@endsection

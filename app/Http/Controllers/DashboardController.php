@@ -30,7 +30,8 @@ class DashboardController extends Controller
 
     public function dashboard(Request $request)
     {
-        $role = Auth::user()->role;
+        $role = Auth::user()->getEffectiveRole();
+
 
         // Handle redirect untuk role pendaftar
         if ($role == 'pendaftar') {

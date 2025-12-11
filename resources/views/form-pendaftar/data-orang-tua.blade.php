@@ -16,7 +16,7 @@
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                     maxlength="255" value="{{$currentDataAyah->name}}" required>
             </div>
-            <div>
+            <!-- <div>
                 <label for="father_place_of_birth" class="block text-sm font-medium text-gray-700">Tempat Lahir Ayah</label>
                 <input type="text" name="father_place_of_birth" id="father_place_of_birth"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
@@ -28,7 +28,22 @@
                     </option>
                     @endforeach
                 </datalist>
-            </div>
+            </div> -->
+            <div class="mb-3">
+            <label for="father_place_of_birth">Tempat Lahir Ayah</label>
+            <input
+                type="text"
+                id="father_place_of_birth"
+                name="father_place_of_birth"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                placeholder="Ketik nama kota"
+                
+                autocomplete="off"
+                value="{{$currentDataAyah->place_of_birth}}"
+                >
+            <div id="father-city-suggestions" class="suggestions"></div>
+             </div>
+            
 
             <div>
                 <label for="father_date_of_birth" class="block text-sm font-medium text-gray-700">Tanggal Lahir Ayah</label>
@@ -65,7 +80,7 @@
                     maxlength="255" value="{{$currentDataIbu->name}}" required>
             </div>
 
-            <div>
+            <!-- <div>
                 <label for="mother_place_of_birth" class="block text-sm font-medium text-gray-700">Tempat Lahir Ibu</label>
                 <input type="text" name="mother_place_of_birth" id="mother_place_of_birth"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
@@ -77,7 +92,22 @@
                     </option>
                     @endforeach
                 </datalist>
-            </div>
+            </div> -->
+
+            <div class="mb-3">
+            <label for="mother_place_of_birth">Tempat Lahir Ayah</label>
+            <input
+                type="text"
+                id="mother_place_of_birth"
+                name="mother_place_of_birth"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                placeholder="Ketik nama kota"
+                
+                autocomplete="off"
+                value="{{$currentDataIbu->place_of_birth}}"
+                >
+            <div id="mother-city-suggestions" class="suggestions"></div>
+             </div>
 
             <div>
                 <label for="mother_date_of_birth" class="block text-sm font-medium text-gray-700">Tanggal Lahir Ibu</label>
@@ -153,19 +183,21 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
+
     const cities = [
         @foreach($cities as $city)
-            { name: "{{ $city['city_name'] }}", type: "{{ $city['type'] }}", province: "{{ $city['province'] }}" },
+            {name: "{{ $city['city_name'] }}", type: "{{ $city['type'] }}", province: "{{ $city['province'] }}" },
         @endforeach
     ];
 
-    function setupAutocomplete(inputId, suggestionBoxId) {
+    // Fungsi untuk memasang auto-suggestion pada input tertentu
+    function attachCityAutocomplete(inputId, suggestionBoxId) {
         const input = document.getElementById(inputId);
-        const suggestions = document.getElementById(suggestionBoxId);
+        const suggestionsContainer = document.getElementById(suggestionBoxId);
 
         input.addEventListener('input', function() {
             const value = this.value.toLowerCase();
-            suggestions.innerHTML = '';
+            suggestionsContainer.innerHTML = '';
 
             if (!value) return;
 
@@ -176,28 +208,24 @@ document.addEventListener("DOMContentLoaded", function() {
             filtered.forEach(city => {
                 const div = document.createElement('div');
                 div.textContent = `${city.type} ${city.name} (${city.province})`;
-                div.classList.add("suggestion-item");
-
                 div.addEventListener('click', function() {
                     input.value = city.name;
-                    suggestions.innerHTML = '';
+                    suggestionsContainer.innerHTML = '';
                 });
-
-                suggestions.appendChild(div);
+                suggestionsContainer.appendChild(div);
             });
         });
 
-        // Tutup saat klik di luar
         document.addEventListener('click', function(e) {
             if (e.target !== input) {
-                suggestions.innerHTML = '';
+                suggestionsContainer.innerHTML = '';
             }
         });
     }
 
-    // Terapkan autocomplete pada 2 input
-    setupAutocomplete('father_place_of_birth', 'father-suggestions');
-    setupAutocomplete('mother_place_of_birth', 'mother-suggestions');
+    attachCityAutocomplete('father_place_of_birth', 'father-city-suggestions');
+    attachCityAutocomplete('mother_place_of_birth', 'mother-city-suggestions');
+
 });
 </script>
 

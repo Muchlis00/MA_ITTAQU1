@@ -171,7 +171,7 @@
 
                    
                     <div class="px-6 py-4">
-                        selamat anda telah diterima, Silahkan lihat Tanda Bukti anda Telah diterima
+                        selamat anda telah diterima, Silahkan lihat Tanda Bukti diterima di MA Ittaqu Surabaya
                     </div>
 
                    

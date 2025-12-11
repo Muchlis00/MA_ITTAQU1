@@ -9,7 +9,7 @@
             <div>Periode PPDB: {{ date('F Y', strtotime($currentPeriode->startDate)) . ' - ' . date('F Y', strtotime($currentPeriode->endDate)) }}</div>
         </div>
         <div>
-            {{!! $informasiPembayaran->detail_pembayaran ?? null !!}}
+            {!! $informasiPembayaran->detail_pembayaran ?? null !!}
             {{-- {{ optional($informasiPembayaran)->detail_pembayaran }} --}}
         </div>
     </div>
@@ -35,7 +35,7 @@
             </div>
             @if (!empty($currentPembayaran))
             @foreach ( $currentPembayaran as $pembayaran)
-            <div class="max-w-xs mx-auto">
+            <div class="max-w-xs ml-auto">
                 <img alt={{ $pembayaran->bukti_pembayaran }} src={{ asset('storage/' . $pembayaran->bukti_pembayaran) }} class="rounded-md shadow" style="max-width: 10em; max-height: 10em;">
             </div>
             @endforeach
