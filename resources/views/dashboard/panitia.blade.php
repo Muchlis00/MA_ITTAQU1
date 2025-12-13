@@ -75,15 +75,15 @@
 
                         <td class="border px-4 py-2">{{ $item->user->name }}</td>
 
-                        <td class="hidden">{{ $item->dataDiriPendaftar->nisn }}</td>
-                        <td class="hidden">{{ $item->dataDiriPendaftar->gender }}</td>
-                        <td class="hidden">{{ $item->dataDiriPendaftar->place_of_birth }}</td>
-                        <td class="hidden">{{ $item->dataDiriPendaftar->date_of_birth }}</td>
-                        <td class="hidden">{{ $item->dataDiriPendaftar->phone }}</td>
-                        <td class="hidden">{{ $item->dataDiriPendaftar->child_number }}</td>
-                        <td class="hidden">{{ $item->dataDiriPendaftar->sibling }}</td>
-                        <td class="hidden">{{ $item->dataDiriPendaftar->previous_school_name }}</td>
-                        <td class="hidden">{{ $item->dataDiriPendaftar->previous_school_address }}</td>
+                        <td class="hidden">{{ $item->dataDiriPendaftar->nisn ?? null }}</td>
+                        <td class="hidden">{{ $item->dataDiriPendaftar->gender ?? null}}</td>
+                        <td class="hidden">{{ $item->dataDiriPendaftar->place_of_birth ?? null }}</td>
+                        <td class="hidden">{{ $item->dataDiriPendaftar->date_of_birth ?? null}}</td>
+                        <td class="hidden">{{ $item->dataDiriPendaftar->phone ?? null}}</td>
+                        <td class="hidden">{{ $item->dataDiriPendaftar->child_number ?? null}}</td>
+                        <td class="hidden">{{ $item->dataDiriPendaftar->sibling ?? null}}</td>
+                        <td class="hidden">{{ $item->dataDiriPendaftar->previous_school_name ?? null}}</td>
+                        <td class="hidden">{{ $item->dataDiriPendaftar->previous_school_address ?? null }}</td>
 
                         <!-- Data Ayah -->
                         <td class="hidden">{{ $item->wali->firstWhere('gender','Laki-Laki')->name ?? '-' }}</td>

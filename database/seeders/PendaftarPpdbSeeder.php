@@ -29,10 +29,13 @@ class PendaftarPpdbSeeder extends Seeder
         // Buat 20 pendaftar dummy
        for ($i = 0; $i < 30; $i++) {
 
-    // 1. Buat User sebagai pendaftar
+    $firstName = $faker->firstName;
+    $lastName = $faker->lastName;
+    $fullName = $firstName . ' ' . $lastName;
+
     $user = User::create([
-        'name' => $faker->name,
-        'email' => $faker->unique()->safeEmail,
+        'name' => $faker->$fullName,
+        'email' => $faker->unique()->$fullName.'@gmail.com',
         'email_verified_at' => now(),
         'password' => Hash::make('password'),
         'role' => 'pendaftar',
@@ -56,6 +59,7 @@ class PendaftarPpdbSeeder extends Seeder
         'verification_status' =>$verif_status,
         'verifier_id' => $verif_status ==='verified' ? 2 :null,
     ]);
+    
 
     $sibling = $faker->numberBetween(1, 5);
     $child_number = $faker->numberBetween(1, $sibling);
