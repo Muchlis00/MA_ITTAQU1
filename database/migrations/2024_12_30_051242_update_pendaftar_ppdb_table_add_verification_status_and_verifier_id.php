@@ -11,7 +11,7 @@ return new class extends Migration
     if (!Schema::hasColumn('pendaftar_ppdb', 'verification_status')) {
         Schema::table('pendaftar_ppdb', function (Blueprint $table) {
             $table->enum('verification_status', ['pending', 'verified', 'rejected'])
-                  ->default('pending')
+                  ->nullable()
                   ->after('ready_to_verify');
         });
     }

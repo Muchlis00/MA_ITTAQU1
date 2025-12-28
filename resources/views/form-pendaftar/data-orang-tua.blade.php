@@ -95,7 +95,7 @@
             </div> -->
 
             <div class="mb-3">
-            <label for="mother_place_of_birth">Tempat Lahir Ayah</label>
+            <label for="mother_place_of_birth">Tempat Lahir Ibu</label>
             <input
                 type="text"
                 id="mother_place_of_birth"
@@ -165,16 +165,9 @@
  const fatherInput = document.getElementById('father_date_of_birth');
     const motherInput = document.getElementById('mother_date_of_birth');
 
-    // Tanggal hari ini
     const today = new Date();
-
-    // Minimal usia 34 tahun → tanggal maksimal lahir = hari ini - 34 tahun
     const minParentDate = new Date(today.getFullYear() - 34, today.getMonth(), today.getDate());
-
-    // Format ke yyyy-MM-DD
     const formatDate = (date) => date.toISOString().split('T')[0];
-
-    // Set atribut max untuk input
     fatherInput.max = formatDate(minParentDate);
     motherInput.max = formatDate(minParentDate);
 
@@ -190,7 +183,6 @@ document.addEventListener("DOMContentLoaded", function() {
         @endforeach
     ];
 
-    // Fungsi untuk memasang auto-suggestion pada input tertentu
     function attachCityAutocomplete(inputId, suggestionBoxId) {
         const input = document.getElementById(inputId);
         const suggestionsContainer = document.getElementById(suggestionBoxId);

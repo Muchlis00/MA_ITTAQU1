@@ -91,7 +91,11 @@ class FormPendaftarController extends Controller
     {
         $currentPeriode = PeriodePPDB::where('startDate', '<=', Carbon::now())
             ->where('endDate', '>=', Carbon::now())
-            ->firstOrFail();
+            ->first();
+        if (!$currentPeriode) {
+        return redirect()->route('dashboard')
+        ->with('error', 'Tidak ada periode pendaftaran yang sedang aktif saat ini');
+}
         $currentUser = Auth::user();
         $currentDataDiriPendaftar = DataDiriPendaftar::where('user_id', Auth::id())->first() ?? new DataDiriPendaftar();
         $currentDataAyah = WaliPendaftar::where(['data_diri_pendaftar_id' => $currentDataDiriPendaftar->id, 'gender' => 'Laki-Laki'])->first() ?? new WaliPendaftar();
@@ -270,9 +274,8 @@ class FormPendaftarController extends Controller
 
     public function storePembayaran(Request $request)
     {
-        // Validasi: file tidak wajib, tapi jika ada harus file
         $request->validate([
-            'bukti_pembayaran' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048'
+            'bukti_pembayaran' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048'
         ]);
 
         $currentPeriode = PeriodePPDB::where('startDate', '<=', Carbon::now())
@@ -320,7 +323,7 @@ class FormPendaftarController extends Controller
             'status_pembayaran' => 'Lunas'
         ]);
         return redirect()->route('formulir-ppdb.pembayaran')
-            ->with('success', 'Pembayaran berhasil disimpan');
+            ->with('success', 'Formulir berhasil dikirim untuk verifikasi');
     }
     private function getCities()
     {

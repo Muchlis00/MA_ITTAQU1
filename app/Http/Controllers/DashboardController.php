@@ -33,7 +33,6 @@ class DashboardController extends Controller
         $role = Auth::user()->getEffectiveRole();
 
 
-        // Handle redirect untuk role pendaftar
         if ($role == 'pendaftar') {
             if ($this->isUserVerified()) {
                 return redirect()->route('status-pendaftaran.index');
@@ -95,13 +94,11 @@ class DashboardController extends Controller
 
     private function getPeriodeFilter($request, $role, $periodeAktif)
     {
-        // Untuk kepsek: default ke periode aktif, jika tidak ada maka 'all'
         if ($role == 'kepsek') {
             $default = $periodeAktif ? $periodeAktif->id_periode : 'all';
             return $request->get('periode', $default);
         }
 
-        // Untuk panitia dan bendahara: default ke periode pertama dari list mereka
         $periodeList = $this->getPeriodeList($role);
         $default = $periodeList->first()->id_periode ?? 'all';
         
@@ -113,23 +110,19 @@ class DashboardController extends Controller
         $userId = Auth::id();
 
         if ($role == 'kepsek') {
-            // Kepsek bisa lihat semua periode
             return PeriodePPDB::orderBy('startDate', 'desc')->get();
         }
 
         if ($role == 'panitia') {
-            // Panitia hanya lihat periode yang mereka handle
             return Auth::user()->periodePpdb()->orderBy('startDate', 'desc')->get();
         }
 
         if ($role == 'bendahara') {
-            // Bendahara hanya lihat periode yang mereka handle
             return PeriodePPDB::whereHas('bendahara', function($query) use ($userId) {
                 $query->where('user_id', $userId);
             })->orderBy('startDate', 'desc')->get();
         }
 
-        // Default: semua periode
         return PeriodePPDB::orderBy('startDate', 'desc')->get();
     }
 
@@ -140,12 +133,10 @@ class DashboardController extends Controller
 
     $query = PendaftarPpdb::with('user', 'periode', 'dataDiriPendaftar', 'wali');
 
-    // Filter berdasarkan periode
     if ($periodeFilter !== 'all') {
         $query->where('pendaftar_ppdb.id_periode', $periodeFilter);
     }
 
-    // Filter tambahan berdasarkan role
     if ($role == 'panitia') {
         $periodeIds = Auth::user()->periodePpdb()->pluck('periode_ppdb.id_periode')->toArray();
         $query->whereIn('pendaftar_ppdb.id_periode', $periodeIds);
@@ -168,12 +159,10 @@ private function getFilteredPembayaran($periodeFilter)
 
     $query = PembayaranPpdb::with('user');
 
-    // Filter berdasarkan periode
     if ($periodeFilter !== 'all') {
         $query->where('pembayaran_ppdb.id_periode', $periodeFilter);
     }
 
-    // Filter tambahan berdasarkan role
     if ($role == 'panitia') {
         $periodeIds = Auth::user()->periodePpdb()->pluck('periode_ppdb.id_periode')->toArray();
         $query->whereIn('pembayaran_ppdb.id_periode', $periodeIds);
@@ -209,13 +198,11 @@ private function getFilteredPembayaran($periodeFilter)
         if ($periodeFilter !== 'all') {
             $query->where('id_periode', $periodeFilter);
             
-            // Jika filter periode spesifik, batasi tanggal berdasarkan periode tersebut
             $periode = PeriodePPDB::find($periodeFilter);
             if ($periode) {
                 $start = Carbon::parse($periode->startDate);
                 $end = Carbon::parse($periode->endDate);
                 
-                // Pastikan end date tidak melebihi hari ini
                 if ($end->gt(Carbon::now())) {
                     $end = Carbon::now();
                 }
@@ -242,7 +229,6 @@ private function getFilteredPembayaran($periodeFilter)
     {
         $pendaftarPerDay = $this->getPendaftarPerDay($periodeFilter);
 
-        // Tentukan judul berdasarkan filter
         $judul = 'Pendaftar PPDB Per Hari';
         if ($periodeFilter !== 'all') {
             $periode = PeriodePPDB::find($periodeFilter);
@@ -295,8 +281,11 @@ private function getFilteredPembayaran($periodeFilter)
         $accountWithRolePendaftar = $this->getFilteredUsers($periodeFilter);
 
         $usersWithoutPendaftarPpdb = $accountWithRolePendaftar->filter(function ($user) use ($pendaftar) {
-            return !$pendaftar->contains('user_id', $user->id); 
-        })->count();
+        //     return !$pendaftar->contains('user_id', $user->id); 
+        // })->count();
+         $userPendaftar = $pendaftar->firstWhere('user_id', $user->id);
+    return $userPendaftar && is_null($userPendaftar->verification_status);
+})->count();
 
         $statusCount = collect($pendaftar)
             ->groupBy('verification_status')

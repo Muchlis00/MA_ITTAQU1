@@ -52,22 +52,19 @@ class RegisteredUserController extends Controller
                 'role' => 'pendaftar',
             ]);
 
-            // ✅ 2. Cari periode yang sedang aktif
             $periodeAktif = PeriodePPDB::where('startDate', '<=', Carbon::now())
                 ->where('endDate', '>=', Carbon::now())
                 ->first();
 
-            // ✅ 3. Jika ada periode aktif, buat record di pendaftar_ppdb
             if ($periodeAktif) {
                 PendaftarPpdb::create([
                     'user_id' => $user->id,
                     'id_periode' => $periodeAktif->id_periode,
                     'ready_to_verify' => 0,
-                    'verification_status' => 'pending',
+                    'verification_status' => null,
                 ]);
             }
 
-            // ✅ Commit transaction jika semua berhasil
             DB::commit();
 
             event(new Registered($user));

@@ -10,12 +10,12 @@ use App\Models\WaliPendaftar;
 use App\Models\PembayaranPpdb;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Faker\Factory as Faker;
 
 class PendaftarPpdbSeeder extends Seeder
 {
     public function run()
     {
-        // Pastikan ada periode PPDB aktif
         $periode = PeriodePpdb::firstOrCreate(
             ['name' => 'Penerimaan Peserta Didik Baru 2025/2026'],
             [
@@ -26,27 +26,24 @@ class PendaftarPpdbSeeder extends Seeder
 
         $faker = \Faker\Factory::create('id_ID');
 
-        // Buat 20 pendaftar dummy
        for ($i = 0; $i < 30; $i++) {
 
     $firstName = $faker->firstName;
     $lastName = $faker->lastName;
     $fullName = $firstName . ' ' . $lastName;
+    $email = strtolower($firstName . ($i+1)) . '@gmail.com';
 
     $user = User::create([
-        'name' => $faker->$fullName,
-        'email' => $faker->unique()->$fullName.'@gmail.com',
+        'name' => $fullName,
+        'email' => $email,
         'email_verified_at' => now(),
         'password' => Hash::make('password'),
         'role' => 'pendaftar',
     ]);
 
-    // 2. Tentukan apakah user ini tidak mengisi data (hanya user saja)
-    // misal: 20% user kosong
     $userOnly = $faker->boolean(20);
 
     if ($userOnly) {
-        // Tidak membuat PendaftarPpdb, DataDiri, Wali, Pembayaran
         continue;
     }
 
@@ -63,6 +60,14 @@ class PendaftarPpdbSeeder extends Seeder
 
     $sibling = $faker->numberBetween(1, 5);
     $child_number = $faker->numberBetween(1, $sibling);
+    $schools = [
+    'SMP Negeri 22 Surabaya' => 'Jl. Gayungsari Bar. X No.38',
+    'MP Negeri 55 Surabaya' => 'Jl. Pagesangan 4 Mulia',
+    'SMP PGRI 64' => 'Jl. Menanggal III No.14',
+];
+
+    $schoolName = $faker->randomElement(array_keys($schools));
+
     $dataDiri = DataDiriPendaftar::create([
         'user_id' => $user->id,
         'gender' => $faker->randomElement(['Laki-laki', 'Perempuan']),
@@ -72,8 +77,9 @@ class PendaftarPpdbSeeder extends Seeder
         'phone' => $faker->phoneNumber,
         'child_number' => $child_number,
         'sibling' => $sibling,
-        'previous_school_name' => $faker->company . ' School',
-        'previous_school_address' => $faker->address,
+        'previous_school_name' => $schoolName,
+'previous_school_address' => $schools[$schoolName],
+
         'ijazah' => 'download.jpg_1765369315/d48mJoqmD4JK7HX0bsH6NtiAa0ObHKi7L0ZcSvtK.jpg',
         'photo' => 'download.jpg_1765369315/d48mJoqmD4JK7HX0bsH6NtiAa0ObHKi7L0ZcSvtK.jpg',
         'akte_kelahiran' => 'download.jpg_1765369315/d48mJoqmD4JK7HX0bsH6NtiAa0ObHKi7L0ZcSvtK.jpg',
@@ -103,7 +109,7 @@ class PendaftarPpdbSeeder extends Seeder
         PembayaranPpdb::create([
             'id_periode' => $periode->id_periode,
             'user_id' => $user->id,
-            'verifier_id' => $verif_status ==='verified' ? 4 :null,
+            'verifier_id' => $verif_status ==='verified' ? 3 :null,
             'verification_status' => $verif_status,
             'bukti_pembayaran' => 'download.jpg_1765369315/d48mJoqmD4JK7HX0bsH6NtiAa0ObHKi7L0ZcSvtK.jpg',
             'status_pembayaran' => ('lunas'),

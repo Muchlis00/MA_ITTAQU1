@@ -110,12 +110,10 @@ $periode = PeriodePPDB::findOrFail($id_periode);
                   ->count();
 }
 private function UserWithoutRegis($id_periode){
- $users = User::where('role', 'pendaftar')
-                ->whereDoesntHave('pendaftarPpdb', function ($query) use ($id_periode) {
-                    $query->where('id_periode', $id_periode); 
-                })
-                ->count();
-    return $users;
+ return PeriodePPDB::findOrFail($id_periode)
+        ->pendaftar()
+        ->whereNull('verification_status')
+        ->count();
 }
 private function UserWithKip($id_periode){
  $periode = PeriodePPDB::findOrFail($id_periode);

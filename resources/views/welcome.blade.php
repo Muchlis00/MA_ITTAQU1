@@ -12,68 +12,147 @@
 <body class="bg-gray-50 font-sans antialiased">
     <!-- Header -->
     <header class="bg-white shadow-md sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center">
-                <img src="{{ asset('img/maittaqu.png') }}" alt="Logo MA ITTAQU" class="h-10 mr-3">
-                <div>
-                    <h1 class="text-xl md:text-2xl font-bold text-blue-800">PPDB MA ITTAQU</h1>
-                    <p class="text-xs text-gray-500">Tahun Ajaran {{ date('Y') }}/{{ date('Y')+1 }}</p>
-                </div>
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+        <!-- Bagian Kiri: Logo dan Status Pendaftaran -->
+        <div class="flex-1 flex items-center">
+            <img src="{{ asset('img/maittaqu.png') }}" alt="Logo MA ITTAQU" class="h-10 mr-3">
+            <div class="max-w-xs">
+                @if($isPeriodActive)
+                    <div class="bg-green-50 border-l-4 border-green-600 text-green-800 p-2 rounded-lg">
+                        <p class="font-bold text-sm">Pendaftaran {{ $activePeriod->name }} Dibuka!</p>
+                        <p class="text-xs">
+                            <i class="far fa-calendar-alt mr-1"></i> 
+                            {{ \Carbon\Carbon::parse($activePeriod->startDate)->translatedFormat('d F Y') }}
+                        </p>
+                    </div>
+                @else
+                    <div class="bg-yellow-50 border-l-4 border-yellow-500 text-yellow-800 p-2 rounded-lg">
+                        <p class="font-bold text-sm">Pendaftaran Ditutup</p>
+                        @php
+                            $nextPeriod = \App\Models\PeriodePPDB::where('startDate', '>', now())
+                                                ->orderBy('startDate', 'asc')
+                                                ->first();
+                        @endphp
+                        @if($nextPeriod)
+                        <p class="text-xs">
+                            <i class="far fa-clock mr-1"></i> 
+                            Dibuka: {{ \Carbon\Carbon::parse($nextPeriod->startDate)->translatedFormat('d F Y') }}
+                        </p>
+                        @endif
+                    </div>
+                @endif
             </div>
-            <nav class="flex items-center space-x-3">
-                <a href="{{ route('login') }}" class="text-white bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded-lg text-sm md:text-base transition duration-300 transform hover:scale-105 shadow-sm">
+        </div>
+
+        <!-- Bagian Tengah: Countdown Timer (hanya tampil jika periode aktif) -->
+        <div class="flex-1">
+            @if($isPeriodActive)
+                <div class="flex flex-col items-center justify-center">
+                    <p class="text-center text-blue-800 font-medium text-sm mb-1">
+                        <i class="far fa-clock mr-1"></i> Waktu tersisa:
+                    </p>
+                    
+                    <div id="countdown" class="flex items-center justify-center gap-1 md:gap-2">
+                        <!-- Hari -->
+                        <div class="flex flex-col items-center">
+                            <div class="bg-blue-700 text-white text-sm md:text-base font-bold px-2 py-1 rounded w-12 md:w-14 text-center">
+                                <span id="countdown-days">22</span>
+                            </div>
+                            <span class="text-xs text-blue-800 mt-0.5">Hari</span>
+                        </div>
+                        
+                        <div class="text-blue-700 font-bold text-sm h-full flex items-center">:</div>
+                        
+                        <!-- Jam -->
+                        <div class="flex flex-col items-center">
+                            <div class="bg-blue-700 text-white text-sm md:text-base font-bold px-2 py-1 rounded w-12 md:w-14 text-center">
+                                <span id="countdown-hours">11</span>
+                            </div>
+                            <span class="text-xs text-blue-800 mt-0.5">Jam</span>
+                        </div>
+                        
+                        <div class="text-blue-700 font-bold text-sm h-full flex items-center">:</div>
+                        
+                        <!-- Menit -->
+                        <div class="flex flex-col items-center">
+                            <div class="bg-blue-700 text-white text-sm md:text-base font-bold px-2 py-1 rounded w-12 md:w-14 text-center">
+                                <span id="countdown-minutes">19</span>
+                            </div>
+                            <span class="text-xs text-blue-800 mt-0.5">Menit</span>
+                        </div>
+                        
+                        <div class="text-blue-700 font-bold text-sm h-full flex items-center">:</div>
+                        
+                        <!-- Detik -->
+                        <div class="flex flex-col items-center">
+                            <div class="bg-blue-700 text-white text-sm md:text-base font-bold px-2 py-1 rounded w-12 md:w-14 text-center">
+                                <span id="countdown-seconds">54</span>
+                            </div>
+                            <span class="text-xs text-blue-800 mt-0.5">Detik</span>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    const endDate = new Date("{{ $activePeriod->endDate }}").getTime();
+                    
+                    const timer = setInterval(function() {
+                        const now = new Date().getTime();
+                        const distance = endDate - now;
+                        
+                        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                        
+                        document.getElementById("countdown-days").textContent = days.toString().padStart(2, '0');
+                        document.getElementById("countdown-hours").textContent = hours.toString().padStart(2, '0');
+                        document.getElementById("countdown-minutes").textContent = minutes.toString().padStart(2, '0');
+                        document.getElementById("countdown-seconds").textContent = seconds.toString().padStart(2, '0');
+                        
+                        // Ubah warna menjadi merah jika kurang dari 24 jam
+                        if (distance < (1000 * 60 * 60 * 24)) {
+                            document.querySelectorAll('#countdown > div > div').forEach(el => {
+                                el.classList.remove('bg-blue-700');
+                                el.classList.add('bg-red-600');
+                            });
+                        }
+                        
+                        // Hentikan timer jika waktu habis
+                        if (distance < 0) {
+                            clearInterval(timer);
+                            document.getElementById("countdown").innerHTML = `
+                                <div class="bg-red-600 text-white px-3 py-2 rounded text-sm font-bold">
+                                    <i class="fas fa-exclamation-circle mr-1"></i> PENDAFTARAN DITUTUP
+                                </div>
+                            `;
+                            location.reload();
+                        }
+                    }, 1000);
+                </script>
+            @endif
+        </div>
+
+        <!-- Bagian Kanan: Tombol Login dan Daftar -->
+        <div class="flex-1 flex justify-end">
+            <nav class="flex items-center space-x-4">
+                <a href="{{ route('login') }}" class="text-white bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded-lg text-sm transition duration-300 shadow-sm">
                     <i class="fas fa-sign-in-alt mr-1"></i> Login
                 </a>
                 @if($isPeriodActive)
-                    <a href="{{ route('register') }}" class="text-white bg-green-600 hover:bg-green-700 px-3 py-2 rounded-lg text-sm md:text-base transition duration-300 transform hover:scale-105 shadow-sm">
+                    <a href="{{ route('register') }}" class="text-white bg-green-600 hover:bg-green-700 px-3 py-2 rounded-lg text-sm transition duration-300 shadow-sm">
                         <i class="fas fa-user-plus mr-1"></i> Daftar
                     </a>
                 @endif
             </nav>
         </div>
-    </header>
+    </div>
+</header>
 
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-8">
         <!-- Period Status Banner -->
-        @if($isPeriodActive)
-            <div class="bg-green-50 border-l-4 border-green-600 text-green-800 p-4 mb-8 rounded-lg flex items-start shadow-sm">
-                <i class="fas fa-check-circle text-2xl mr-3 mt-1 text-green-600"></i>
-                <div>
-                    <p class="font-bold text-lg">Pendaftaran {{ $activePeriod->name }} Sedang Dibuka!</p>
-                    <p class="flex items-center text-sm md:text-base">
-                        <i class="far fa-calendar-alt mr-2"></i> 
-                        Periode: {{ \Carbon\Carbon::parse($activePeriod->startDate)->translatedFormat('d F Y') }} - 
-                        {{ \Carbon\Carbon::parse($activePeriod->endDate)->translatedFormat('d F Y') }}
-                    </p>
-                </div>
-            </div>
-        @else
-            <div class="bg-yellow-50 border-l-4 border-yellow-500 text-yellow-800 p-4 mb-8 rounded-lg flex items-start shadow-sm">
-                <i class="fas fa-exclamation-circle text-2xl mr-3 mt-1 text-yellow-600"></i>
-                <div>
-                    <p class="font-bold text-lg">Pendaftaran Belum Dibuka</p>
-                    <p class="text-sm md:text-base">Silakan cek kembali di waktu yang telah ditentukan.</p>
-                    
-                    @php
-                        $nextPeriod = \App\Models\PeriodePPDB::where('startDate', '>', now())
-                                            ->orderBy('startDate', 'asc')
-                                            ->first();
-                    @endphp
-                    
-                    @if($nextPeriod)
-                    <p class="mt-2 flex items-center text-sm md:text-base">
-                        <i class="far fa-clock mr-2"></i> 
-                        Pendaftaran berikutnya: {{ \Carbon\Carbon::parse($nextPeriod->startDate)->translatedFormat('d F Y') }}
-                    </p>
-                    <p class="flex items-center text-sm md:text-base">
-                        <i class="far fa-clock mr-2"></i> 
-                        Ditutup: {{ \Carbon\Carbon::parse($nextPeriod->endDate)->translatedFormat('d F Y') }}
-                    </p>
-                    @endif
-                </div>
-            </div>
-        @endif
+        
 
         <!-- Hero Section -->
         <section class="text-center mb-12">
@@ -228,124 +307,7 @@
         @endif
 
         
-        <section class="text-center my-16">
-            @if($isPeriodActive)
-                <h2 class="text-2xl md:text-3xl font-semibold text-gray-800 mb-4">Siap Bergabung dengan MA ITTAQU?</h2>
-                <p class="text-gray-600 mb-6 max-w-2xl mx-auto">
-                    Daftarkan diri Anda sekarang sebelum periode pendaftaran berakhir pada
-                    {{ \Carbon\Carbon::parse($activePeriod->endDate)->translatedFormat('d F Y') }}.
-                </p>
-                
-                <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
-                    <a href="{{ route('register') }}" class="text-white bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg shadow-md transition duration-300 transform hover:scale-105 flex items-center justify-center">
-                        <i class="fas fa-user-plus mr-2"></i> Daftar Sekarang
-                    </a>
-                    <a href="{{ route('login') }}" class="text-white bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg shadow-md transition duration-300 transform hover:scale-105 flex items-center justify-center">
-                        <i class="fas fa-sign-in-alt mr-2"></i> Login Peserta
-                    </a>
-                </div>
-                
-                
-                <div class="mt-8 bg-gradient-to-r from-blue-100 to-indigo-100 p-6 rounded-xl shadow-inner max-w-2xl mx-auto">
-                    <p class="text-center text-blue-800 font-medium mb-4">
-                        <i class="far fa-clock mr-2"></i> Waktu pendaftaran tersisa:
-                    </p>
-                    
-                    <div id="countdown" class="flex flex-wrap items-center justify-center gap-2 md:gap-4">
-                        
-                        <div class="flex flex-col items-center">
-                            <div class="bg-blue-700 text-white text-xl md:text-2xl font-bold px-4 py-2 rounded-lg w-16 md:w-20 text-center">
-                                <span id="countdown-days">22</span>
-                            </div>
-                            <span class="text-xs md:text-sm text-blue-800 mt-1">Hari</span>
-                        </div>
-                        
-                        
-                        <div class="text-blue-700 font-bold text-xl md:text-2xl h-full flex items-center hidden sm:block">:</div>
-                        
-                        
-                        <div class="flex flex-col items-center">
-                            <div class="bg-blue-700 text-white text-xl md:text-2xl font-bold px-4 py-2 rounded-lg w-16 md:w-20 text-center">
-                                <span id="countdown-hours">11</span>
-                            </div>
-                            <span class="text-xs md:text-sm text-blue-800 mt-1">Jam</span>
-                        </div>
-                        
-                        
-                        <div class="text-blue-700 font-bold text-xl md:text-2xl h-full flex items-center hidden sm:block">:</div>
-                        
-                        
-                        <div class="flex flex-col items-center">
-                            <div class="bg-blue-700 text-white text-xl md:text-2xl font-bold px-4 py-2 rounded-lg w-16 md:w-20 text-center">
-                                <span id="countdown-minutes">19</span>
-                            </div>
-                            <span class="text-xs md:text-sm text-blue-800 mt-1">Menit</span>
-                        </div>
-                        
-                        
-                        <div class="text-blue-700 font-bold text-xl md:text-2xl h-full flex items-center hidden sm:block">:</div>
-                        
-                        
-                        <div class="flex flex-col items-center">
-                            <div class="bg-blue-700 text-white text-xl md:text-2xl font-bold px-4 py-2 rounded-lg w-16 md:w-20 text-center">
-                                <span id="countdown-seconds">54</span>
-                            </div>
-                            <span class="text-xs md:text-sm text-blue-800 mt-1">Detik</span>
-                        </div>
-                    </div>
-                </div>
-
-                <script>
-                    const endDate = new Date("{{ $activePeriod->endDate }}").getTime();
-                    
-                    const timer = setInterval(function() {
-                        const now = new Date().getTime();
-                        const distance = endDate - now;
-                        
-                        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                        
-                        document.getElementById("countdown-days").textContent = days.toString().padStart(2, '0');
-                        document.getElementById("countdown-hours").textContent = hours.toString().padStart(2, '0');
-                        document.getElementById("countdown-minutes").textContent = minutes.toString().padStart(2, '0');
-                        document.getElementById("countdown-seconds").textContent = seconds.toString().padStart(2, '0');
-                        
-                        if (distance < (1000 * 60 * 60 * 24)) {
-                            document.querySelectorAll('#countdown > div > div').forEach(el => {
-                                el.classList.remove('bg-blue-700', 'bg-blue-600', 'bg-blue-500', 'bg-blue-400');
-                                el.classList.add('bg-red-600');
-                            });
-                        }
-                        
-                        if (distance < 0) {
-                            clearInterval(timer);
-                            document.getElementById("countdown").innerHTML = `
-                                <div class="bg-red-600 text-white px-6 py-3 rounded-lg font-bold col-span-4">
-                                    <i class="fas fa-exclamation-circle mr-2"></i> PENDAFTARAN TELAH DITUTUP
-                                </div>
-                            `;
-                            location.reload();
-                        }
-                    }, 1000);
-                </script>
-            @else
-                <div class="bg-white p-8 rounded-xl shadow-md max-w-2xl mx-auto">
-                    <h2 class="text-2xl md:text-3xl font-semibold text-gray-800 mb-4">Pendaftaran Saat Ini Ditutup</h2>
-                    <p class="text-gray-600 mb-6">
-                        Pendaftaran peserta didik baru saat ini belum dibuka. Silakan pantau informasi terbaru 
-                        melalui website kami atau media sosial resmi MA ITTAQU.
-                    </p>
-                    <div class="flex justify-center gap-4">
-                        <a href="{{ route('login') }}" class="text-white bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg shadow-md inline-flex items-center">
-                            <i class="fas fa-lock-open mr-2"></i> Login Admin
-                        </a>
-                        
-                    </div>
-                </div>
-            @endif
-        </section>
+        
     </main>
 
     

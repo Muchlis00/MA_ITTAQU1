@@ -7,16 +7,12 @@
     <script src="https://cdn.tailwindcss.com"></script> 
 </head>
 <body>
-    <!-- Kop Surat Container -->
     <div class="max-w-4xl mx-auto border-b-2 border-black pb-4 mb-8">
-        <!-- Header Kop Surat -->
         <div class="flex items-center justify-between mb-2">
-            <!-- Logo Kiri -->
             <div class="w-32 h-32 flex items-center justify-center">
                 <img src="{{ asset('img/maittaqu.png') }}" alt="Ma ittaqu" class="max-w-full max-h-full object-contain">
             </div>
             
-            <!-- Informasi Perusahaan -->
             <div class="text-center flex-1 px-4">
                 <h2 class="text-lg md:text-xl font-semibold">YAYASAN PENDIDIKAN ITTAQU SURABAYA</h2>
                 <h1 class="text-xl md:text-2xl font-bold uppercase">MADRASAH ALIYAH ITTAQU</h1>
@@ -31,7 +27,6 @@
         <div class="border-t-2 border-black mt-2"></div>
     </div>
     
-    <!-- Konten Surat -->
     <div class="max-w-4xl mx-auto px-4">
         <div class="mb-4">
             <p class="text-right">Surabaya, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>

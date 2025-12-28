@@ -8,16 +8,13 @@
 </head>
 <body class="bg-white text-black antialiased">
 
-  <!-- Kop Surat -->
   <div class="max-w-4xl mx-auto border-b-2 border-black pb-4 mb-8">
     <div class="flex items-center justify-between mb-2">
       
-      <!-- Logo -->
       <div class="w-32 h-32 flex items-center justify-center">
         <img src="{{ asset('img/maittaqu.png') }}" alt="Logo MA ITTAQU" class="max-w-full max-h-full object-contain" />
       </div>
 
-      <!-- Informasi Sekolah -->
       <div class="flex-1 text-center px-4">
         <h2 class="text-lg md:text-xl font-semibold">YAYASAN PENDIDIKAN ITTAQU SURABAYA</h2>
         <h1 class="text-xl md:text-2xl font-bold uppercase">MADRASAH ALIYAH ITTAQU</h1>
@@ -67,7 +64,6 @@
       </div>
     </div>
 
-    <!-- Identitas Peserta -->
     <div class="mb-8 space-y-3">
       <p class="text-justify">Menerangkan bahwa:</p>
       <div class="flex">
@@ -87,7 +83,6 @@
         <p>: {{ $currentDataDiriPendaftar->previous_school_name }}</p>
       </div>
       <br>
-      <!-- Kotak Penerimaan -->
       <div class="mx-auto mt-10 mb-6 w-full max-w-md border-2 border-black rounded-md p-4 bg-white text-center">
         <h2 class="text-xl font-semibold">DITERIMA DI MA ITTAQU SURABAYA</h2>
       </div>
@@ -100,7 +95,6 @@
     <br>
     <br>
 
-    <!-- Tanda Tangan -->
     <div class="text-right mt-16">
       <div class="mb-2">
         <p>Surabaya, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
