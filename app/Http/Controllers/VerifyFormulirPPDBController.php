@@ -19,7 +19,7 @@ class VerifyFormulirPPDBController extends Controller
         $listPendaftar = PendaftarPpdb::where('verification_status', 'pending')
             ->where('ready_to_verify', true)
             ->with(['user', 'DataDiriPendaftar', 'wali'])
-            ->get();
+            ->paginate(10);
         return view('verify-formulir.index', compact('listPendaftar'));
     }
     public function verify($id, Request $request)

@@ -121,7 +121,7 @@
     </div>
 
     <style>
-        /* Optional: Custom styles for better appearance */
+       
         .chart-container {
             position: relative;
             height: 16rem;

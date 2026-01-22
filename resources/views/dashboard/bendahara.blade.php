@@ -16,12 +16,16 @@
 
 <x-app-layout>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-
+    
         <div class="bg-white rounded-lg shadow p-4">
+            <h1 class="text-2xl font-bold text-gray-900"">Daftar {{ $periodeAktif->name }} Periode
+                            ({{ \Carbon\Carbon::parse($periodeAktif->startDate)->format('d-m-Y') }}
+                            -
+                            {{ \Carbon\Carbon::parse($periodeAktif->endDate)->format('d-m-Y') }})</h1>
             <table class="simple-datatables w-full table-auto">
                 <thead>
                     <tr>
-                        <th class="px-4 py-2">Periode</th>
+                        <th class="hidden">Periode</th>
                         <th class="px-4 py-2">Nama</th>
                         <th class="hidden">NISN</th>
                         <th class="hidden">Jenis Kelamin</th>
@@ -51,10 +55,10 @@
                         <th class="hidden">Pekerjaan</th>
                         <th class="hidden">Pendapatan</th>
 
-                        <th class="px-4 py-2">Status Pembayaran</th>
+                        <th class="px-4 py-2">Pembayaran</th>
 
                         <th class="hidden">Pembayaran</th>
-                        <th class="hidden">Status Pembayaran</th>
+                        <th class="px-4 py-2">Status Pembayaran</th>
                     </tr>
                 </thead>
 
@@ -65,7 +69,7 @@
                     @endphp
 
                     <tr>
-                        <td class="border px-4 py-2">
+                        <td class="hidden">
                             {{ $item->periode->name }}
                             ({{ \Carbon\Carbon::parse($item->periode->startDate)->format('d-m-Y') }}
                             -
@@ -108,7 +112,7 @@
                         </td>
 
                         <td class="hidden">{{ $pembayaranItem->status_pembayaran ?? '-' }}</td>
-                        <td class="hidden">{{ $pembayaranItem->verification_status ?? '-' }}</td>
+                        <td class="border px-4 py-2">{{ $pembayaranItem->verification_status ?? '-' }}</td>
                     </tr>
                     @endforeach
                 </tbody>

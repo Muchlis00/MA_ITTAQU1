@@ -31,16 +31,35 @@
                             <td>{{ date('d F Y', strtotime($ppdb->startDate)) }}</td>
                             <td>{{ date('d F Y', strtotime($ppdb->endDate)) }}</td>
                             <td>
-                                <a data-toggle="modal" data-target="#editPeriodeModal{{ $ppdb->id_periode }}" class="btn btn-primary">Edit</a>
-                                <form action="{{ route('periode-ppdb.destroy', $ppdb->id_periode) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">Hapus</button>
-                                </form>
-                                <a href="{{ route('periode-ppdb.show', $ppdb->id_periode) }}" class="btn btn-warning">Panitia & Bendahara</a>
-                                <a href="{{ route('periode-ppdb.exportPdf', $ppdb->id_periode) }}" class="btn btn-primary">Export PDF</a>
+    <div class="d-flex flex-wrap gap-2">
+        <a data-toggle="modal"
+           data-target="#editPeriodeModal{{ $ppdb->id_periode }}"
+           class="btn btn-primary btn-sm mr-2">
+            Edit
+        </a>
 
-                            </td>
+        <form action="{{ route('periode-ppdb.destroy', $ppdb->id_periode) }}"
+              method="POST"
+              class="d-inline-block"
+              onsubmit="return confirm('Yakin ingin menghapus periode ini?')">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-danger btn-sm mr-2">
+                Hapus
+            </button>
+        </form>
+
+        <a href="{{ route('periode-ppdb.show', $ppdb->id_periode) }}"
+           class="btn btn-warning btn-sm ">
+            Panitia & Bendahara
+        </a>
+
+        <a href="{{ route('periode-ppdb.exportPdf', $ppdb->id_periode) }}"
+           class="btn btn-secondary btn-sm mt-2">
+            Export PDF
+        </a>
+    </div>
+</td>
                             <td>
                                 @php
                         $now = \Carbon\Carbon::now();

@@ -49,16 +49,31 @@
                             <td>{{ $tp->tgl_guru }}</td>
                             <td>{{ $tp->jk_guru }}</td>
                             <td>{{ $tp->jabatan }}</td>
-                            <td>
-                                <a href="{{ route('tenaga-pendidik.show', $tp->id_pendidik) }}">Lihat</a>
-                                <a href="{{ route('tenaga-pendidik.edit', $tp->id_pendidik) }}" class="btn btn-warning">Edit</a>
-                                <form action="{{ route('tenaga-pendidik.destroy', $tp->id_pendidik) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">Hapus</button>
+                           <td>
+    <div class="d-flex flex-column flex-md-row gap-2">
+        <a href="{{ route('tenaga-pendidik.show', $tp->id_pendidik) }}" 
+           class="btn-sm">
+            Lihat
+        </a>
 
-                                </form>
-                            </td>
+        <a href="{{ route('tenaga-pendidik.edit', $tp->id_pendidik) }}" 
+           class="btn btn-warning btn-sm mr-2">
+            Edit
+        </a>
+
+        <div>
+            <form action="{{ route('tenaga-pendidik.destroy', $tp->id_pendidik) }}" 
+                  method="POST"
+                  onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-danger btn-sm w-100">
+                    Hapus
+                </button>
+            </form>
+        </div>
+    </div>
+</td>
                         </tr>
                         @endforeach
                     </tbody>
