@@ -1,6 +1,34 @@
 @extends('form-pendaftar.index')
 
 @section('form-pendaftar')
+<style>
+.suggestions {
+    border: 1px solid #d1d5db;
+    border-top: none;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: white;
+    position: absolute;
+    width: 100%;
+    z-index: 1000;
+    border-radius: 0 0 0.375rem 0.375rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.suggestions div {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.suggestions div:hover {
+    background-color: #f9fafb;
+}
+
+.suggestions div:last-child {
+    border-bottom: none;
+}
+</style>
 <div>
     @if ($currentAgreement && $currentAgreement->content)
     <div class="bg-gray-50 p-4 rounded-md">
@@ -59,7 +87,7 @@
                         @endforeach
                     </datalist>
                 </div> -->
-            <div class="mb-3">
+            <div class="relative mb-3">
             <label for="place_of_birth">Tempat Lahir</label>
             <input
                 type="text"
@@ -86,6 +114,20 @@
                 <div>
                     <label for="phone" class="block text-sm font-medium text-gray-700">No. Telepon Pendaftar</label>
                     <input value="{{$currentDataDiriPendaftar->phone}}" autocomplete="off" type="tel" maxlength="13" name="phone" id="phone" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                </div>
+
+                <div class="relative">
+                    <label for="domisili" class="block text-sm font-medium text-gray-700">Domisili</label>
+                    <input
+                        type="text"
+                        id="domisili"
+                        name="domisili"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        placeholder="Ketik nama kota"
+                        autocomplete="off"
+                        value="{{$currentDataDiriPendaftar->domisili}}"
+                    >
+                    <div id="domisili-suggestions" class="suggestions"></div>
                 </div>
 
                 <div>
@@ -176,6 +218,36 @@ document.addEventListener("DOMContentLoaded", function() {
     document.addEventListener('click', function(e) {
         if (e.target !== input) {
             suggestionsContainer.innerHTML = '';
+        }
+    });
+
+    // Domisili autocomplete
+    const domisiliInput = document.getElementById('domisili');
+    const domisiliSuggestionsContainer = document.getElementById('domisili-suggestions');
+
+    domisiliInput.addEventListener('input', function() {
+        const value = this.value.toLowerCase();
+        domisiliSuggestionsContainer.innerHTML = '';
+
+        if (!value) return;
+
+        const filtered = cities.filter(city => city.name.toLowerCase().includes(value));
+
+        filtered.forEach(city => {
+            const div = document.createElement('div');
+            div.textContent = `${city.type} ${city.name} (${city.province})`;
+            div.addEventListener('click', function() {
+                domisiliInput.value = city.name;
+                domisiliSuggestionsContainer.innerHTML = '';
+            });
+            domisiliSuggestionsContainer.appendChild(div);
+        });
+    });
+
+    
+    document.addEventListener('click', function(e) {
+        if (e.target !== domisiliInput) {
+            domisiliSuggestionsContainer.innerHTML = '';
         }
     });
 });

@@ -57,6 +57,7 @@ class FormPendaftarController extends Controller
                 'date_of_birth' => 'required|date',
                 'nisn' => 'required|string|max:20|unique:data_diri_pendaftar,nisn,' . $request->user_id . ',user_id',
                 'phone' => 'required|string|max:15',
+                'domisili' => 'required|string|max:255',
                 'child_number' => 'required|integer|min:1',
                 'sibling' => 'required|integer|min:0',
                 'previous_school_name' => 'required|string|max:255',

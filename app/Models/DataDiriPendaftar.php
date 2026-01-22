@@ -18,6 +18,7 @@ class DataDiriPendaftar extends Model
         'date_of_birth',
         'nisn',
         'phone',
+        'domisili',
         'child_number',
         'sibling',
         'previous_school_name',
