@@ -40,20 +40,21 @@ class DashboardController extends Controller
             return redirect()->route('formulir-ppdb.dataPendaftar');
         }
 
-        // Ambil periode aktif (yang sedang berjalan)
         $periodeAktif = $this->getPeriodeAktif();
         
-        // Logic filter berdasarkan role
         $periodeFilter = $this->getPeriodeFilter($request, $role, $periodeAktif);
         
-        // Data untuk dropdown berdasarkan role
         $periodeList = $this->getPeriodeList($role);
 
-        // Ambil data pendaftar dan pembayaran berdasarkan role dan filter
         $pendaftar = $this->getFilteredPendaftar($periodeFilter);
         $pembayaran = $this->getFilteredPembayaran($periodeFilter);
 
-        // Prepare charts untuk kepsek
+        $accountWithRolePendaftar = $this->getFilteredUsers($periodeFilter);
+        $belumMengisiFormulir = $accountWithRolePendaftar->filter(function ($user) use ($pendaftar) {
+            $userPendaftar = $pendaftar->firstWhere('user_id', $user->id);
+            return $userPendaftar && is_null($userPendaftar->verification_status);
+        })->count();
+
         $charts = [];
         if ($role == 'kepsek') {
             $charts = [
@@ -63,19 +64,19 @@ class DashboardController extends Controller
                 'previousSchoolChart' => $this->createPreviousSchoolDistributionChart($periodeFilter),
                 'averageIncomeChart' => $this->createAverageIncomeChart($periodeFilter),
                 'kipChart' => $this->createKipDistributionChart($periodeFilter),
+                'domisiliChart' => $this->createDomisiliDistributionChart($periodeFilter),
             ];
         }
 
-        // Merge data
         $data = array_merge([
             'periodeList' => $periodeList,
             'selectedPeriode' => $periodeFilter,
             'periodeAktif' => $periodeAktif,
             'pendaftar' => $pendaftar,
             'pembayaran' => $pembayaran,
+            'belumMengisiFormulir' => $belumMengisiFormulir,
         ], $charts);
 
-        // Return view berdasarkan role (atau default view jika tidak ada)
         if (view()->exists("dashboard.{$role}")) {
             return view("dashboard.{$role}", $data);
         }
@@ -233,7 +234,7 @@ private function getFilteredPembayaran($periodeFilter)
         if ($periodeFilter !== 'all') {
             $periode = PeriodePPDB::find($periodeFilter);
             if ($periode) {
-                $judul = 'Pendaftar PPDB Per Hari - ' . $periode->name;
+                $judul = 'Pendaftar PPDB Per Hari';
             }
         }
 
@@ -301,7 +302,6 @@ private function getFilteredPembayaran($periodeFilter)
                 ];
             });
 
-        // Tentukan judul berdasarkan filter
         $judul = 'Statistik Status Pendaftaran Pendaftar';
         if ($periodeFilter !== 'all') {
             $periode = PeriodePPDB::find($periodeFilter);
@@ -313,7 +313,7 @@ private function getFilteredPembayaran($periodeFilter)
         return Chartjs::build()
             ->name("uncompleteRegistrationChart")
             ->type("doughnut") 
-            ->size(["width" => 200, "height" => 200])
+            ->size(["width" => 400, "height" => 300])
             ->labels(['Menunggu Di Verifikasi', 'Pendaftaran Selesai', 'Formulir perlu perbaikan', 'Belum mengisi Formulir']) 
             ->datasets([[
                 "label" => "Jumlah Pendaftar",
@@ -332,69 +332,91 @@ private function getFilteredPembayaran($periodeFilter)
                 "data" => array_values($statusCount)  
             ]])
             ->options([
+                'responsive' => true,
+                'maintainAspectRatio' => false,
                 'plugins' => [
                     'title' => [
                         'display' => true,
-                        'text' => $judul
+                        'text' => $judul,
+                        'align' => 'center',
+                        'font' => [
+                            'size' => 14,
+                            'weight' => 'bold'
+                        ],
+                        'padding' => 20
+                    ],
+                    'legend' => [
+                        'display' => true,
+                        'position' => 'bottom',
+                        'align' => 'center',
+                        'labels' => [
+                            'boxWidth' => 15,
+                            'padding' => 15,
+                            'font' => [
+                                'size' => 11
+                            ]
+                        ]
                     ]
                 ]
             ]);
     }
 
     private function createGenderDistributionChart($periodeFilter = 'all')
-    {
-        $pendaftar = $this->getFilteredPendaftar($periodeFilter);
+{
+    $pendaftar = $this->getFilteredPendaftar($periodeFilter);
 
-        $genderCount = collect($pendaftar)
-            ->map(function ($item) {
-                return $item["dataDiriPendaftar"]->gender ?? null; 
-            })
-            ->filter() 
-            ->groupBy(fn($gender) => $gender)
-            ->map(function ($group) {
-                return $group->count(); 
-            });
+    $totalPendaftar = $pendaftar->count();
 
-        $genderCount = [
-            'Laki-Laki' => $genderCount['Laki-Laki'] ?? 0,
-            'Perempuan' => $genderCount['Perempuan'] ?? 0
-        ];
+    $genderCount = collect($pendaftar)
+        ->filter(function ($item) {
+            return !is_null($item->verification_status);
+        })
+        ->map(function ($item) {
+            return $item->dataDiriPendaftar->gender ?? null;
+        })
+        ->filter()
+        ->countBy();
 
-        // Tentukan judul berdasarkan filter
-        $judul = 'Statistik Gender Pendaftar PPDB';
-        if ($periodeFilter !== 'all') {
-            $periode = PeriodePPDB::find($periodeFilter);
-            if ($periode) {
-                $judul = 'Distribusi Gender - ' . $periode->name;
-            }
-        }
+    $laki = $genderCount['Laki-Laki'] ?? 0;
+    $perempuan = $genderCount['Perempuan'] ?? 0;
 
-        return Chartjs::build()
-            ->name("genderChart")
-            ->type("doughnut")
-            ->size(["width" => 200, "height" => 200])
-            ->labels(['Laki-Laki', 'Perempuan']) 
-            ->datasets([[
-                "label" => "Jumlah Pendaftar",
-                "backgroundColor" => [
-                    "rgba(54, 162, 235, 0.7)", 
-                    "rgba(255, 99, 132, 0.7)"  
+    $belumIsiFormulir = $totalPendaftar - ($laki + $perempuan);
+
+    $judul = 'Distribusi Gender Pendaftar';
+
+    return Chartjs::build()
+        ->name("genderChart")
+        ->type("doughnut")
+        ->size(["width" => 400, "height" => 300])
+        ->labels(['Laki-Laki', 'Perempuan', 'Belum Mengisi Formulir'])
+        ->datasets([[
+            "label" => "Jumlah Pendaftar",
+            "backgroundColor" => [
+                "rgba(54, 162, 235, 0.7)",
+                "rgba(255, 99, 132, 0.7)",
+                "rgba(201, 203, 207, 0.7)"
+            ],
+            "borderColor" => [
+                "rgba(54, 162, 235, 1)",
+                "rgba(255, 99, 132, 1)",
+                "rgba(201, 203, 207, 1)"
+            ],
+            "data" => [$laki, $perempuan, $belumIsiFormulir]
+        ]])
+        ->options([
+            'responsive' => true,
+            'maintainAspectRatio' => false,
+            'plugins' => [
+                'title' => [
+                    'display' => true,
+                    'text' => $judul
                 ],
-                "borderColor" => [
-                    "rgba(54, 162, 235, 1)", 
-                    "rgba(255, 99, 132, 1)"  
-                ],
-                "data" => array_values($genderCount) 
-            ]])
-            ->options([
-                'plugins' => [
-                    'title' => [
-                        'display' => true,
-                        'text' => $judul
-                    ]
+                'legend' => [
+                    'position' => 'bottom'
                 ]
-            ]);
-    }
+            ]
+        ]);
+}
 
     private function createPreviousSchoolDistributionChart($periodeFilter = 'all')
     {
@@ -404,7 +426,8 @@ private function getFilteredPembayaran($periodeFilter)
             ->pluck('dataDiriPendaftar.previous_school_name')
             ->filter()
             ->countBy()
-            ->sortDesc();
+            ->sortDesc()
+            ->take(8); 
 
         $labels = $previousSchoolCounts->keys()->toArray();
         $data = $previousSchoolCounts->values()->toArray();
@@ -418,19 +441,18 @@ private function getFilteredPembayaran($periodeFilter)
             );
         }, $labels);
 
-        // Tentukan judul berdasarkan filter
         $judul = 'Statistik Sekolah Asal Pendaftar';
         if ($periodeFilter !== 'all') {
             $periode = PeriodePPDB::find($periodeFilter);
             if ($periode) {
-                $judul = 'Sekolah Asal - ' . $periode->name;
+                $judul = 'Sekolah Asal ' ;
             }
         }
 
         return Chartjs::build()
             ->name("previousSchoolChart")
             ->type("doughnut")
-            ->size(["width" => 400, "height" => 200])
+            ->size(["width" => 400, "height" => 300])
             ->labels($labels)
             ->datasets([[
                 "label" => "Jumlah Pendaftar",
@@ -439,12 +461,32 @@ private function getFilteredPembayaran($periodeFilter)
                 "data" => $data
             ]])
             ->options([
+                'responsive' => true,
+                'maintainAspectRatio' => false,
                 'plugins' => [
                     'title' => [
                         'display' => true,
-                        'text' => $judul
+                        'text' => $judul,
+                        'align' => 'center',
+                        'font' => [
+                            'size' => 14,
+                            'weight' => 'bold'
+                        ],
+                        'padding' => 20
+                    ],
+                    'legend' => [
+                        'display' => true,
+                        'position' => 'bottom',
+                        'align' => 'center',
+                        'labels' => [
+                            'boxWidth' => 12,
+                            'padding' => 10,
+                            'font' => [
+                                'size' => 10
+                            ]
+                        ]
                     ]
-                ],
+                ]
             ]);
     }
 
@@ -471,19 +513,18 @@ private function getFilteredPembayaran($periodeFilter)
         $labels = ['Ayah', 'Ibu'];
         $data = [$averageFatherIncome, $averageMotherIncome];
 
-        // Tentukan judul berdasarkan filter
         $judul = 'Rata-Rata Pendapatan Ayah dan Ibu';
         if ($periodeFilter !== 'all') {
             $periode = PeriodePPDB::find($periodeFilter);
             if ($periode) {
-                $judul = 'Rata-Rata Pendapatan Orang Tua - ' . $periode->name;
+                $judul = 'Rata-Rata Pendapatan Orang Tua ' ;
             }
         }
 
         return Chartjs::build()
             ->name("averageIncomeChart")
             ->type("bar")
-            ->size(["width" => 400, "height" => 200])
+            ->size(["width" => 400, "height" => 300])
             ->labels($labels)
             ->datasets([[
                 "label" => "Rata-Rata Pendapatan",
@@ -498,10 +539,21 @@ private function getFilteredPembayaran($periodeFilter)
                 "data" => $data
             ]])
             ->options([
+                'responsive' => true,
+                'maintainAspectRatio' => false,
                 'plugins' => [
                     'title' => [
                         'display' => true,
-                        'text' => $judul
+                        'text' => $judul,
+                        'align' => 'center',
+                        'font' => [
+                            'size' => 14,
+                            'weight' => 'bold'
+                        ],
+                        'padding' => 20
+                    ],
+                    'legend' => [
+                        'display' => false
                     ]
                 ],
                 'scales' => [
@@ -509,7 +561,10 @@ private function getFilteredPembayaran($periodeFilter)
                         'beginAtZero' => true,
                         'title' => [
                             'display' => true,
-                            'text' => 'Rupiah'
+                            'text' => 'Rupiah',
+                            'font' => [
+                                'size' => 11
+                            ]
                         ]
                     ]
                 ]
@@ -520,34 +575,40 @@ private function getFilteredPembayaran($periodeFilter)
     {
         $pendaftar = $this->getFilteredPendaftar($periodeFilter);
 
-        $kipCounts = collect($pendaftar)
-            ->pluck('dataDiriPendaftar.kip')
-            ->map(function ($kip) {
-                return $kip ? 'Memiliki KIP' : 'Tidak Memiliki KIP';
-            })
-            ->countBy();
+         $kipCounts = collect($pendaftar)
+        ->pluck('dataDiriPendaftar.kip') 
+        ->map(function ($kip) {
+            if (is_null($kip)) {
+                return 'Belum Mengisi Formulir';
+            } elseif ($kip === '-') {
+                return 'Tidak Memiliki KIP';
+            } else {
+                return 'Memiliki KIP';
+            }
+        })
+        ->countBy();
 
         $labels = $kipCounts->keys()->toArray();
         $data = $kipCounts->values()->toArray();
 
         $backgroundColors = [
             'rgba(75, 192, 192, 0.7)',
-            'rgba(255, 99, 132, 0.7)'
+            'rgba(255, 99, 132, 0.7)',
+            "rgba(201, 203, 207, 0.7)"
         ];
 
-        // Tentukan judul berdasarkan filter
         $judul = 'Statistik KIP Pendaftar';
         if ($periodeFilter !== 'all') {
             $periode = PeriodePPDB::find($periodeFilter);
             if ($periode) {
-                $judul = 'Penerima KIP - ' . $periode->name;
+                $judul = 'Penerima KIP ';
             }
         }
 
         return Chartjs::build()
             ->name("kipChart")
             ->type("doughnut")
-            ->size(["width" => 400, "height" => 200])
+            ->size(["width" => 400, "height" => 300])
             ->labels($labels)
             ->datasets([[
                 "label" => "Jumlah Pendaftar",
@@ -556,12 +617,134 @@ private function getFilteredPembayaran($periodeFilter)
                 "data" => $data
             ]])
             ->options([
+                'responsive' => true,
+                'maintainAspectRatio' => false,
                 'plugins' => [
                     'title' => [
                         'display' => true,
-                        'text' => $judul
+                        'text' => $judul,
+                        'align' => 'center',
+                        'font' => [
+                            'size' => 14,
+                            'weight' => 'bold'
+                        ],
+                        'padding' => 20
+                    ],
+                    'legend' => [
+                        'display' => true,
+                        'position' => 'bottom',
+                        'align' => 'center',
+                        'labels' => [
+                            'boxWidth' => 15,
+                            'padding' => 15,
+                            'font' => [
+                                'size' => 11
+                            ]
+                        ]
+                    ]
+                ]
+            ]);
+    }
+
+    private function createDomisiliDistributionChart($periodeFilter = 'all')
+    {
+        $pendaftar = $this->getFilteredPendaftar($periodeFilter);
+
+        $domisiliCounts = collect($pendaftar)
+            ->pluck('dataDiriPendaftar.domisili')
+            ->filter()
+            ->countBy()
+            ->sortDesc()
+            ->take(10); 
+
+        $labels = $domisiliCounts->keys()->toArray();
+        $data = $domisiliCounts->values()->toArray();
+
+        $backgroundColors = array_map(function ($index) {
+            $colors = [
+                'rgba(255, 99, 132, 0.7)',
+                'rgba(54, 162, 235, 0.7)',
+                'rgba(255, 206, 86, 0.7)',
+                'rgba(75, 192, 192, 0.7)',
+                'rgba(153, 102, 255, 0.7)',
+                'rgba(255, 159, 64, 0.7)',
+                'rgba(199, 199, 199, 0.7)',
+                'rgba(83, 102, 255, 0.7)',
+                'rgba(255, 99, 255, 0.7)',
+                'rgba(99, 255, 132, 0.7)'
+            ];
+            return $colors[$index % count($colors)];
+        }, array_keys($labels));
+
+        $judul = 'Statistik Domisili Pendaftar (10 Kota Terbanyak)';
+        if ($periodeFilter !== 'all') {
+            $periode = PeriodePPDB::find($periodeFilter);
+            if ($periode) {
+                $judul = 'Domisili Pendaftar ' ;
+            }
+        }
+
+        return Chartjs::build()
+            ->name("domisiliChart")
+            ->type("bar")
+            ->size(["width" => 400, "height" => 300])
+            ->labels($labels)
+            ->datasets([[
+                "label" => "Jumlah Pendaftar",
+                "backgroundColor" => $backgroundColors,
+                "borderColor" => "rgba(0, 0, 0, 0.1)",
+                "data" => $data
+            ]])
+            ->options([
+                'responsive' => true,
+                'maintainAspectRatio' => false,
+                'plugins' => [
+                    'title' => [
+                        'display' => true,
+                        'text' => $judul,
+                        'align' => 'center',
+                        'font' => [
+                            'size' => 14,
+                            'weight' => 'bold'
+                        ],
+                        'padding' => 20
+                    ],
+                    'legend' => [
+                        'display' => false
                     ]
                 ],
+                'scales' => [
+                    'y' => [
+                        'beginAtZero' => true,
+                        'title' => [
+                            'display' => true,
+                            'text' => 'Jumlah Pendaftar',
+                            'font' => [
+                                'size' => 11
+                            ]
+                        ],
+                        'ticks' => [
+                            'stepSize' => 1,
+                            'precision' => 0
+                        ]
+                    ],
+                    'x' => [
+                        'title' => [
+                            'display' => true,
+                            'text' => 'Kota Domisili',
+                            'font' => [
+                                'size' => 11
+                            ]
+                        ],
+                        'ticks' => [
+                            'maxRotation' => 45,
+                            'minRotation' => 45,
+                            'font' => [
+                                'size' => 10
+                            ]
+                        ]
+                    ]
+                ]
             ]);
     }
 }

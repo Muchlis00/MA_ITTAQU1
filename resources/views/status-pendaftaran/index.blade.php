@@ -60,9 +60,13 @@
                                 <span class="px-2 py-1 text-sm font-medium bg-green-100 text-green-800 rounded-full">
                                     Terverifikasi
                                 </span>
-                                @else
+                                @elseif($pendaftarPPDB->verification_status === 'rejected')
                                 <span class="px-2 py-1 text-sm font-medium bg-red-100 text-red-800 rounded-full">
                                     Ditolak
+                                </span>
+                                @else
+                                <span class="px-2 py-1 text-sm font-medium bg-red-100 text-red-800 rounded-full">
+                                    Belum Mengisi Formulir
                                 </span>
                                 @endif
                             </div>

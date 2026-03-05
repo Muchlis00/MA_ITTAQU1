@@ -49,7 +49,7 @@
             <p class="text-justify indent-8">
                 1. Total Pendaftar berjumlah  {{ $totalPendaftar }} siswa           </p>
                 <p class="text-justify indent-8">
-                2. Total Pendaftar yang tidak melanjutkan perbaikan berjumlah {{ $totalRejec }} siswa           </p>
+                2. Total Pendaftar yang dengan status perbaikan berjumlah {{ $totalRejec }} siswa           </p>
             <p class="text-justify indent-8">
                 3. Total Pendaftar yang menunggu verifikasi berjumlah {{ $totalPend }} siswa           </p>
                 <p class="text-justify indent-8">

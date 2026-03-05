@@ -61,7 +61,6 @@
                 return response.json();
             })
             .then(data => {
-                // Gunakan fungsi setEditorContent yang sudah didefinisikan di pell.js
                 window.setEditorContent(data.detail_pembayaran ?? "");
             })
             .catch(error => {
@@ -70,8 +69,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        // Panggil handlePeriodeChange setelah editor diinisialisasi
-        // Inisialisasi editor sudah ditangani oleh pell.js
         handlePeriodeChange();
     });
 </script>

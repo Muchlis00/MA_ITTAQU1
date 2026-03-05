@@ -35,11 +35,9 @@ class UserController extends Controller
             return response()->json(['message' => 'Name parameter is missing'], 400);
         }
 
-        // ✅ Query dasar: cari guru by name
         $query = User::where('name', 'like', "%{$name}%")
             ->where('role', 'guru');
 
-        // ✅ Jika ada periode_id, exclude guru yang sudah jadi panitia/bendahara di periode tersebut
         if ($periodeId) {
             $query->whereDoesntHave('panitiaPpdb', function($q) use ($periodeId) {
                 $q->where('id_periode', $periodeId);

@@ -201,7 +201,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Data Wali (Full Width) -->
                                 <div class="mt-6">
                                     <div class="flex items-center gap-2 mb-4">
                                         <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -283,11 +282,9 @@
                 @endforelse
             </div>
 
-            <!-- Pagination -->
             @if($listPendaftar->hasPages())
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 px-6 py-4">
                 <div class="flex items-center justify-between">
-                    <!-- Mobile Pagination -->
                     <div class="flex-1 flex justify-between sm:hidden">
                         @if ($listPendaftar->onFirstPage())
                             <span class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 border border-gray-300 cursor-not-allowed rounded-md">
@@ -310,7 +307,6 @@
                         @endif
                     </div>
 
-                    <!-- Desktop Pagination -->
                     <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                         <div>
                             <p class="text-sm text-gray-700">
@@ -407,12 +403,10 @@
 
 @include('verify-formulir.data-rejection-modal')
 
-<!-- Modal Preview Dokumen (Sidebar Kanan) -->
 <div id="dokumenModal" class="hidden fixed inset-0 z-[9999]">
         <!-- Overlay -->
         <div class="absolute inset-0 bg-black bg-opacity-50 transition-opacity" onclick="closeDokumenModal()"></div>
         
-        <!-- Sidebar Panel (Slide dari kanan) -->
         <div id="dokumenPanel" class="absolute top-0 right-0 h-full w-full md:w-1/2 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out translate-x-full">
             <div class="h-full flex flex-col">
                 <!-- Header -->
@@ -487,7 +481,6 @@
     </div>
 
     <script>
-        // Fungsi untuk accordion
         function toggleAccordion(index) {
             const content = document.getElementById(`accordion-${index}`);
             const arrow = document.getElementById(`arrow-${index}`);
@@ -501,37 +494,29 @@
             }
         }
 
-        // Fungsi untuk modal preview dokumen
         function lihatDokumen(path, title = 'Dokumen') {
             const fullPath = "{{ asset('storage/') }}" + "/" + path;
             
-            // Set title
             document.getElementById('dokumenTitle').textContent = title;
             document.getElementById('fileName').textContent = getFileName(path);
             
-            // Reset states
             document.getElementById('dokumenPreview').classList.add('hidden');
             document.getElementById('loadingSpinner').classList.remove('hidden');
             document.getElementById('errorMessage').classList.add('hidden');
             
-            // Set download link
             document.getElementById('downloadLink').href = fullPath;
             
-            // Show modal
             const modal = document.getElementById('dokumenModal');
             const panel = document.getElementById('dokumenPanel');
             
             modal.style.display = 'block';
             
-            // Prevent body scroll
             document.body.style.overflow = 'hidden';
             
-            // Trigger animation after a small delay
             setTimeout(() => {
                 panel.style.transform = 'translateX(0)';
             }, 10);
             
-            // Load image
             const img = document.getElementById('dokumenPreview');
             img.src = fullPath;
             
@@ -539,7 +524,6 @@
                 document.getElementById('loadingSpinner').classList.add('hidden');
                 document.getElementById('dokumenPreview').classList.remove('hidden');
                 
-                // Simulated file size
                 const sizeInKB = Math.round(Math.random() * 2000) + 100;
                 document.getElementById('fileSize').textContent = `Ukuran: ${sizeInKB} KB`;
             };
@@ -554,10 +538,8 @@
             const panel = document.getElementById('dokumenPanel');
             const modal = document.getElementById('dokumenModal');
             
-            // Animate out
             panel.style.transform = 'translateX(100%)';
             
-            // Restore body scroll
             document.body.style.overflow = '';
             
             setTimeout(() => {
@@ -569,7 +551,6 @@
             return path.split('/').pop();
         }
         
-        // Close modal with Escape key
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 closeDokumenModal();
@@ -595,7 +576,6 @@
             animation: spin 1s linear infinite;
         }
         
-        /* Force modal to be on top of everything */
         #dokumenModal {
             position: fixed !important;
             z-index: 99999 !important;
@@ -608,7 +588,6 @@
             top: 0 !important;
         }
         
-        /* Responsive width for modal */
         @media (min-width: 768px) {
             #dokumenPanel {
                 width: 50% !important;

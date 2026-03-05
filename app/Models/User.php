@@ -66,29 +66,20 @@ class User extends Authenticatable implements MustVerifyEmail
             ->exists();
     }
 
-    // ✅ TAMBAHKAN METHOD INI:
-    /**
-     * Get effective role (role yang sedang aktif berdasarkan periode)
-     * Priority: role tetap > role periode aktif
-     */
     public function getEffectiveRole()
     {
-        // Jika role bukan guru, return role asli
         if ($this->role !== 'guru') {
             return $this->role;
         }
 
-        // Jika guru adalah panitia di periode aktif
         if ($this->isPanitiaAktif()) {
             return 'panitia';
         }
 
-        // Jika guru adalah bendahara di periode aktif
         if ($this->isBendaharaAktif()) {
             return 'bendahara';
         }
 
-        // Default return role asli
         return $this->role;
     }
 
@@ -98,12 +89,10 @@ class User extends Authenticatable implements MustVerifyEmail
             $roles = explode(',', $roles);
         }
 
-        // Cek role tetap
         if (in_array($this->role, $roles)) {
             return true;
         }
 
-        // Cek role dinamis berdasarkan periode aktif
         foreach ($roles as $role) {
             if ($role === 'panitia' && $this->isPanitiaAktif()) {
                 return true;

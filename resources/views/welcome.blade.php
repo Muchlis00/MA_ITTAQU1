@@ -8,12 +8,45 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}">
     <link rel="icon" href="{{ asset('img/favicon.ico') }}" type="image/x-icon">
+    <style>
+        .carousel-container {
+            position: relative;
+        }
+        .carousel-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 30;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            border-radius: 9999px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 3px solid #e5e7eb;
+            color: #6b7280;
+            transition: all 0.2s;
+            cursor: pointer;
+            
+        }
+        .carousel-button:hover {
+            background-color: white;
+            color: #2563eb;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .carousel-button-prev {
+            left: 1rem;
+        }
+        .carousel-button-next {
+            right: 1rem;
+        }
+    </style>
 </head>
 <body class="bg-gray-50 font-sans antialiased">
-    <!-- Header -->
     <header class="bg-white shadow-md sticky top-0 z-50">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <!-- Bagian Kiri: Logo dan Status Pendaftaran -->
             <div class="flex-1 flex items-center">
                 <img src="{{ asset('img/maittaqu.png') }}" alt="Logo MA ITTAQU" class="h-10 mr-3">
                 <div class="max-w-xs">
@@ -45,7 +78,6 @@
                 </div>
             </div>
 
-            <!-- Bagian Tengah: Countdown Timer -->
             <div class="flex-1">
                 @if($isPeriodActive)
                     <div class="flex flex-col items-center justify-center">
@@ -122,7 +154,6 @@
                 @endif
             </div>
 
-            <!-- Bagian Kanan: Tombol Login dan Daftar -->
             <div class="flex-1 flex justify-end">
                 <nav class="flex items-center space-x-4">
                     <a href="{{ route('login') }}" class="text-white bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded-lg text-sm transition duration-300 shadow-sm">
@@ -138,15 +169,12 @@
         </div>
     </header>
 
-    <main class="container mx-auto px-4 py-8">
-        <!-- SLIDER CONTAINER -->
-        <div class="relative overflow-hidden bg-white rounded-2xl shadow-xl p-2 mb-8">
-            <!-- SLIDES -->
-            <div id="slides" class="flex transition-transform duration-500 ease-in-out">
+    <main class="container mx-auto px-8 md:px-10 py-8">
+        <div class="relative bg-white rounded-2xl shadow-xl p-2 mb-8 carousel-container">
+            <div class="overflow-hidden rounded-xl">
+                <div id="slides" class="flex transition-transform duration-500 ease-in-out">
                 
-                <!-- ================= SLIDE 1: WELCOME & KEUNGGULAN ================= -->
                 <section class="min-w-full px-4 py-6">
-                    <!-- Hero Section -->
                     <div class="text-center mb-10">
                         <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4 leading-tight">
                             Selamat Datang di PPDB<br>MA ITTAQU
@@ -157,7 +185,6 @@
                         </p>
                     </div>
 
-                    <!-- Why Choose Us -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                         <div>
                             <h2 class="text-2xl md:text-3xl font-semibold text-gray-800 mb-6">
@@ -210,22 +237,18 @@
                     </div>
                 </section>
 
-                <!-- ================= SLIDE 2: PERSYARATAN PENDAFTARAN ================= -->
                 <section class="min-w-full px-4 py-6">
-                    <!-- Header tetap ditampilkan -->
-                    <div class="bg-white rounded-xl overflow-hidden h-full flex flex-col">
-                        <!-- HEADER SAMA SEPERTI SLIDE 4 -->
-                        <div class="bg-blue-700 text-white p-6">
+                    <div class="bg-white rounded-xl overflow-hidden flex flex-col">
+                        <div class="bg-blue-700 text-white p-4 md:p-6">
                             <h2 class="text-2xl font-bold text-center">
                                 <i class="fas fa-file-contract mr-2"></i> Persyaratan Pendaftaran
                             </h2>
                         </div>
                         
-                        <!-- Content -->
-                        <div class="p-6 flex-grow overflow-y-auto">
+                        <div class="p-4 md:p-6">
                             @if($isPeriodActive)
                             <div class="prose max-w-4xl mx-auto">
-                                <div class="bg-blue-50 p-6 rounded-lg mb-6 border border-blue-100">
+                                <div class="bg-blue-50 p-4 md:p-6 rounded-lg mb-6 border border-blue-100">
                                     <h3 class="text-xl font-semibold text-blue-800 mb-4 flex items-center">
                                         <i class="fas fa-file-alt mr-2"></i> Persyaratan Umum
                                     </h3>
@@ -233,7 +256,6 @@
                                 </div>
                             </div>
                             @else
-                            <!-- Tampilkan pesan jika periode tidak aktif -->
                             <div class="h-full flex items-center justify-center">
                                 <div class="text-center py-8">
                                     <i class="fas fa-calendar-times text-4xl text-gray-400 mb-4"></i>
@@ -256,22 +278,18 @@
                     </div>
                 </section>
 
-                <!-- ================= SLIDE 3: INFORMASI PEMBAYARAN ================= -->
                 <section class="min-w-full px-4 py-6">
-                    <!-- Header tetap ditampilkan -->
-                    <div class="bg-white rounded-xl overflow-hidden h-full flex flex-col">
-                        <!-- HEADER SAMA SEPERTI SLIDE 4 -->
-                        <div class="bg-blue-700 text-white p-6">
+                    <div class="bg-white rounded-xl overflow-hidden flex flex-col">
+                        <div class="bg-blue-700 text-white p-4 md:p-6">
                             <h2 class="text-2xl font-bold text-center">
                                 <i class="fas fa-file-contract mr-2"></i> Rincian Pembayaran
                             </h2>
                         </div>
                         
-                        <!-- Content -->
-                        <div class="p-6 flex-grow overflow-y-auto">
+                        <div class="p-4 md:p-6">
                             @if($isPeriodActive)
                             <div class="prose max-w-4xl mx-auto">
-                                <div class="bg-green-50 p-6 rounded-lg mb-6 border border-green-100">
+                                <div class="bg-green-50 p-4 md:p-6 rounded-lg mb-6 border border-green-100">
                                     <h3 class="text-xl font-semibold text-green-800 mb-4 flex items-center">
                                         <i class="fas fa-money-bill-wave mr-2"></i> Informasi Pembayaran
                                     </h3>
@@ -279,7 +297,6 @@
                                 </div>
                             </div>
                             @else
-                            <!-- Tampilkan pesan jika periode tidak aktif -->
                             <div class="h-full flex items-center justify-center">
                                 <div class="text-center py-8">
                                     <i class="fas fa-lock text-4xl text-gray-400 mb-4"></i>
@@ -294,18 +311,15 @@
                     </div>
                 </section>
 
-                <!-- ================= SLIDE 4: JADWAL ORIENTASI ================= -->
                 <section class="min-w-full px-4 py-6">
-                    <!-- Header tetap ditampilkan -->
-                    <div class="bg-white rounded-xl overflow-hidden h-full flex flex-col">
-                        <div class="bg-blue-700 text-white p-6">
+                    <div class="bg-white rounded-xl overflow-hidden flex flex-col">
+                        <div class="bg-blue-700 text-white p-4 md:p-6">
                             <h2 class="text-2xl font-bold text-center">
                                 <i class="fas fa-file-contract mr-2"></i> Matsama / Orientasi 
                             </h2>
                         </div>
                         
-                        <!-- Content -->
-                        <div class="p-6 flex-grow overflow-y-auto">
+                        <div class="p-4 md:p-6 overflow-x-auto">
                             @if($orientasi->count() > 0)
                                 <div class="overflow-x-auto rounded-lg border border-gray-200">
                                     <table class="min-w-full divide-y divide-gray-200">
@@ -356,51 +370,34 @@
                 </section>
 
             </div>
-        </div>
-
-        <!-- BUTTON NAVIGATION & INDICATORS -->
-        <div class="flex flex-col md:flex-row justify-between items-center mt-8 space-y-4 md:space-y-0">
-            <button onclick="prevSlide()"
-                class="flex items-center bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg transition duration-300 shadow-sm">
-                <i class="fas fa-chevron-left mr-2"></i> Sebelumnya
-            </button>
-
-            <div class="flex items-center space-x-6">
-                <!-- Slide Indicators -->
-                <div class="flex space-x-2">
-                    @for($i = 0; $i < 4; $i++)
-                    <button onclick="goToSlide({{ $i }})"
-                        class="w-3 h-3 rounded-full transition duration-300 {{ $i === 0 ? 'bg-blue-600' : 'bg-gray-300 hover:bg-gray-400' }}"
-                        id="indicator-{{ $i }}">
-                    </button>
-                    @endfor
-                </div>
-                
-                <!-- Slide Counter -->
-                <span id="slide-counter" class="text-gray-700 font-medium bg-gray-100 px-4 py-2 rounded-lg">
-                    Slide <span id="current-slide">1</span> dari 4
-                </span>
             </div>
 
-            <button onclick="nextSlide()"
-                class="flex items-center bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg transition duration-300 shadow-sm">
-                Selanjutnya <i class="fas fa-chevron-right ml-2"></i>
+            <button onclick="prevSlide()" class="carousel-button carousel-button-prev">
+                <span class="text-3xl leading-none select-none">&#8249;</span>
+            </button>
+
+            <button onclick="nextSlide()" class="carousel-button carousel-button-next">
+                <span class="text-3xl leading-none select-none">&#8250;</span>
             </button>
         </div>
 
-        <!-- Tombol Daftar CTA (Jika periode aktif) -->
-        @if($isPeriodActive)
-        <div class="text-center mt-12">
-            <a href="{{ route('register') }}" 
-               class="inline-flex items-center bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold text-lg px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                <i class="fas fa-user-plus mr-3 text-xl"></i> DAFTAR SEKARANG
-            </a>
-            <p class="text-gray-600 mt-3 text-sm">Kesempatan terbatas! Segera daftarkan diri Anda.</p>
+        <div class="flex items-center justify-center mt-2 mb-6 space-x-6">
+            <div class="flex space-x-2">
+                @for($i = 0; $i < 4; $i++)
+                <button onclick="goToSlide({{ $i }})"
+                    class="w-3 h-3 rounded-full transition duration-300 {{ $i === 0 ? 'bg-blue-600' : 'bg-gray-300 hover:bg-gray-400' }}"
+                    id="indicator-{{ $i }}">
+                </button>
+                @endfor
+            </div>
+            <span id="slide-counter" class="text-gray-700 font-medium bg-gray-100 px-4 py-2 rounded-lg text-sm">
+                Slide <span id="current-slide">1</span> dari 4
+            </span>
         </div>
-        @endif
+
+        
     </main>
 
-    <!-- Footer -->
     <footer class="bg-gray-800 text-white pt-12 pb-6 mt-12">
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -451,7 +448,7 @@
                         </li>
                         <li class="flex items-center">
                             <i class="fas fa-envelope mr-3 text-blue-400"></i>
-                            <span>ypittaqu@gmail.com</span>
+                            <span><a href="#" class="__cf_email__" data-cfemail="077e776e737366767247606a666e6b2964686a">ypittaqu@gmail.com</a></span>
                         </li>
                         <li class="flex items-center">
                             <i class="fas fa-clock mr-3 text-blue-400"></i>
@@ -488,6 +485,7 @@
         </div>
     </footer>
 
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
     <script>
         let currentSlide = 0;
         const slides = document.getElementById('slides');
@@ -498,7 +496,6 @@
             slides.style.transform = `translateX(-${currentSlide * 100}%)`;
             counter.textContent = currentSlide + 1;
             
-            // Update indicators
             for (let i = 0; i < totalSlides; i++) {
                 const indicator = document.getElementById(`indicator-${i}`);
                 if (i === currentSlide) {
@@ -516,7 +513,6 @@
                 currentSlide++;
                 updateSlide();
             } else {
-                // Loop kembali ke slide pertama
                 currentSlide = 0;
                 updateSlide();
             }
@@ -527,7 +523,6 @@
                 currentSlide--;
                 updateSlide();
             } else {
-                // Loop ke slide terakhir
                 currentSlide = totalSlides - 1;
                 updateSlide();
             }
@@ -538,21 +533,16 @@
             updateSlide();
         }
 
-        // Auto slide setiap 10 detik
         setInterval(nextSlide, 10000);
 
-        // Keyboard navigation
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowLeft') prevSlide();
             if (e.key === 'ArrowRight') nextSlide();
         });
 
-        // Newsletter form submission
         document.getElementById('newsletter-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            const email = this.querySelector('input[type="email"]').value;
-            alert(`Terima kasih! Email ${email} telah berhasil didaftarkan untuk newsletter.`);
-            this.reset();
+            alert('Fitur newsletter akan segera tersedia!');
         });
     </script>
 </body>

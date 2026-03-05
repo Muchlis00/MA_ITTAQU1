@@ -22,7 +22,7 @@ class TenagaPendidikController extends Controller
     public function index()
     { {
 
-            $tenagaPendidik = TenagaPendidik::all(); //->paginate(10) untuk tampil 10
+            $tenagaPendidik = TenagaPendidik::all(); 
             return view('tenaga-pendidik.index', compact('tenagaPendidik'));
         }
     }

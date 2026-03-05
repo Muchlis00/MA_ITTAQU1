@@ -58,7 +58,6 @@
             currentPaymentId = null;
         }
 
-        // Close modal when clicking outside
         modal.addEventListener('click', function(event) {
             if (event.target === modal || event.target.classList.contains('bg-opacity-75')) {
                 closeModal();
@@ -72,19 +71,16 @@
                 return;
             }
 
-            // Create and submit form
             const form = document.createElement('form');
             form.method = 'POST';
             form.action = `/verify-formulir/reject/${currentId}`;
 
-            // Add CSRF token
             const csrfToken = document.createElement('input');
             csrfToken.type = 'hidden';
             csrfToken.name = '_token';
             csrfToken.value = '{{ csrf_token() }}';
             form.appendChild(csrfToken);
 
-            // Add rejection reason
             const reasonInput = document.createElement('input');
             reasonInput.type = 'hidden';
             reasonInput.name = 'rejection_reason';

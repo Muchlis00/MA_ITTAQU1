@@ -45,6 +45,7 @@ Route::middleware(['auth', 'verified', 'role:pendaftar,guru,kepsek'])->group(fun
 
     Route::get('/formulir-ppdb/dokumen-pendaftar', [FormPendaftarController::class, 'dokumenPendaftar'])->name('formulir-ppdb.dokumenPendaftar');
     Route::post('/formulir-ppdb/dokumen-pendaftar', [FormPendaftarController::class, 'storeDokumenPendaftar'])->name('formulir-ppdb.storeDokumenPendaftar');
+    Route::post('/formulir-ppdb/dokumen-pendaftar/kip/delete', [FormPendaftarController::class, 'deleteKip'])->name('formulir-ppdb.deleteKip');
 
     Route::get('/formulir-ppdb/data-orang-tua', [FormPendaftarController::class, 'dataOrangTua'])->name('formulir-ppdb.dataOrangTua');
     Route::post('/formulir-ppdb/data-orang-tua', [FormPendaftarController::class, 'storeDataOrangTua'])->name('formulir-ppdb.storeDataOrangTua');
@@ -68,6 +69,7 @@ Route::middleware(['auth', 'verified', 'role:bendahara'])->group(function () {
 
     Route::get('/verify-payment', [VerifyPaymentController::class, 'index'])->name('verify-payment.index');
     Route::post('/verify-payment/verify/{id}', [VerifyPaymentController::class, 'verify'])->name('verify-payment.verify');
+    Route::post('/verify-payment/update-status/{id}', [VerifyPaymentController::class, 'updateStatus'])->name('verify-payment.update-status');
     Route::post('/verify-payment/reject/{id}', [VerifyPaymentController::class, 'reject'])->name('verify-payment.reject');
 });
 

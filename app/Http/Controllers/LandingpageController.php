@@ -23,7 +23,6 @@ class LandingpageController extends Controller
             'informasiPembayaran' => $activePeriod?->detail_pembayaran->first()?->detail_pembayaran ?? null,
             'agreementContent' => $activePeriod?->agreement->first()?->content ?? null,
             'orientasi' => $activePeriod?->orientasi ?? collect()
-            //kurang orientasi
         ]);
     }
 }

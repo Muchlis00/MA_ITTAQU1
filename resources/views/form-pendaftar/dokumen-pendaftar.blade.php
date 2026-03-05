@@ -29,11 +29,18 @@ $formFields = [
                 <label for={{ $field['key'] }} class="w-32 whitespace-nowrap text-sm font-medium text-gray-700">{{ $field['name'] }}</label>
                 <input type="file" accept="image/*" name={{ $field['key'] }} id={{ $field['key'] }}
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                @if ($field['value'])
-                <div class="max-w-xs">
-                    <img alt={{ $field['name'] }} src={{ asset('storage/' . $field['value']) }} class="rounded-md shadow" style="max-width: 10em; max-height: 10em;">
-                </div>
-                @endif
+                @if ($field['value'] && $field['value'] !== '-')
+<div class="flex items-center gap-4">
+    <div class="max-w-xs">
+        <img alt="{{ $field['name'] }}" src="{{ asset('storage/' . $field['value']) }}" class="rounded-md shadow" style="max-width: 10em; max-height: 10em;">
+    </div>
+    @if ($field['key'] === 'kip')
+    <button type="button" onclick="deleteKip()" class="bg-red-500 hover:bg-red-700 text-white text-xs px-3 py-1 rounded">Hapus</button>
+    @endif
+</div>
+@endif
+
+               
             </div>
             @endforeach
 
@@ -48,4 +55,27 @@ $formFields = [
         </button>
     </div>
 </form>
+<script>
+    function deleteKip() {
+    if (!confirm('Yakin hapus KIP?')) return;
+
+    fetch('{{ route("formulir-ppdb.deleteKip") }}', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => {
+        if (response.redirected) {
+            window.location.href = response.url;
+        } else {
+            location.reload();
+        }
+    })
+    .catch(error => {
+        alert('Terjadi kesalahan');
+    });
+}
+</script>
 @endsection

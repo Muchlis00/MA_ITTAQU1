@@ -38,6 +38,32 @@ class VerifyPaymentController extends Controller
         return redirect()->back()->with('success', 'Pembayaran berhasil diverifikasi');
     }
 
+    public function updateStatus($id, Request $request)
+    {
+        $request->validate([
+            'status_pembayaran' => 'required|in:Belum Lunas,40%,Lunas',
+            'catatan' => 'nullable|string|max:255'
+        ]);
+
+        $pembayaran = PembayaranPpdb::with('user')->findOrFail($id);
+        
+        $updateData = [
+            'status_pembayaran' => $request->status_pembayaran,
+            'verifier_id' => Auth::id(),
+            'verification_status' => 'verified'
+        ];
+
+        PembayaranPpdb::where('id', $id)->update($updateData);
+
+        if (in_array($request->status_pembayaran, ['Lunas', '40%'], true)) {
+            Mail::to($pembayaran->user->email)->send(new PaymentVerifiedMail(
+                $pembayaran->user
+            ));
+        }
+
+        return redirect()->back()->with('success', 'Status pembayaran berhasil diperbarui');
+    }
+
     public function reject($id, Request $request)
     {
         $pendaftar = PembayaranPpdb::with('user')->findOrFail($id);

@@ -47,7 +47,6 @@ class FormPendaftarController extends Controller
     {
         try {
             Log::info('Data Pendaftar:', $request->all());
-            // Validate the request data
             $request->validate([
                 'user_id' => 'required|exists:users,id',
                 'periode_id' => 'required|exists:periode_ppdb,id_periode',
@@ -64,16 +63,13 @@ class FormPendaftarController extends Controller
                 'previous_school_address' => 'required|string',
             ]);
 
-            // Update or create DataDiriPendaftar
             DataDiriPendaftar::updateOrCreate(
-                ['user_id' => $request->user_id], // Condition
-                $request->except(['periode_id', 'name', '_token']) // Data to update or create
+                ['user_id' => $request->user_id], 
+                $request->except(['periode_id', 'name', '_token']) 
             );
 
-            // Update the user's name
             User::find($request->user_id)->update(['name' => $request->name]);
 
-            // Update or create PendaftarPpdb
             PendaftarPpdb::updateOrCreate(
                 [
                     'user_id' => $request->user_id,
@@ -134,7 +130,6 @@ class FormPendaftarController extends Controller
             'address' => 'required|string',
         ]);
 
-        // Create father record
         WaliPendaftar::updateOrCreate(['data_diri_pendaftar_id' => $request->data_diri_pendaftar_id, 'gender' => 'Laki-Laki',], [
             'data_diri_pendaftar_id' => $request->data_diri_pendaftar_id,
             'name' => $request->father_name,
@@ -147,7 +142,6 @@ class FormPendaftarController extends Controller
             'pendapatan' => $request->father_income,
         ]);
 
-        // Create mother record
         WaliPendaftar::updateOrCreate(['data_diri_pendaftar_id' => $request->data_diri_pendaftar_id, 'gender' => 'Perempuan',], [
             'data_diri_pendaftar_id' => $request->data_diri_pendaftar_id,
             'name' => $request->mother_name,
@@ -219,7 +213,6 @@ class FormPendaftarController extends Controller
         $currentDataDiriPendaftar = DataDiriPendaftar::where('user_id', Auth::id())
             ->firstOrFail();
 
-        // Define field mappings
         $fieldMappings = [
             'father' => [
                 'gender' => 'Laki-Laki',
@@ -236,18 +229,15 @@ class FormPendaftarController extends Controller
             ]
         ];
 
-        // Process each parent's documents
         foreach ($fieldMappings as $parent => $mapping) {
             $updates = [];
 
-            // Collect updates for this parent
             foreach ($mapping['fields'] as $requestField => $dbField) {
                 if ($request->hasFile($requestField)) {
                     $updates[$dbField] = $this->storeFile($request, $requestField);
                 }
             }
 
-            // If we have updates, apply them
             if (!empty($updates)) {
                 WaliPendaftar::where([
                     'data_diri_pendaftar_id' => $currentDataDiriPendaftar->id,
@@ -283,7 +273,6 @@ class FormPendaftarController extends Controller
             ->where('endDate', '>=', Carbon::now())
             ->firstOrFail();
 
-        // Cek apakah user sudah pernah mengisi pembayaran untuk periode ini
         $existingPembayaran = PembayaranPpdb::where('id_periode', $currentPeriode->id_periode)
             ->where('user_id', Auth::id())
             ->first();
@@ -293,18 +282,15 @@ class FormPendaftarController extends Controller
             'user_id' => Auth::id(),
         ];
 
-        // Jika user upload file baru, simpan path-nya
         if ($request->hasFile('bukti_pembayaran')) {
             $dataToSave['bukti_pembayaran'] = $this->storeFile($request, 'bukti_pembayaran');
         }
 
         if ($existingPembayaran) {
-            // Jika ada data dan ada file baru, update
             if (isset($dataToSave['bukti_pembayaran'])) {
                 $existingPembayaran->update($dataToSave);
             }
         } else {
-            // Insert baru
             PembayaranPpdb::create($dataToSave);
         }
 
@@ -321,11 +307,38 @@ class FormPendaftarController extends Controller
         ]);
         PembayaranPpdb::where('user_id', Auth::id())->update([
             'verification_status' => 'pending',
-            'status_pembayaran' => 'Lunas'
+            'status_pembayaran' => 'Belum Lunas'
         ]);
         return redirect()->route('formulir-ppdb.pembayaran')
             ->with('success', 'Formulir berhasil dikirim untuk verifikasi');
     }
+    public function deleteKip(Request $request)
+{
+    \Log::info('deleteKip dipanggil oleh user: ' . Auth::id());
+
+    $user = Auth::user();
+    $dataDiri = DataDiriPendaftar::where('user_id', $user->id)->first();
+
+    if (!$dataDiri) {
+        \Log::error('DataDiri tidak ditemukan untuk user: ' . $user->id);
+        return redirect()->back()->with('error', 'Data pendaftar tidak ditemukan.');
+    }
+
+    \Log::info('DataDiri sebelum dihapus:', ['kip' => $dataDiri->kip]);
+
+    if ($dataDiri->kip && $dataDiri->kip !== '-') {
+        $deleted = Storage::disk('public')->delete($dataDiri->kip);
+        \Log::info('Hapus file: ' . ($deleted ? 'berhasil' : 'gagal'));
+    }
+
+    $updated = $dataDiri->update(['kip' => '-']);
+    \Log::info('Update database: ' . ($updated ? 'berhasil' : 'gagal'));
+
+    $dataDiriFresh = $dataDiri->fresh();
+    \Log::info('DataDiri setelah update:', ['kip' => $dataDiriFresh->kip]);
+
+    return redirect()->back()->with('success', 'File KIP berhasil dihapus.');
+}
     private function getCities()
     {
         $json = Storage::get('cities.json');

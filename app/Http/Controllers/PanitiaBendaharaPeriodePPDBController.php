@@ -18,7 +18,6 @@ class PanitiaBendaharaPeriodePPDBController extends Controller
             'jabatan' => 'required|in:Panitia,Bendahara',
         ]);
 
-        // ✅ CEK: Apakah user adalah guru?
         $user = User::find($request->user_id);
         if ($user->role !== 'guru') {
             return redirect()
@@ -26,17 +25,14 @@ class PanitiaBendaharaPeriodePPDBController extends Controller
                 ->with('error', 'Hanya guru yang bisa ditugaskan sebagai Panitia atau Bendahara!');
         }
 
-        // ✅ CEK: Apakah user sudah jadi panitia di periode ini?
         $sudahPanitia = PanitiaPpdb::where('user_id', $request->user_id)
             ->where('id_periode', $request->periode_id)
             ->exists();
 
-        // ✅ CEK: Apakah user sudah jadi bendahara di periode ini?
         $sudahBendahara = BendaharaPpdb::where('user_id', $request->user_id)
             ->where('id_periode', $request->periode_id)
             ->exists();
 
-        // ✅ VALIDASI: Tidak boleh rangkap jabatan
         if ($sudahPanitia || $sudahBendahara) {
             return redirect()
                 ->back()
@@ -49,8 +45,6 @@ class PanitiaBendaharaPeriodePPDBController extends Controller
                 'user_id' => $request->user_id,
             ]);
             
-            // ❌ JANGAN UPDATE ROLE DI USERS
-            // User::where('id', $request->user_id)->update(['role' => 'panitia']);
             
             TenagaPendidik::where('id', $request->user_id)->update(['jabatan' => 'Panitia']);
         }
@@ -61,8 +55,6 @@ class PanitiaBendaharaPeriodePPDBController extends Controller
                 'user_id' => $request->user_id,
             ]);
             
-            // ❌ JANGAN UPDATE ROLE DI USERS
-            // User::where('id', $request->user_id)->update(['role' => 'bendahara']);
             
             TenagaPendidik::where('id', $request->user_id)->update(['jabatan' => 'Bendahara']);
         }

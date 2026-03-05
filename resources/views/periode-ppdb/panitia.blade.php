@@ -85,7 +85,6 @@
                                         placeholder="Ketik minimal 3 huruf untuk mencari guru..."
                                         required>
                                     <div id="nameDropdown" class="dropdown-menu" style="display: none; width: 100%;">
-                                        <!-- Dropdown items akan muncul di sini -->
                                     </div>
                                 </div>
                                 <small class="form-text text-muted">
@@ -121,23 +120,21 @@
         const jabatanInput = document.getElementById("jabatan");
         const userId = document.getElementById("user_id");
         const submitBtn = document.getElementById("submitBtn");
-        const periodeId = "{{$periode->id_periode}}"; // ✅ Ambil periode ID
+        const periodeId = "{{$periode->id_periode}}"; 
 
-        // ✅ Function to search and display user suggestions
         function searchByName(name) {
             if (name.length < 3) {
                 nameDropdown.style.display = "none";
                 nameDropdown.innerHTML = "";
-                submitBtn.disabled = true; // Disable submit jika belum pilih
+                submitBtn.disabled = true; 
                 return;
             }
 
-            // ✅ Tambahkan periode_id ke query
             fetch(`{{ route('searchGuruByName') }}?name=${encodeURIComponent(name)}&periode_id=${periodeId}`)
                 .then((response) => response.json())
                 .then((data) => {
                     console.log('Hasil pencarian:', data);
-                    nameDropdown.innerHTML = ""; // Clear previous results
+                    nameDropdown.innerHTML = ""; 
                     
                     if (data.length > 0) {
                         data.forEach((user) => {
@@ -158,7 +155,6 @@
 
                         nameDropdown.style.display = "block";
                     } else {
-                        // ✅ Tampilkan pesan jika tidak ada guru yang tersedia
                         const noResult = document.createElement("div");
                         noResult.classList.add("dropdown-item", "text-muted");
                         noResult.textContent = "Tidak ada guru yang tersedia (sudah menjadi panitia/bendahara)";
@@ -178,24 +174,21 @@
                 });
         }
 
-        // ✅ Function to select a user from the dropdown
         function selectUser(name, id) {
             nameInput.value = name;
             nameDropdown.style.display = "none";
             userId.value = id;
-            submitBtn.disabled = false; // ✅ Enable submit setelah pilih user
+            submitBtn.disabled = false; 
             
             console.log('User dipilih:', { name, id });
         }
 
-        // ✅ Add event listener to name input for keyup
         nameInput.addEventListener("keyup", function () {
-            userId.value = ""; // Reset user_id saat user mengetik lagi
-            submitBtn.disabled = true; // Disable submit
+            userId.value = ""; 
+            submitBtn.disabled = true;
             searchByName(nameInput.value);
         });
 
-        // ✅ Reset form saat modal dibuka
         $('#tambahPanitiaModal').on('show.bs.modal', function () {
             nameInput.value = "";
             jabatanInput.value = "";
@@ -205,14 +198,12 @@
             submitBtn.disabled = true;
         });
 
-        // ✅ Hide dropdown if clicked outside
         document.addEventListener("click", function (event) {
             if (!nameInput.contains(event.target) && !nameDropdown.contains(event.target)) {
                 nameDropdown.style.display = "none";
             }
         });
 
-        // ✅ Validasi sebelum submit
         document.querySelector('form').addEventListener('submit', function(e) {
             if (!userId.value) {
                 e.preventDefault();

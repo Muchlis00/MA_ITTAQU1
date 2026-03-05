@@ -1,7 +1,7 @@
 <x-app-layout>
 @if(session()->has('success'))
     <script>
-        alert("Data berhasil disimpan!"); // Ganti dengan pesan yang sesuai
+        alert("Data berhasil disimpan!"); 
     </script>
     @endif
 
@@ -44,17 +44,15 @@
     let periodeId = document.querySelector("#id_periode").value;
     let url = "{{ route('agreement.show', ':periodeId') }}".replace(':periodeId', periodeId);
 
-    // Data to be sent in the POST request
     const data = {
-        _token: '{{ csrf_token() }}', // CSRF token for Laravel
+        _token: '{{ csrf_token() }}', 
     };
 
-    // Send POST request using fetch
     fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}', // Include CSRF token in headers
+                'X-CSRF-TOKEN': '{{ csrf_token() }}', 
             },
             body: JSON.stringify(data),
         })
@@ -65,7 +63,6 @@
             return response.json();
         })
         .then(data => {
-            // Set the retrieved content to the Pell editor
             window.setEditorContent(data.content ?? '');
         })
         .catch(error => {
@@ -73,7 +70,6 @@
         });
 }
 
-// Trigger content update on DOM ready
 document.addEventListener('DOMContentLoaded', handlePeriodeChange);
     </script>
     @vite('resources/js/pell.js')

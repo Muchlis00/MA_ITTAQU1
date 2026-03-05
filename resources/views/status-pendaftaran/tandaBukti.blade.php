@@ -31,15 +31,12 @@
     <div class="border-t-2 border-black mt-2"></div>
   </div>
 
-  <!-- Isi Surat -->
   <div class="max-w-4xl mx-auto px-4">
     
-    <!-- Tanggal -->
     <div class="mb-6 text-right">
       <p>Surabaya, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
     </div>
 
-    <!-- Nomor dan Perihal -->
     <div class="mb-6 space-y-2">
       <div class="flex">
         <p class="w-24">Nomor</p>
@@ -51,7 +48,6 @@
       </div>
     </div>
     <br>
-    <!-- Identitas Penandatangan -->
     <div class="mb-8 space-y-3">
       <p class="text-justify">Yang bertanda tangan di bawah ini:</p>
       <div class="flex">

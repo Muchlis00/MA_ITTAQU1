@@ -40,11 +40,9 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        // ✅ Gunakan Database Transaction untuk memastikan data konsisten
         DB::beginTransaction();
         
         try {
-            // ✅ 1. Buat user baru
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
@@ -73,13 +71,10 @@ class RegisteredUserController extends Controller
             return redirect(RouteServiceProvider::HOME);
 
         } catch (\Exception $e) {
-            // ✅ Rollback jika ada error
             DB::rollBack();
             
-            // Log error untuk debugging
             \Log::error('Registration failed: ' . $e->getMessage());
             
-            // Redirect kembali dengan error message
             return back()
                 ->withInput($request->only('name', 'email'))
                 ->withErrors(['error' => 'Registrasi gagal. Silakan coba lagi.']);

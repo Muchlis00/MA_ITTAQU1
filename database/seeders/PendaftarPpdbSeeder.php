@@ -19,8 +19,8 @@ class PendaftarPpdbSeeder extends Seeder
         $periode = PeriodePpdb::firstOrCreate(
             ['name' => 'Penerimaan Peserta Didik Baru 2025/2026'],
             [
-                'startDate' => '2025-12-01',
-                'endDate' => '2025-12-31',
+                'startDate' => '2026-03-01',
+                'endDate' => '2026-03-31',
             ]
         );
 
@@ -44,6 +44,13 @@ class PendaftarPpdbSeeder extends Seeder
     $userOnly = $faker->boolean(20);
 
     if ($userOnly) {
+        PendaftarPpdb::create([
+                        'id_periode' => $periode->id_periode,
+                        'user_id' => $user->id,
+                        'ready_to_verify' => 0,
+                        'verification_status' => null,
+                        'verifier_id' => null,
+                    ]);
         continue;
     }
 
@@ -62,31 +69,36 @@ class PendaftarPpdbSeeder extends Seeder
     $child_number = $faker->numberBetween(1, $sibling);
     $schools = [
     'SMP Negeri 22 Surabaya' => 'Jl. Gayungsari Bar. X No.38',
-    'MP Negeri 55 Surabaya' => 'Jl. Pagesangan 4 Mulia',
+    'SMP Negeri 55 Surabaya' => 'Jl. Pagesangan 4 Mulia',
     'SMP PGRI 64' => 'Jl. Menanggal III No.14',
 ];
 
     $schoolName = $faker->randomElement(array_keys($schools));
-
+    $domisili= [
+        'Surabaya',
+        'Sidoarjo',
+        'Malang' ,
+    ];
+ 
     $dataDiri = DataDiriPendaftar::create([
         'user_id' => $user->id,
         'gender' => $faker->randomElement(['Laki-laki', 'Perempuan']),
         'place_of_birth' => $faker->city,
-        'date_of_birth' => $faker->date('Y-m-d', '-16 years'),
+        'date_of_birth' => $faker->dateTimeBetween('-21 years', '-16 years')->format('Y-m-d'),
         'nisn' => $faker->numerify('##########'),
         'phone' => $faker->phoneNumber,
+        'domisili'=>$faker->randomElement($domisili),
         'child_number' => $child_number,
         'sibling' => $sibling,
         'previous_school_name' => $schoolName,
-'previous_school_address' => $schools[$schoolName],
+        'previous_school_address' => $schools[$schoolName],
 
-        'ijazah' => 'download.jpg_1765369315/d48mJoqmD4JK7HX0bsH6NtiAa0ObHKi7L0ZcSvtK.jpg',
-        'photo' => 'download.jpg_1765369315/d48mJoqmD4JK7HX0bsH6NtiAa0ObHKi7L0ZcSvtK.jpg',
-        'akte_kelahiran' => 'download.jpg_1765369315/d48mJoqmD4JK7HX0bsH6NtiAa0ObHKi7L0ZcSvtK.jpg',
-        'kip' => $faker->optional(0.3)->numerify('############'),
+        'ijazah' => 'example/ijazah.jpg',
+        'photo' => 'example/4x3.jpg',
+        'akte_kelahiran' => 'example/akte.jpg',
+        'kip' => $faker->randomElement(['example/kip.jpg', '-']),
     ]);
 
-    // 5. Buat 1–2 wali pendaftar
     $jumlahWali = $faker->numberBetween(1, 2);
     for ($j = 0; $j < $jumlahWali; $j++) {
         WaliPendaftar::create([
@@ -99,12 +111,11 @@ class PendaftarPpdbSeeder extends Seeder
             'gender' => $faker->randomElement(['Laki-laki', 'Perempuan']),
             'pekerjaan' => $faker->jobTitle,
             'pendapatan' => $faker->numberBetween(1000000, 10000000),
-            'ktp' => 'download.jpg_1765369315/d48mJoqmD4JK7HX0bsH6NtiAa0ObHKi7L0ZcSvtK.jpg',
-            'kartu_keluarga' => 'download.jpg_1765369315/d48mJoqmD4JK7HX0bsH6NtiAa0ObHKi7L0ZcSvtK.jpg',
+            'ktp' => 'example/ktp-a.jpg',
+            'kartu_keluarga' => 'example/kk.jpg',
         ]);
     }
 
-    // 6. Buat Data Pembayaran (80%)
     if ($faker->boolean(80)) {
         PembayaranPpdb::create([
             'id_periode' => $periode->id_periode,

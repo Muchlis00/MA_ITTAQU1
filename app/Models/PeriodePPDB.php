@@ -28,13 +28,11 @@ class PeriodePPDB extends Model
             ->withTimestamps();
     }
 
-    // Relationship with pembayaran_ppdb
     public function pembayaran()
     {
         return $this->hasMany(PembayaranPPDB::class, 'id_periode', 'id_periode');
     }
 
-    // Relationship with pendaftar_ppdb
     public function pendaftar()
     {
         return $this->hasMany(PendaftarPPDB::class, 'id_periode', 'id_periode');

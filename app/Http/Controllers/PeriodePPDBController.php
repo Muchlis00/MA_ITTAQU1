@@ -94,7 +94,6 @@ class PeriodePPDBController extends Controller
 private function TotalRegisPeriod($id_periode){
 $periode = PeriodePPDB::findOrFail($id_periode);
     return $periode->pendaftar()
-                  ->where('verification_status', 'verified') 
                   ->count();
 }
 private function TotalRejecPeriod($id_periode){
@@ -127,7 +126,7 @@ private function UserWithoutKip($id_periode){
  $periode = PeriodePPDB::findOrFail($id_periode);
     return $periode->pendaftar()
         ->whereHas('dataDiriPendaftar', function ($query) {
-            $query->whereNull('kip');
+            $query->where('kip','-');
         })
         ->count();
 }
