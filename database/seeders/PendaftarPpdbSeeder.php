@@ -122,8 +122,8 @@ class PendaftarPpdbSeeder extends Seeder
             'user_id' => $user->id,
             'verifier_id' => $verif_status ==='verified' ? 3 :null,
             'verification_status' => $verif_status,
-            'bukti_pembayaran' => 'download.jpg_1765369315/d48mJoqmD4JK7HX0bsH6NtiAa0ObHKi7L0ZcSvtK.jpg',
-            'status_pembayaran' => ('lunas'),
+            'bukti_pembayaran' => 'example/bayar.jpg',
+            'status_pembayaran' => $faker->randomElement(['lunas', '40%']),
         ]);
     }
 }
