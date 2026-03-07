@@ -306,7 +306,7 @@ private function getFilteredPembayaran($periodeFilter)
         if ($periodeFilter !== 'all') {
             $periode = PeriodePPDB::find($periodeFilter);
             if ($periode) {
-                $judul = 'Status Pendaftaran - ' . $periode->name;
+                $judul = 'Status Pendaftaran' ;
             }
         }
 
