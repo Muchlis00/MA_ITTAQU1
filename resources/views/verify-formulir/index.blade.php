@@ -162,7 +162,7 @@
                                             @foreach($dokumen as $dok)
                                             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                                                 <div class="flex items-center gap-3">
-                                                    @if($dok['file'])
+                                                    @if($dok['file'] )
                                                         <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
                                                             <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -198,10 +198,113 @@
                                             </div>
                                             @endforeach
                                         </div>
+
+                                        <div class="flex items-center gap-2 mb-3 mt-6">
+                                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                            </svg>
+                                            <h4 class="text-lg font-semibold text-gray-900">Dokumen Rapor</h4>
+                                        </div>
+                                        <div class="space-y-3">
+                                            @php
+                                                $raporDocs = [
+                                                    ['label' => 'Rapor Semester 1', 'file' => $pendaftar->DataDiriPendaftar->rapor_semester_1 ?? null],
+                                                    ['label' => 'Rapor Semester 2', 'file' => $pendaftar->DataDiriPendaftar->rapor_semester_2 ?? null],
+                                                    ['label' => 'Rapor Semester 3', 'file' => $pendaftar->DataDiriPendaftar->rapor_semester_3 ?? null],
+                                                    ['label' => 'Rapor Semester 4', 'file' => $pendaftar->DataDiriPendaftar->rapor_semester_4 ?? null],
+                                                    ['label' => 'Rapor Semester 5', 'file' => $pendaftar->DataDiriPendaftar->rapor_semester_5 ?? null],
+                                                ];
+                                            @endphp
+                                            @foreach($raporDocs as $dok)
+                                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                                                <div class="flex items-center gap-3">
+                                                    @if($dok['file'])
+                                                        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                                            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                            </svg>
+                                                        </div>
+                                                    @else
+                                                        <div class="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
+                                                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                            </svg>
+                                                        </div>
+                                                    @endif
+                                                    <div>
+                                                        <p class="font-medium text-gray-900">{{ $dok['label'] }}</p>
+                                                        <p class="text-xs text-gray-500">
+                                                            @if($dok['file'])
+                                                                Tersedia
+                                                            @else
+                                                                Belum upload
+                                                            @endif
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                @if($dok['file'])
+                                                    <button onclick="lihatDokumen('{{ $dok['file'] }}', '{{ $dok['label'] }}')" class="flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium text-sm">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                                        </svg>
+                                                        Lihat
+                                                    </button>
+                                                @endif
+                                            </div>
+                                            @endforeach
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="mt-6">
+                                    <div class="flex items-center gap-2 mb-4">
+                                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c1.657 0 3 1.343 3 3v9H9v-9c0-1.657 1.343-3 3-3z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 8a3 3 0 116 0"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 20h14"></path>
+                                        </svg>
+                                        <h4 class="text-lg font-semibold text-gray-900">Nilai Rapor</h4>
+                                    </div>
+
+                                    @php
+                                        $mapelList = [
+                                            'bahasa_indonesia' => 'Bahasa Indonesia',
+                                            'matematika' => 'Matematika',
+                                            'ipa' => 'IPA (Ilmu Pengetahuan Alam)',
+                                            'ips' => 'IPS (Ilmu Pengetahuan Sosial)',
+                                            'bahasa_inggris' => 'Bahasa Inggris',
+                                        ];
+                                        $nilaiRapor = $pendaftar->DataDiriPendaftar->nilai_rapor ?? [];
+                                    @endphp
+
+                                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                                        <div class="overflow-x-auto">
+                                            <table class="min-w-full border border-gray-200">
+                                                <thead class="bg-gray-50">
+                                                    <tr>
+                                                        <th class="px-3 py-2 border text-left text-sm font-medium text-gray-700">Mata Pelajaran</th>
+                                                        @for ($s = 1; $s <= 5; $s++)
+                                                            <th class="px-3 py-2 border text-center text-sm font-medium text-gray-700">Semester {{ $s }}</th>
+                                                        @endfor
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="bg-white">
+                                                    @foreach ($mapelList as $key => $label)
+                                                        <tr>
+                                                            <td class="px-3 py-2 border text-sm text-gray-700 whitespace-nowrap">{{ $label }}</td>
+                                                            @for ($s = 1; $s <= 5; $s++)
+                                                                <td class="px-3 py-2 border text-sm text-center text-gray-900">
+                                                                    {{ $nilaiRapor[$key]['semester_'.$s] ?? '-' }}
+                                                                </td>
+                                                            @endfor
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
                                     <div class="flex items-center gap-2 mb-4">
                                         <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>

@@ -191,6 +191,59 @@
             </div>
         </div>
 
+        <div class="mb-8">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">Statistik Nilai Rapor</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="summary-card bg-gradient-to-br from-blue-600 via-blue-500 to-blue-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 p-6 text-white border border-blue-400">
+                    <div class="summary-card-content flex items-center justify-between">
+                        <div class="flex-1">
+                            <p class="summary-label text-indigo-100 text-sm font-medium mb-1">Nilai Tertinggi</p>
+                            <p class="summary-number text-4xl font-extrabold">
+                                {{ ($raporStats && $raporStats['max'] !== null) ? number_format($raporStats['max'], 2) : '-' }}
+                            </p>
+                            <p class="summary-description text-indigo-200 text-xs mt-1">Dari {{ $raporStats['count'] ?? 0 }} nilai</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="summary-card bg-gradient-to-br from-blue-600 via-blue-500 to-blue-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 p-6 text-white border border-blue-400">
+                    <div class="summary-card-content flex items-center justify-between">
+                        <div class="flex-1">
+                            <p class="summary-label text-indigo-100 text-sm font-medium mb-1">Nilai Terendah</p>
+                            <p class="summary-number text-4xl font-extrabold">
+                                {{ ($raporStats && $raporStats['min'] !== null) ? number_format($raporStats['min'], 2) : '-' }}
+                            </p>
+                            <p class="summary-description text-indigo-200 text-xs mt-1">Dari {{ $raporStats['count'] ?? 0 }} nilai</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="summary-card bg-gradient-to-br from-blue-600 via-blue-500 to-blue-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 p-6 text-white border border-blue-400">
+                    <div class="summary-card-content flex items-center justify-between">
+                        <div class="flex-1">
+                            <p class="summary-label text-indigo-100 text-sm font-medium mb-1">Rata-rata</p>
+                            <p class="summary-number text-4xl font-extrabold">
+                                {{ ($raporStats && $raporStats['avg'] !== null) ? number_format($raporStats['avg'], 2) : '-' }}
+                            </p>
+                            <p class="summary-description text-indigo-200 text-xs mt-1">Dari {{ $raporStats['count'] ?? 0 }} nilai</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="summary-card bg-gradient-to-br from-blue-600 via-blue-500 to-blue-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 p-6 text-white border border-blue-400">
+                    <div class="summary-card-content flex items-center justify-between">
+                        <div class="flex-1">
+                            <p class="summary-label text-indigo-100 text-sm font-medium mb-1">Modus</p>
+                            <p class="summary-number text-4xl font-extrabold">
+                                {{ ($raporStats && $raporStats['mode'] !== null) ? number_format($raporStats['mode'], 2) : '-' }}
+                            </p>
+                            <p class="summary-description text-indigo-200 text-xs mt-1">Muncul {{ $raporStats['mode_count'] ?? 0 }} kali</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
             <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200 xl:col-span-2">
                 <div class="h-80">
@@ -235,7 +288,7 @@
             </div>
         </div>
 
-        <style>
+        
              <style>
         .chart-container {
             position: relative;
@@ -317,7 +370,7 @@
         .summary-card:hover .summary-number {
             animation: float 3s ease-in-out infinite;
         }
-    </style>
+    
         </style>
     </div>
 </x-app-layout>

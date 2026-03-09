@@ -43,6 +43,9 @@ Route::middleware(['auth', 'verified', 'role:pendaftar,guru,kepsek'])->group(fun
     Route::get('/formulir-ppdb/data-pendaftar', [FormPendaftarController::class, 'dataPendaftar'])->name('formulir-ppdb.dataPendaftar');
     Route::post('/formulir-ppdb/data-pendaftar', [FormPendaftarController::class, 'storeDataPendaftar'])->name('formulir-ppdb.storeDataPendaftar');
 
+    Route::get('/formulir-ppdb/nilai-rapor', [FormPendaftarController::class, 'nilaiRapor'])->name('formulir-ppdb.nilaiRapor');
+    Route::post('/formulir-ppdb/nilai-rapor', [FormPendaftarController::class, 'storeNilaiRapor'])->name('formulir-ppdb.storeNilaiRapor');
+
     Route::get('/formulir-ppdb/dokumen-pendaftar', [FormPendaftarController::class, 'dokumenPendaftar'])->name('formulir-ppdb.dokumenPendaftar');
     Route::post('/formulir-ppdb/dokumen-pendaftar', [FormPendaftarController::class, 'storeDokumenPendaftar'])->name('formulir-ppdb.storeDokumenPendaftar');
     Route::post('/formulir-ppdb/dokumen-pendaftar/kip/delete', [FormPendaftarController::class, 'deleteKip'])->name('formulir-ppdb.deleteKip');

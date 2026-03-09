@@ -15,6 +15,21 @@ $formFields = [
 ['name'=> 'KIP',
 'key' =>'kip',
 'value' => $currentDataDiriPendaftar->kip],
+['name'=> 'Rapor Semester 1',
+'key' =>'rapor_semester_1',
+'value' => $currentDataDiriPendaftar->rapor_semester_1],
+['name'=> 'Rapor Semester 2',
+'key' =>'rapor_semester_2',
+'value' => $currentDataDiriPendaftar->rapor_semester_2],
+['name'=> 'Rapor Semester 3',
+'key' =>'rapor_semester_3',
+'value' => $currentDataDiriPendaftar->rapor_semester_3],
+['name'=> 'Rapor Semester 4',
+'key' =>'rapor_semester_4',
+'value' => $currentDataDiriPendaftar->rapor_semester_4],
+['name'=> 'Rapor Semester 5',
+'key' =>'rapor_semester_5',
+'value' => $currentDataDiriPendaftar->rapor_semester_5],
 ];
 @endphp
 <form action="{{ route('formulir-ppdb.storeDokumenPendaftar') }}" method="POST" class="space-y-6" enctype="multipart/form-data">

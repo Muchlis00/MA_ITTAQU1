@@ -56,7 +56,9 @@ class DashboardController extends Controller
         })->count();
 
         $charts = [];
+        $raporStats = null;
         if ($role == 'kepsek') {
+            $raporStats = $this->calculateNilaiRaporStats($pendaftar);
             $charts = [
                 'PendaftarChart' => $this->createRegistrationTrendChart($periodeFilter),
                 'uncompleteRegistrationChart' => $this->createVerificationStatusChart($periodeFilter),
@@ -75,6 +77,7 @@ class DashboardController extends Controller
             'pendaftar' => $pendaftar,
             'pembayaran' => $pembayaran,
             'belumMengisiFormulir' => $belumMengisiFormulir,
+            'raporStats' => $raporStats,
         ], $charts);
 
         if (view()->exists("dashboard.{$role}")) {
@@ -82,6 +85,74 @@ class DashboardController extends Controller
         }
         
         return view('dashboard', $data);
+    }
+
+    private function calculateNilaiRaporStats($pendaftar)
+    {
+        $values = [];
+
+        foreach ($pendaftar as $item) {
+            if (!$item->dataDiriPendaftar) {
+                continue;
+            }
+
+            $nilaiRapor = $item->dataDiriPendaftar->nilai_rapor ?? null;
+
+            if (!is_array($nilaiRapor)) {
+                continue;
+            }
+
+            foreach ($nilaiRapor as $mapelData) {
+                if (!is_array($mapelData)) {
+                    continue;
+                }
+
+                foreach ($mapelData as $value) {
+                    if (is_numeric($value)) {
+                        $values[] = (float) $value;
+                    }
+                }
+            }
+        }
+
+        if (count($values) === 0) {
+            return [
+                'count' => 0,
+                'min' => null,
+                'max' => null,
+                'avg' => null,
+                'mode' => null,
+                'mode_count' => 0,
+            ];
+        }
+
+        $min = min($values);
+        $max = max($values);
+        $avg = array_sum($values) / count($values);
+
+        $freq = [];
+        foreach ($values as $v) {
+            $key = rtrim(rtrim(sprintf('%.2f', $v), '0'), '.');
+            $freq[$key] = ($freq[$key] ?? 0) + 1;
+        }
+
+        $modeKey = null;
+        $modeCount = 0;
+        foreach ($freq as $k => $c) {
+            if ($c > $modeCount) {
+                $modeKey = $k;
+                $modeCount = $c;
+            }
+        }
+
+        return [
+            'count' => count($values),
+            'min' => $min,
+            'max' => $max,
+            'avg' => $avg,
+            'mode' => $modeKey !== null ? (float) $modeKey : null,
+            'mode_count' => $modeCount,
+        ];
     }
 
     private function getPeriodeAktif()

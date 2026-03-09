@@ -11,6 +11,10 @@ class DataDiriPendaftar extends Model
 
     protected $table = 'data_diri_pendaftar';
 
+    protected $casts = [
+        'nilai_rapor' => 'array',
+    ];
+
     protected $fillable = [
         'user_id',
         'gender',
@@ -27,6 +31,12 @@ class DataDiriPendaftar extends Model
         'photo',
         'akte_kelahiran',
         'kip',
+        'nilai_rapor',
+        'rapor_semester_1',
+        'rapor_semester_2',
+        'rapor_semester_3',
+        'rapor_semester_4',
+        'rapor_semester_5',
     ];
 
     public function user()

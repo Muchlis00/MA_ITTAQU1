@@ -12,6 +12,7 @@
     @php
     $steps = [
     ['name'=> 'Data Pendaftar', 'route' => 'formulir-ppdb.dataPendaftar'],
+    ['name'=> 'Nilai Rapor', 'route' => 'formulir-ppdb.nilaiRapor'],
     ['name'=> 'Dokumen Pendaftar', 'route' => 'formulir-ppdb.dokumenPendaftar'],
     ['name'=> 'Data Orang Tua', 'route' => 'formulir-ppdb.dataOrangTua'],
     ['name'=> 'Dokumen Orang Tua', 'route' => 'formulir-ppdb.dokumenOrangTua'],

@@ -63,9 +63,11 @@ class FormPendaftarController extends Controller
                 'previous_school_address' => 'required|string',
             ]);
 
+            $dataToSave = $request->except(['periode_id', 'name', '_token']);
+
             DataDiriPendaftar::updateOrCreate(
                 ['user_id' => $request->user_id], 
-                $request->except(['periode_id', 'name', '_token']) 
+                $dataToSave
             );
 
             User::find($request->user_id)->update(['name' => $request->name]);
@@ -82,6 +84,47 @@ class FormPendaftarController extends Controller
             \Log::error('Form submission error: ' . $e->getMessage());
             return back()->withErrors(['error' => $e->getMessage()]);
         }
+    }
+
+    public function nilaiRapor(Request $request)
+    {
+        $currentPeriode = PeriodePPDB::where('startDate', '<=', Carbon::now())
+            ->where('endDate', '>=', Carbon::now())
+            ->firstOrFail();
+        $currentUser = Auth::user();
+        $currentDataDiriPendaftar = DataDiriPendaftar::where('user_id', Auth::id())->first();
+
+        if (!$currentDataDiriPendaftar) {
+            return redirect()
+                ->route('formulir-ppdb.dataPendaftar')
+                ->with('failed', 'Silakan isi Data Pendaftar terlebih dahulu');
+        }
+
+        return view('form-pendaftar.nilai-rapor', compact('currentPeriode', 'currentUser', 'currentDataDiriPendaftar'));
+    }
+
+    public function storeNilaiRapor(Request $request)
+    {
+        $request->validate([
+            'nilai_rapor' => 'nullable|array',
+            'nilai_rapor.*.*' => 'nullable|numeric|min:0|max:100',
+        ]);
+
+        $dataDiri = DataDiriPendaftar::where('user_id', Auth::id())->first();
+
+        if (!$dataDiri) {
+            return redirect()
+                ->route('formulir-ppdb.dataPendaftar')
+                ->with('failed', 'Silakan isi Data Pendaftar terlebih dahulu');
+        }
+
+        $dataDiri->update([
+            'nilai_rapor' => $request->input('nilai_rapor', []),
+        ]);
+
+        return redirect()
+            ->route('formulir-ppdb.nilaiRapor')
+            ->with('success', 'Nilai rapor berhasil disimpan');
     }
 
     public function dataOrangTua()
@@ -169,9 +212,21 @@ class FormPendaftarController extends Controller
     }
     public function storeDokumenPendaftar(Request $request)
     {
+        $request->validate([
+            'ijazah' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+            'photo' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+            'akte_kelahiran' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+            'kip' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+            'rapor_semester_1' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+            'rapor_semester_2' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+            'rapor_semester_3' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+            'rapor_semester_4' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+            'rapor_semester_5' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
         $updateData = [];
 
-        $possibleFields = ['ijazah', 'photo', 'akte_kelahiran', 'kip'];
+        $possibleFields = ['ijazah', 'photo', 'akte_kelahiran', 'kip', 'rapor_semester_1', 'rapor_semester_2', 'rapor_semester_3', 'rapor_semester_4', 'rapor_semester_5'];
 
         foreach ($possibleFields as $field) {
             if ($request->hasFile($field)) {
@@ -179,8 +234,19 @@ class FormPendaftarController extends Controller
             }
         }
 
+        $dataDiri = DataDiriPendaftar::updateOrCreate(
+            ['user_id' => Auth::id()],
+            ['user_id' => Auth::id()]
+        );
+
+        if (!$request->hasFile('kip')) {
+            if (is_null($dataDiri->kip)) {
+                $updateData['kip'] = '-';
+            }
+        }
+
         if (!empty($updateData)) {
-            DataDiriPendaftar::where('user_id', Auth::id())->update($updateData);
+            $dataDiri->update($updateData);
         }
 
         return redirect()->route('formulir-ppdb.dokumenPendaftar')
