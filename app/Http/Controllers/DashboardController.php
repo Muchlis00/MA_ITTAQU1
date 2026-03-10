@@ -49,16 +49,53 @@ class DashboardController extends Controller
         $pendaftar = $this->getFilteredPendaftar($periodeFilter);
         $pembayaran = $this->getFilteredPembayaran($periodeFilter);
 
+        $pendaftarSelesaiCount = null;
+        if ($role == 'kepsek') {
+            $verifiedPembayaranUserIds = $pembayaran
+                ->where('verification_status', 'verified')
+                ->pluck('user_id')
+                ->unique()
+                ->toArray();
+
+            $pendaftarSelesaiCount = $pendaftar
+                ->where('verification_status', 'verified')
+                ->filter(function ($item) use ($verifiedPembayaranUserIds) {
+                    return in_array($item->user_id, $verifiedPembayaranUserIds, true);
+                })
+                ->count();
+        }
+
         $accountWithRolePendaftar = $this->getFilteredUsers($periodeFilter);
-        $belumMengisiFormulir = $accountWithRolePendaftar->filter(function ($user) use ($pendaftar) {
-            $userPendaftar = $pendaftar->firstWhere('user_id', $user->id);
-            return $userPendaftar && is_null($userPendaftar->verification_status);
-        })->count();
+
+$statusCount = [
+    'menunggu_verifikasi' => 0,
+    'selesai' => 0,
+    'perlu_perbaikan' => 0,
+    'belum_mengisi' => 0
+];
+
+foreach ($accountWithRolePendaftar as $user) {
+
+    $form = $pendaftar->firstWhere('user_id', $user->id);
+    $payment = $pembayaran->firstWhere('user_id', $user->id);
+
+    $formStatus = $form->verification_status ?? null;
+    $paymentStatus = $payment->verification_status ?? null;
+
+    $status = $this->getDashboardStatus($formStatus, $paymentStatus);
+
+    $statusCount[$status]++;
+}
+
+$pendaftarSelesaiCount = $statusCount['selesai'];
+$menungguVerifikasiCount = $statusCount['menunggu_verifikasi'];
+$perluPerbaikanCount = $statusCount['perlu_perbaikan'];
+$belumMengisiFormulir = $statusCount['belum_mengisi'];
 
         $charts = [];
         $raporStats = null;
         if ($role == 'kepsek') {
-            $raporStats = $this->calculateNilaiRaporStats($pendaftar);
+            $raporStats = $this->calculateNilaiRaporStatsByMapel($pendaftar);
             $charts = [
                 'PendaftarChart' => $this->createRegistrationTrendChart($periodeFilter),
                 'uncompleteRegistrationChart' => $this->createVerificationStatusChart($periodeFilter),
@@ -71,14 +108,17 @@ class DashboardController extends Controller
         }
 
         $data = array_merge([
-            'periodeList' => $periodeList,
-            'selectedPeriode' => $periodeFilter,
-            'periodeAktif' => $periodeAktif,
-            'pendaftar' => $pendaftar,
-            'pembayaran' => $pembayaran,
-            'belumMengisiFormulir' => $belumMengisiFormulir,
-            'raporStats' => $raporStats,
-        ], $charts);
+    'periodeList' => $periodeList,
+    'selectedPeriode' => $periodeFilter,
+    'periodeAktif' => $periodeAktif,
+    'pendaftar' => $pendaftar,
+    'pembayaran' => $pembayaran,
+    'belumMengisiFormulir' => $belumMengisiFormulir,
+    'raporStats' => $raporStats,
+    'pendaftarSelesaiCount' => $pendaftarSelesaiCount,
+    'menungguVerifikasiCount' => $menungguVerifikasiCount,
+    'perluPerbaikanCount' => $perluPerbaikanCount,
+], $charts);
 
         if (view()->exists("dashboard.{$role}")) {
             return view("dashboard.{$role}", $data);
@@ -87,34 +127,8 @@ class DashboardController extends Controller
         return view('dashboard', $data);
     }
 
-    private function calculateNilaiRaporStats($pendaftar)
+    private function calculateStatsFromValues(array $values)
     {
-        $values = [];
-
-        foreach ($pendaftar as $item) {
-            if (!$item->dataDiriPendaftar) {
-                continue;
-            }
-
-            $nilaiRapor = $item->dataDiriPendaftar->nilai_rapor ?? null;
-
-            if (!is_array($nilaiRapor)) {
-                continue;
-            }
-
-            foreach ($nilaiRapor as $mapelData) {
-                if (!is_array($mapelData)) {
-                    continue;
-                }
-
-                foreach ($mapelData as $value) {
-                    if (is_numeric($value)) {
-                        $values[] = (float) $value;
-                    }
-                }
-            }
-        }
-
         if (count($values) === 0) {
             return [
                 'count' => 0,
@@ -153,6 +167,78 @@ class DashboardController extends Controller
             'mode' => $modeKey !== null ? (float) $modeKey : null,
             'mode_count' => $modeCount,
         ];
+    }
+
+private function getDashboardStatus($formStatus, $paymentStatus)
+{
+    if (is_null($formStatus) && is_null($paymentStatus)) {
+        return 'belum_mengisi';
+    }
+
+    if ($formStatus === 'verified' && $paymentStatus === 'verified') {
+        return 'selesai';
+    }
+
+    if ($formStatus === 'rejected' || $paymentStatus === 'rejected') {
+        return 'perlu_perbaikan';
+    }
+
+    if (
+        ($formStatus === 'pending' && $paymentStatus === 'pending') ||
+        ($formStatus === 'verified' && $paymentStatus === 'pending')
+    ) {
+        return 'menunggu_verifikasi';
+    }
+
+    return 'belum_mengisi';
+}
+
+    private function calculateNilaiRaporStatsByMapel($pendaftar)
+    {
+        $mapelList = [
+            'bahasa_indonesia' => 'Bahasa Indonesia',
+            'matematika' => 'Matematika',
+            'ipa' => 'IPA (Ilmu Pengetahuan Alam)',
+            'ips' => 'IPS (Ilmu Pengetahuan Sosial)',
+            'bahasa_inggris' => 'Bahasa Inggris',
+        ];
+
+        $valuesByMapel = [];
+        foreach (array_keys($mapelList) as $key) {
+            $valuesByMapel[$key] = [];
+        }
+
+        foreach ($pendaftar as $item) {
+            if (!$item->dataDiriPendaftar) {
+                continue;
+            }
+
+            $nilaiRapor = $item->dataDiriPendaftar->nilai_rapor ?? null;
+            if (!is_array($nilaiRapor)) {
+                continue;
+            }
+
+            foreach ($mapelList as $mapelKey => $label) {
+                $mapelData = $nilaiRapor[$mapelKey] ?? null;
+                if (!is_array($mapelData)) {
+                    continue;
+                }
+
+                foreach ($mapelData as $value) {
+                    if (is_numeric($value)) {
+                        $valuesByMapel[$mapelKey][] = (float) $value;
+                    }
+                }
+            }
+        }
+
+        $result = [];
+        foreach ($mapelList as $mapelKey => $label) {
+            $stats = $this->calculateStatsFromValues($valuesByMapel[$mapelKey] ?? []);
+            $result[$mapelKey] = array_merge(['label' => $label], $stats);
+        }
+
+        return $result;
     }
 
     private function getPeriodeAktif()
@@ -348,89 +434,78 @@ private function getFilteredPembayaran($periodeFilter)
     }
 
     private function createVerificationStatusChart($periodeFilter = 'all')
-    {
-        $pendaftar = $this->getFilteredPendaftar($periodeFilter);
-        $accountWithRolePendaftar = $this->getFilteredUsers($periodeFilter);
+{
+    $pendaftar = $this->getFilteredPendaftar($periodeFilter);
+    $pembayaran = $this->getFilteredPembayaran($periodeFilter);
+    $users = $this->getFilteredUsers($periodeFilter);
 
-        $usersWithoutPendaftarPpdb = $accountWithRolePendaftar->filter(function ($user) use ($pendaftar) {
-        //     return !$pendaftar->contains('user_id', $user->id); 
-        // })->count();
-         $userPendaftar = $pendaftar->firstWhere('user_id', $user->id);
-    return $userPendaftar && is_null($userPendaftar->verification_status);
-})->count();
+    $statusCount = [
+        'menunggu_verifikasi' => 0,
+        'selesai' => 0,
+        'perlu_perbaikan' => 0,
+        'belum_mengisi' => 0
+    ];
 
-        $statusCount = collect($pendaftar)
-            ->groupBy('verification_status')
-            ->map(function ($group) {
-                return $group->count();  
-            })
-            ->pipe(function ($counts) use ($usersWithoutPendaftarPpdb) {
-                return [
-                    'pending' => $counts['pending'] ?? 0,
-                    'verified' => $counts['verified'] ?? 0,
-                    'rejected' => $counts['rejected'] ?? 0,
-                    'tidak_ada_di_pendaftar' => $usersWithoutPendaftarPpdb 
-                ];
-            });
+    foreach ($users as $user) {
 
-        $judul = 'Statistik Status Pendaftaran Pendaftar';
-        if ($periodeFilter !== 'all') {
-            $periode = PeriodePPDB::find($periodeFilter);
-            if ($periode) {
-                $judul = 'Status Pendaftaran' ;
-            }
-        }
+        $form = $pendaftar->firstWhere('user_id', $user->id);
+        $payment = $pembayaran->firstWhere('user_id', $user->id);
 
-        return Chartjs::build()
-            ->name("uncompleteRegistrationChart")
-            ->type("doughnut") 
-            ->size(["width" => 400, "height" => 300])
-            ->labels(['Menunggu Di Verifikasi', 'Pendaftaran Selesai', 'Formulir perlu perbaikan', 'Belum mengisi Formulir']) 
-            ->datasets([[
-                "label" => "Jumlah Pendaftar",
-                "backgroundColor" => [
-                    "rgba(255, 206, 86, 0.7)",  
-                    "rgba(75, 192, 192, 0.7)",  
-                    "rgba(255, 99, 132, 0.7)",  
-                    "rgba(201, 203, 207, 0.7)"  
-                ],
-                "borderColor" => [
-                    "rgba(255, 206, 86, 1)",
-                    "rgba(75, 192, 192, 1)",
-                    "rgba(255, 99, 132, 1)",
-                    "rgba(201, 203, 207, 1)"
-                ],
-                "data" => array_values($statusCount)  
-            ]])
-            ->options([
-                'responsive' => true,
-                'maintainAspectRatio' => false,
-                'plugins' => [
-                    'title' => [
-                        'display' => true,
-                        'text' => $judul,
-                        'align' => 'center',
-                        'font' => [
-                            'size' => 14,
-                            'weight' => 'bold'
-                        ],
-                        'padding' => 20
-                    ],
-                    'legend' => [
-                        'display' => true,
-                        'position' => 'bottom',
-                        'align' => 'center',
-                        'labels' => [
-                            'boxWidth' => 15,
-                            'padding' => 15,
-                            'font' => [
-                                'size' => 11
-                            ]
-                        ]
-                    ]
-                ]
-            ]);
+        $formStatus = $form->verification_status ?? null;
+        $paymentStatus = $payment->verification_status ?? null;
+
+        $status = $this->getDashboardStatus($formStatus, $paymentStatus);
+
+        $statusCount[$status]++;
     }
+
+    $judul = 'Statistik Status Pendaftaran Pendaftar';
+
+    return Chartjs::build()
+        ->name("uncompleteRegistrationChart")
+        ->type("doughnut")
+        ->size(["width" => 400, "height" => 300])
+        ->labels([
+            'Menunggu Di Verifikasi',
+            'Pendaftaran Selesai',
+            'Formulir perlu perbaikan',
+            'Belum mengisi Formulir'
+        ])
+        ->datasets([[
+            "label" => "Jumlah Pendaftar",
+            "backgroundColor" => [
+                "rgba(255, 206, 86, 0.7)",
+                "rgba(75, 192, 192, 0.7)",
+                "rgba(255, 99, 132, 0.7)",
+                "rgba(201, 203, 207, 0.7)"
+            ],
+            "borderColor" => [
+                "rgba(255, 206, 86, 1)",
+                "rgba(75, 192, 192, 1)",
+                "rgba(255, 99, 132, 1)",
+                "rgba(201, 203, 207, 1)"
+            ],
+            "data" => [
+                $statusCount['menunggu_verifikasi'],
+                $statusCount['selesai'],
+                $statusCount['perlu_perbaikan'],
+                $statusCount['belum_mengisi']
+            ]
+        ]])
+        ->options([
+            'responsive' => true,
+            'maintainAspectRatio' => false,
+            'plugins' => [
+                'title' => [
+                    'display' => true,
+                    'text' => $judul
+                ],
+                'legend' => [
+                    'position' => 'bottom'
+                ]
+            ]
+        ]);
+}
 
     private function createGenderDistributionChart($periodeFilter = 'all')
 {
@@ -664,8 +739,8 @@ private function getFilteredPembayaran($periodeFilter)
 
         $backgroundColors = [
             'rgba(75, 192, 192, 0.7)',
-            'rgba(255, 99, 132, 0.7)',
-            "rgba(201, 203, 207, 0.7)"
+            'rgba(201, 203, 207, 0.7)',
+            'rgba(255, 99, 132, 0.7)'
         ];
 
         $judul = 'Statistik KIP Pendaftar';

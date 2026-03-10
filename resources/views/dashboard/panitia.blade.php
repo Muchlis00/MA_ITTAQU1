@@ -110,11 +110,11 @@
                         <td class="hidden">{{ $item->wali->firstWhere('gender','Perempuan')->pendapatan ?? '-' }}</td>
 
                         <td class="border px-4 py-2">
-                            {{ $item->ready_to_verify ? 'Sudah kirim' : 'Telah Terverifikasi' }}
+                            {{ $item->ready_to_verify ? 'Sudah kirim' : 'Belum Kirim' }}
                         </td>
 
                         <td class="border px-4 py-2">
-                            {{ $item->verification_status }}
+                            {{ $item->verification_status ?? 'Belum Isi Formulir'}}
                         </td>
 
                         <td class="hidden">{{ $pembayaranItem->status_pembayaran ?? '-' }}</td>

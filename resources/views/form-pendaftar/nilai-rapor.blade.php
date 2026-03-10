@@ -40,9 +40,10 @@
                                             step="0.01"
                                             min="0"
                                             max="100"
+                                            oninput="if(this.value > 100) this.value = 100; if(this.value < 0) this.value = 0;"
                                             name="nilai_rapor[{{ $key }}][semester_{{ $s }}]"
                                             class="w-24 mx-auto block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                            value="{{ $nilaiRapor[$key]['semester_'.$s] ?? '' }}"
+                                            value="{{ $nilaiRapor[$key]['semester_'.$s] ?? '' }}" required
                                         >
                                     </td>
                                 @endfor
@@ -52,7 +53,7 @@
                 </table>
             </div>
 
-            <p class="text-xs text-gray-500 mt-2">Isi nilai 0-100. Boleh dikosongkan jika belum ada.</p>
+            <p class="text-xs text-gray-500 mt-2">Isi nilai 0-100.</p>
         </div>
 
         <div class="flex justify-end">

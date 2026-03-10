@@ -156,7 +156,13 @@
                                                     ['label' => 'Ijazah', 'file' => $pendaftar->DataDiriPendaftar->ijazah],
                                                     ['label' => 'Foto', 'file' => $pendaftar->DataDiriPendaftar->photo],
                                                     ['label' => 'Akte Kelahiran', 'file' => $pendaftar->DataDiriPendaftar->akte_kelahiran],
-                                                    ['label' => 'KIP', 'file' => $pendaftar->DataDiriPendaftar->kip, 'optional' => true],
+                                                    [
+        'label' => 'KIP',
+        'file' => ($pendaftar->DataDiriPendaftar->kip && $pendaftar->DataDiriPendaftar->kip !== '-') 
+                    ? $pendaftar->DataDiriPendaftar->kip 
+                    : null,
+        'optional' => true
+    ],
                                                 ];
                                             @endphp
                                             @foreach($dokumen as $dok)
@@ -181,7 +187,7 @@
                                                             @if($dok['file'])
                                                                 Tersedia
                                                             @else
-                                                                {{ isset($dok['optional']) && $dok['optional'] ? 'Tidak wajib' : 'Belum upload' }}
+                                                                {{ isset($dok['optional']) && $dok['optional'] ? 'Tidak Memiliki' : 'Belum upload' }}
                                                             @endif
                                                         </p>
                                                     </div>

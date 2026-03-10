@@ -55,9 +55,9 @@
                         <th class="hidden">Pekerjaan</th>
                         <th class="hidden">Pendapatan</th>
 
+                        <th class="hidden">Status Formulir</th>
+                        <th class="hidden">Status Pendaftaran</th>
                         <th class="px-4 py-2">Pembayaran</th>
-
-                        <th class="hidden">Pembayaran</th>
                         <th class="px-4 py-2">Status Pembayaran</th>
                     </tr>
                 </thead>
@@ -107,12 +107,16 @@
                         <td class="hidden">{{ $item->wali->firstWhere('gender','Perempuan')->pekerjaan ?? '-' }}</td>
                         <td class="hidden">{{ $item->wali->firstWhere('gender','Perempuan')->pendapatan ?? '-' }}</td>
 
-                        <td class="border px-4 py-2">
-                            {{ $pembayaranItem->status_pembayaran ?? '-' }}
+                        <td class="hidden">
+                            {{ $item->ready_to_verify ? 'Sudah kirim' : 'Belum Kirim' }}
                         </td>
 
-                        <td class="hidden">{{ $pembayaranItem->status_pembayaran ?? '-' }}</td>
-                        <td class="border px-4 py-2">{{ $pembayaranItem->verification_status ?? '-' }}</td>
+                        <td class="hidden">
+                            {{ $item->verification_status ?? 'Belum Isi Formulir'}}
+                        </td>
+
+                        <td class="border px-4 py-2">{{ $pembayaranItem->status_pembayaran ?? 'Belum Bayar' }}</td>
+                        <td class="border px-4 py-2">{{ $pembayaranItem->verification_status ?? 'Belum Kirim' }}</td>
                     </tr>
                     @endforeach
                 </tbody>
