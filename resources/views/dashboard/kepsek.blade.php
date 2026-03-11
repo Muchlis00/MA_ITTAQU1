@@ -65,7 +65,7 @@
             @endif
         </div>
 
-        <div class="mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- <div class="mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div class="summary-card bg-gradient-to-br from-blue-600 via-blue-500 to-blue-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 p-6 text-white border border-blue-400">
                 <div class="summary-card-content flex items-center justify-between">
                     <div class="flex-1">
@@ -189,45 +189,9 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
-        <div class="mb-8">
-            <h2 class="text-lg font-semibold text-gray-800 mb-4">Statistik Nilai Rapor</h2>
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="min-w-full border border-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-4 py-3 border text-left text-sm font-medium text-gray-700">Mata Pelajaran</th>
-                                <th class="px-4 py-3 border text-center text-sm font-medium text-gray-700">Nilai Tertinggi</th>
-                                <th class="px-4 py-3 border text-center text-sm font-medium text-gray-700">Nilai Terendah</th>
-                                <th class="px-4 py-3 border text-center text-sm font-medium text-gray-700">Rata-rata</th>
-                                <th class="px-4 py-3 border text-center text-sm font-medium text-gray-700">Modus</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white">
-                            @php
-                                $raporStatsTable = $raporStats ?? [];
-                            @endphp
-
-                            @forelse ($raporStatsTable as $stat)
-                                <tr class="hover:bg-gray-50">
-                                    <td class="px-4 py-3 border text-sm font-medium text-gray-900 whitespace-nowrap">{{ $stat['label'] ?? '-' }}</td>
-                                    <td class="px-4 py-3 border text-sm text-center text-gray-900">{{ isset($stat['max']) && $stat['max'] !== null ? number_format($stat['max'], 2) : '-' }}</td>
-                                    <td class="px-4 py-3 border text-sm text-center text-gray-900">{{ isset($stat['min']) && $stat['min'] !== null ? number_format($stat['min'], 2) : '-' }}</td>
-                                    <td class="px-4 py-3 border text-sm text-center text-gray-900">{{ isset($stat['avg']) && $stat['avg'] !== null ? number_format($stat['avg'], 2) : '-' }}</td>
-                                    <td class="px-4 py-3 border text-sm text-center text-gray-900">{{ isset($stat['mode']) && $stat['mode'] !== null ? number_format($stat['mode'], 2) : '-' }}</td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="px-4 py-6 text-center text-sm text-gray-500">Belum ada data nilai rapor.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+        
 
             <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200 xl:col-span-2">
@@ -272,7 +236,45 @@
                 </div>
             </div>
         </div>
+    <br>
 
+        <div class="mb-8">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">Statistik Nilai Rapor</h2>
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full border border-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-3 border text-left text-sm font-medium text-gray-700">Mata Pelajaran</th>
+                                <th class="px-4 py-3 border text-center text-sm font-medium text-gray-700">Nilai Tertinggi</th>
+                                <th class="px-4 py-3 border text-center text-sm font-medium text-gray-700">Nilai Terendah</th>
+                                <th class="px-4 py-3 border text-center text-sm font-medium text-gray-700">Rata-rata</th>
+                                <th class="px-4 py-3 border text-center text-sm font-medium text-gray-700">Modus</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white">
+                            @php
+                                $raporStatsTable = $raporStats ?? [];
+                            @endphp
+
+                            @forelse ($raporStatsTable as $stat)
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 border text-sm font-medium text-gray-900 whitespace-nowrap">{{ $stat['label'] ?? '-' }}</td>
+                                    <td class="px-4 py-3 border text-sm text-center text-gray-900">{{ isset($stat['max']) && $stat['max'] !== null ? number_format($stat['max'], 2) : '-' }}</td>
+                                    <td class="px-4 py-3 border text-sm text-center text-gray-900">{{ isset($stat['min']) && $stat['min'] !== null ? number_format($stat['min'], 2) : '-' }}</td>
+                                    <td class="px-4 py-3 border text-sm text-center text-gray-900">{{ isset($stat['avg']) && $stat['avg'] !== null ? number_format($stat['avg'], 2) : '-' }}</td>
+                                    <td class="px-4 py-3 border text-sm text-center text-gray-900">{{ isset($stat['mode']) && $stat['mode'] !== null ? number_format($stat['mode'], 2) : '-' }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="px-4 py-6 text-center text-sm text-gray-500">Belum ada data nilai rapor.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
         
              <style>
         .chart-container {

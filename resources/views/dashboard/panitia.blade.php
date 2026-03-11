@@ -89,7 +89,6 @@
                         <td class="hidden">{{ $item->dataDiriPendaftar->previous_school_name ?? '-'}}</td>
                         <td class="hidden">{{ $item->dataDiriPendaftar->previous_school_address ?? '-' }}</td>
 
-                        <!-- Data Ayah -->
                         <td class="hidden">{{ $item->wali->firstWhere('gender','Laki-Laki')->name ?? '-' }}</td>
                         <td class="hidden">{{ $item->wali->firstWhere('gender','Laki-Laki')->address ?? '-' }}</td>
                         <td class="hidden">{{ $item->wali->firstWhere('gender','Laki-Laki')->phone ?? '-' }}</td>
@@ -99,7 +98,6 @@
                         <td class="hidden">{{ $item->wali->firstWhere('gender','Laki-Laki')->pekerjaan ?? '-' }}</td>
                         <td class="hidden">{{ $item->wali->firstWhere('gender','Laki-Laki')->pendapatan ?? '-' }}</td>
 
-                        <!-- Data Ibu -->
                         <td class="hidden">{{ $item->wali->firstWhere('gender','Perempuan')->name ?? '-' }}</td>
                         <td class="hidden">{{ $item->wali->firstWhere('gender','Perempuan')->address ?? '-' }}</td>
                         <td class="hidden">{{ $item->wali->firstWhere('gender','Perempuan')->phone ?? '-' }}</td>

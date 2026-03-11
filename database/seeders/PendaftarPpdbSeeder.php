@@ -207,6 +207,6 @@ class PendaftarPpdbSeeder extends Seeder
             ]);
         }
 
-        $this->command->info('Berhasil membuat 30 pendaftar PPDB dummy!');
+        $this->command->info('Berhasil 30 data');
     }
 }
