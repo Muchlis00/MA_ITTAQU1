@@ -35,7 +35,7 @@ class TenagaPendidikSeeder extends Seeder
             [
                 'nama_guru' => 'Anita Ardiyani, S.Pd',
                 'nip' => '198502022008081224',
-                'tempat_guru' => '',
+                'tempat_guru' => 'Surabaya',
                 'tgl_guru' => '1985-02-02',
                 'jk_guru' => 'Perempuan',
                 'jabatan' => 'Guru',
