@@ -263,7 +263,20 @@
                                     <td class="px-4 py-3 border text-sm text-center text-gray-900">{{ isset($stat['max']) && $stat['max'] !== null ? number_format($stat['max'], 2) : '-' }}</td>
                                     <td class="px-4 py-3 border text-sm text-center text-gray-900">{{ isset($stat['min']) && $stat['min'] !== null ? number_format($stat['min'], 2) : '-' }}</td>
                                     <td class="px-4 py-3 border text-sm text-center text-gray-900">{{ isset($stat['avg']) && $stat['avg'] !== null ? number_format($stat['avg'], 2) : '-' }}</td>
-                                    <td class="px-4 py-3 border text-sm text-center text-gray-900">{{ isset($stat['mode']) && $stat['mode'] !== null ? number_format($stat['mode'], 2) : '-' }}</td>
+                                    <td class="px-4 py-3 border text-sm text-center text-gray-900">
+    @if(isset($stat['mode']) && is_array($stat['mode']) && count($stat['mode']) > 0)
+        @php
+            $formattedModes = array_map(function($val) { 
+                return number_format($val, 2); 
+            }, $stat['mode']);
+        @endphp
+        {{ implode(', ', $formattedModes) }}
+    @elseif(isset($stat['mode']) && is_numeric($stat['mode']))
+        {{ number_format($stat['mode'], 2) }}
+    @else
+        -
+    @endif
+</td>
                                 </tr>
                             @empty
                                 <tr>

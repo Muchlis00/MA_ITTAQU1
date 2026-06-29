@@ -150,12 +150,14 @@ $belumMengisiFormulir = $statusCount['belum_mengisi'];
             $freq[$key] = ($freq[$key] ?? 0) + 1;
         }
 
-        $modeKey = null;
+        $modeKey = [];
         $modeCount = 0;
         foreach ($freq as $k => $c) {
             if ($c > $modeCount) {
-                $modeKey = $k;
+                $modeKey = [$k];
                 $modeCount = $c;
+            }elseif ($c === $modeCount && $modeCount > 0) {
+                $modeKey[] = $k;
             }
         }
 
@@ -164,7 +166,7 @@ $belumMengisiFormulir = $statusCount['belum_mengisi'];
             'min' => $min,
             'max' => $max,
             'avg' => $avg,
-            'mode' => $modeKey !== null ? (float) $modeKey : null,
+            'mode' => !empty($modeKey) ? array_map('floatval', $modeKey) : null,
             'mode_count' => $modeCount,
         ];
     }
@@ -459,7 +461,7 @@ private function getFilteredPembayaran($periodeFilter)
         $statusCount[$status]++;
     }
 
-    $judul = 'Statistik Status Pendaftaran Pendaftar';
+    $judul = 'Statistik Status Pendaftar';
 
     return Chartjs::build()
         ->name("uncompleteRegistrationChart")
