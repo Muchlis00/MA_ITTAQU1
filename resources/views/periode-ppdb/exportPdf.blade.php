@@ -2,80 +2,118 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Export Pdf</title>
-    <script src="https://cdn.tailwindcss.com"></script> 
+    <title>Laporan Hasil PPDB</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div class="max-w-4xl mx-auto border-b-2 border-black pb-4 mb-8">
-        <div class="flex items-center justify-between mb-2">
-            <div class="w-32 h-32 flex items-center justify-center">
-                <img src="{{ asset('img/maittaqu.png') }}" alt="Ma ittaqu" class="max-w-full max-h-full object-contain">
+<body class="text-sm">
+
+<div class="max-w-4xl mx-auto">
+
+    <!-- Kop Surat -->
+    <div class="border-b-2 border-black pb-4 mb-6">
+        <div class="flex items-center">
+
+            <div class="w-28">
+                <img src="{{ asset('img/maittaqu.png') }}" class="w-24">
             </div>
-            
-            <div class="text-center flex-1 px-4">
-                <h2 class="text-lg md:text-xl font-semibold">YAYASAN PENDIDIKAN ITTAQU SURABAYA</h2>
-                <h1 class="text-xl md:text-2xl font-bold uppercase">MADRASAH ALIYAH ITTAQU</h1>
-                <h2 class="text-lg md:text-xl font-semibold">“ Terakreditasi B “</h2>
-                <h2 class="text-lg md:text-xl font-semibold">NSM : 131 235 780 012</h2>
-                <div class="text-sm md:text-base mt-1">
-                    <p>Jl. Menanggal IV No. 31-F Telp. (031) 8275887 Gayungan</p>
-                    <p>S U R A B A Y A 60234</p>
-                </div>
+
+            <div class="text-center flex-1">
+                <h2 class="text-lg font-semibold">YAYASAN PENDIDIKAN ITTAQU SURABAYA</h2>
+                <h1 class="text-xl font-bold uppercase">MADRASAH ALIYAH ITTAQU</h1>
+                <p>“Terakreditasi B”</p>
+                <p>NSM : 131 235 780 012</p>
+                <p class="text-xs mt-1">
+                    Jl. Menanggal IV No.31-F Telp. (031) 8275887 Gayungan <br>
+                    SURABAYA 60234
+                </p>
             </div>
-        </div>
-        <div class="border-t-2 border-black mt-2"></div>
-    </div>
-    
-    <div class="max-w-4xl mx-auto px-4">
-        <div class="mb-4">
-            <p class="text-right">Surabaya, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
 
         </div>
-        
-        <div class="mb-4">
-            <p>Nomor: 001/DP/VI/ {{ \Carbon\Carbon::now()->translatedFormat('Y') }} </p>
-            <p>Lampiran: -</p>
-            <p>Perihal: Hasil PPDB Tahun Ajaran {{ date('Y') }}/{{ date('Y')+1 }} </p>
-            
-        </div>
-    
-        
-        <div class="mb-8">
-            <p>Berhubung dilaksanakannya kegiatan PPDB TAHUN AJARAN {{ date('Y') }}/{{ date('Y')+1 }} pada Tanggal {{ date('d/m/Y', strtotime($periode->startDate)) }}
-                dan berakhir pada Tanggal {{ date('d/m/Y', strtotime($periode->endDate)) }}. dengan rincian sebagai berikut :
+    </div>
+
+
+    <!-- Tanggal -->
+    <div class="text-right mb-4">
+        Surabaya, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}
+    </div>
+
+
+    <!-- Nomor Surat -->
+    <div class="mb-6">
+        <p>Nomor : 001/PPDB/MAI/{{ date('Y') }}</p>
+        <p>Lampiran : -</p>
+        <p>Perihal : Laporan Hasil PPDB</p>
+    </div>
+
+
+    <!-- Isi Surat -->
+    <div class="mb-6 text-justify">
+
+        <p class="indent-8 mb-3">
+            Berdasarkan pelaksanaan kegiatan Penerimaan Peserta Didik Baru (PPDB)
+            Tahun Ajaran {{ date('Y') }}/{{ date('Y')+1 }} yang dilaksanakan mulai tanggal
+            {{ \Carbon\Carbon::parse($periode->startDate)->translatedFormat('d F Y') }}
+            sampai dengan
+            {{ \Carbon\Carbon::parse($periode->endDate)->translatedFormat('d F Y') }},
+            maka diperoleh data hasil pendaftaran sebagai berikut:
         </p>
-        <br>
-            <p class="text-justify indent-8">
-                1. Total Pendaftar berjumlah  {{ $totalPendaftar }} siswa           </p>
-                <p class="text-justify indent-8">
-                2. Total Pendaftar yang dengan status perbaikan berjumlah {{ $totalRejec }} siswa           </p>
-            <p class="text-justify indent-8">
-                3. Total Pendaftar yang menunggu verifikasi berjumlah {{ $totalPend }} siswa           </p>
-                <p class="text-justify indent-8">
-                4. Total Pendaftar yang hanya daftar akun berjumlah  {{ $totalaccount }} siswa           </p>
-                <p class="text-justify indent-8">
-                5. Total Pendaftar memiliki KIP berjumlah {{ $kip }}  siswa         </p>
-                <p class="text-justify indent-8">
-                6. Total Pendaftar yang tidak memiliki KIP berjumlah {{ $nokip }} siswa           </p>
-                <p class="text-justify indent-8">
-                7. Total Pendaftar Laki-Laki {{ $genL }} siswa          </p>
-                <p class="text-justify indent-8">
-                8. Total Pendaftar Perempuan {{ $genP }} siswa          </p>
 
-                <br>
-            <p class="mb-8">
-                Demikian surat ini kami sampaikan, atas perhatian dan kerjasamanya kami ucapkan terima kasih.
-            </p>
-        </div>
-        
-        <div class="text-center">
-            <p class="">Hormat kami,</p>
-            <p class="mb-12">Kepala Sekolah MA ITTAQU SURABAYA</p>
+        <div class="ml-8 space-y-1">
 
-            <p class="font-semibold">{{ $kepsek->name }}</p>
-            <p>NIP : {{ $kepsek->nip ?? '15468986548245' }}</p>
+            <p>1. Total pendaftar sebanyak {{ $totalPendaftar }} siswa.</p>
+            <p>2. Total pendaftar selesai verifikasi sebanyak {{ $totalSelesai }} siswa.</p>
+            <p>3. Pendaftar dengan status menunggu verifikasi
+                sebanyak {{ $totalPend }} siswa.</p>
+
+            <p>4. Pendaftar dengan status perlu perbaikan formulir
+                sebanyak {{ $totalRejec }}siswa.</p>
+
+            <p>5. Pengguna yang  belum
+                mengisi formulir sebanyak {{ $totalaccount }} siswa.</p>
+
+            <p>6. Pendaftar berjenis kelamin Laki-Laki
+                sebanyak {{ $genL }}siswa.</p>
+
+            <p>7. Pendaftar berjenis kelamin Perempuan
+                sebanyak {{ $genP }} siswa.</p>
+
+            <p>8. Pendaftar yang memiliki Kartu Indonesia Pintar (KIP)
+                sebanyak {{ $kip }} siswa.</p>
+
+            <p>9. Pendaftar yang tidak memiliki KIP
+                sebanyak {{ $nokip }} siswa.</p>
+            <!-- <p>10. Pendaftar dengan domisili terbanyak adalah {{ $domisiliTerbanyak->keys()->first() }}
+                sebanyak {{ $domisiliTerbanyak->first() }} siswa.</p>
+            <p>11. Pendaftar dengan asal sekolah terbanyak adalah {{ $sekolahTerbanyak->keys()->first() }}
+                sebanyak {{ $sekolahTerbanyak->first() }} siswa.</p> -->
+
         </div>
+
+        <p class="indent-8 mt-4">
+            Demikian laporan hasil pelaksanaan PPDB ini disampaikan
+            sebagai bahan informasi dan evaluasi pelaksanaan kegiatan
+            penerimaan peserta didik baru pada tahun ajaran ini.
+            Atas perhatian dan kerjasamanya kami ucapkan terima kasih.
+        </p>
+
     </div>
+
+
+    <!-- Tanda Tangan -->
+    <div class="text-center mt-12">
+
+        <p>Hormat kami,</p>
+        <p>Kepala Sekolah MA ITTAQU SURABAYA</p>
+
+        <div class="mt-16 font-semibold">
+            {{ $kepsek->name }}
+        </div>
+
+        <p>NIP : {{ $kepsek->nip ?? '198007092001011107' }}</p>
+
+    </div>
+
+</div>
+
 </body>
 </html>
