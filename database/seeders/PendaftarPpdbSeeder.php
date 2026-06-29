@@ -17,10 +17,10 @@ class PendaftarPpdbSeeder extends Seeder
     public function run()
     {
         $periode = PeriodePpdb::firstOrCreate(
-            ['name' => 'Penerimaan Peserta Didik Baru 2025/2026'],
+            ['name' => 'Penerimaan Peserta Didik Baru 2026/2027'],
             [
-                'startDate' => '2026-03-01',
-                'endDate' => '2026-03-31',
+                'startDate' => '2026-06-01',
+                'endDate' => '2026-06-30',
             ]
         );
 
@@ -79,7 +79,6 @@ class PendaftarPpdbSeeder extends Seeder
                     break;
             }
 
-            
             $pendaftar = PendaftarPpdb::create([
                 'id_periode' => $periode->id_periode,
                 'user_id' => $user->id,
@@ -88,7 +87,6 @@ class PendaftarPpdbSeeder extends Seeder
                 'verifier_id' => $formStatus === 'verified' ? 2 : null,
             ]);
 
-           
             if ($formStatus === null) {
                 continue;
             }
@@ -114,42 +112,42 @@ class PendaftarPpdbSeeder extends Seeder
             ];
 
             $nilaiRapor = [
-    'bahasa_indonesia' => [
-        'semester_1' => $faker->numberBetween(70, 95),
-        'semester_2' => $faker->numberBetween(70, 95),
-        'semester_3' => $faker->numberBetween(70, 95),
-        'semester_4' => $faker->numberBetween(70, 95),
-        'semester_5' => $faker->numberBetween(70, 95),
-    ],
-    'matematika' => [
-        'semester_1' => $faker->numberBetween(65, 95),
-        'semester_2' => $faker->numberBetween(65, 95),
-        'semester_3' => $faker->numberBetween(65, 95),
-        'semester_4' => $faker->numberBetween(65, 95),
-        'semester_5' => $faker->numberBetween(65, 95),
-    ],
-    'ipa' => [
-        'semester_1' => $faker->numberBetween(70, 95),
-        'semester_2' => $faker->numberBetween(70, 95),
-        'semester_3' => $faker->numberBetween(70, 95),
-        'semester_4' => $faker->numberBetween(70, 95),
-        'semester_5' => $faker->numberBetween(70, 95),
-    ],
-    'ips' => [
-        'semester_1' => $faker->numberBetween(65, 95),
-        'semester_2' => $faker->numberBetween(65, 95),
-        'semester_3' => $faker->numberBetween(65, 95),
-        'semester_4' => $faker->numberBetween(65, 95),
-        'semester_5' => $faker->numberBetween(65, 95),
-    ],
-    'bahasa_inggris' => [
-        'semester_1' => $faker->numberBetween(70, 95),
-        'semester_2' => $faker->numberBetween(70, 95),
-        'semester_3' => $faker->numberBetween(70, 95),
-        'semester_4' => $faker->numberBetween(70, 95),
-        'semester_5' => $faker->numberBetween(70, 95),
-    ],
-];
+                'bahasa_indonesia' => [
+                    'semester_1' => $faker->numberBetween(70, 95),
+                    'semester_2' => $faker->numberBetween(70, 95),
+                    'semester_3' => $faker->numberBetween(70, 95),
+                    'semester_4' => $faker->numberBetween(70, 95),
+                    'semester_5' => $faker->numberBetween(70, 95),
+                ],
+                'matematika' => [
+                    'semester_1' => $faker->numberBetween(65, 95),
+                    'semester_2' => $faker->numberBetween(65, 95),
+                    'semester_3' => $faker->numberBetween(65, 95),
+                    'semester_4' => $faker->numberBetween(65, 95),
+                    'semester_5' => $faker->numberBetween(65, 95),
+                ],
+                'ipa' => [
+                    'semester_1' => $faker->numberBetween(70, 95),
+                    'semester_2' => $faker->numberBetween(70, 95),
+                    'semester_3' => $faker->numberBetween(70, 95),
+                    'semester_4' => $faker->numberBetween(70, 95),
+                    'semester_5' => $faker->numberBetween(70, 95),
+                ],
+                'ips' => [
+                    'semester_1' => $faker->numberBetween(65, 95),
+                    'semester_2' => $faker->numberBetween(65, 95),
+                    'semester_3' => $faker->numberBetween(65, 95),
+                    'semester_4' => $faker->numberBetween(65, 95),
+                    'semester_5' => $faker->numberBetween(65, 95),
+                ],
+                'bahasa_inggris' => [
+                    'semester_1' => $faker->numberBetween(70, 95),
+                    'semester_2' => $faker->numberBetween(70, 95),
+                    'semester_3' => $faker->numberBetween(70, 95),
+                    'semester_4' => $faker->numberBetween(70, 95),
+                    'semester_5' => $faker->numberBetween(70, 95),
+                ],
+            ];
 
             $dataDiri = DataDiriPendaftar::create([
                 'user_id' => $user->id,
@@ -175,35 +173,45 @@ class PendaftarPpdbSeeder extends Seeder
                 'rapor_semester_5' => 'example/rapot.jpg',
             ]);
 
-           
-            $jumlahWali = $faker->numberBetween(1, 2);
+            /*
+            WALI
+            */
+            $jumlahWali = 2; 
 
-            for ($j = 0; $j < $jumlahWali; $j++) {
+$genders = ['Laki-laki', 'Perempuan'];
 
-                WaliPendaftar::create([
-                    'data_diri_pendaftar_id' => $dataDiri->id,
-                    'name' => $faker->name,
-                    'address' => $faker->address,
-                    'phone' => $faker->phoneNumber,
-                    'place_of_birth' => $faker->city,
-                    'date_of_birth' => $faker->date('Y-m-d', '-30 years'),
-                    'gender' => $faker->randomElement(['Laki-laki', 'Perempuan']),
-                    'pekerjaan' => $faker->jobTitle,
-                    'pendapatan' => $faker->numberBetween(1000000, 10000000),
-                    'ktp' => 'example/ktp-a.jpg',
-                    'kartu_keluarga' => 'example/kk.jpg',
-                ]);
+for ($j = 0; $j < $jumlahWali; $j++) {
 
-            }
+    WaliPendaftar::create([
+        'data_diri_pendaftar_id' => $dataDiri->id,
+        'name' => $faker->name($genders[$j] === 'Laki-laki' ? 'male' : 'female'),
+        'address' => $faker->address,
+        'phone' => $faker->phoneNumber,
+        'place_of_birth' => $faker->city,
+        'date_of_birth' => $faker->date('Y-m-d', '-30 years'),
+        'gender' => $genders[$j],
+        'pekerjaan' => $faker->jobTitle,
+        'pendapatan' => $faker->numberBetween(1000000, 10000000),
+        'ktp' => 'example/ktp-a.jpg',
+        'kartu_keluarga' => 'example/kk.jpg',
+    ]);
+}
 
-           
+            /*
+            STATUS PEMBAYARAN 
+            */
+            $statusPembayaran = match ($paymentStatus) {
+                'verified' => $faker->randomElement(['Lunas', '40%']),
+                default => 'Belum Lunas',
+            };
+
             PembayaranPpdb::create([
                 'id_periode' => $periode->id_periode,
                 'user_id' => $user->id,
                 'verifier_id' => $paymentStatus === 'verified' ? 3 : null,
                 'verification_status' => $paymentStatus,
                 'bukti_pembayaran' => 'example/bayar.jpg',
-                'status_pembayaran' => 'lunas',
+                'status_pembayaran' => $statusPembayaran,
             ]);
         }
 
