@@ -219,6 +219,7 @@
                                                     ['label' => 'Rapor Semester 3', 'file' => $pendaftar->DataDiriPendaftar->rapor_semester_3 ?? null],
                                                     ['label' => 'Rapor Semester 4', 'file' => $pendaftar->DataDiriPendaftar->rapor_semester_4 ?? null],
                                                     ['label' => 'Rapor Semester 5', 'file' => $pendaftar->DataDiriPendaftar->rapor_semester_5 ?? null],
+                                                    ['label' => 'Rapor Semester 6', 'file' => $pendaftar->DataDiriPendaftar->rapor_semester_6 ?? null],
                                                 ];
                                             @endphp
                                             @foreach($raporDocs as $dok)
@@ -290,7 +291,7 @@
                                                 <thead class="bg-gray-50">
                                                     <tr>
                                                         <th class="px-3 py-2 border text-left text-sm font-medium text-gray-700">Mata Pelajaran</th>
-                                                        @for ($s = 1; $s <= 5; $s++)
+                                                        @for ($s = 1; $s <= 6; $s++)
                                                             <th class="px-3 py-2 border text-center text-sm font-medium text-gray-700">Semester {{ $s }}</th>
                                                         @endfor
                                                     </tr>
@@ -299,7 +300,7 @@
                                                     @foreach ($mapelList as $key => $label)
                                                         <tr>
                                                             <td class="px-3 py-2 border text-sm text-gray-700 whitespace-nowrap">{{ $label }}</td>
-                                                            @for ($s = 1; $s <= 5; $s++)
+                                                            @for ($s = 1; $s <= 6; $s++)
                                                                 <td class="px-3 py-2 border text-sm text-center text-gray-900">
                                                                     {{ $nilaiRapor[$key]['semester_'.$s] ?? '-' }}
                                                                 </td>

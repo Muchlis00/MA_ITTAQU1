@@ -30,6 +30,9 @@ $formFields = [
 ['name'=> 'Rapor Semester 5',
 'key' =>'rapor_semester_5',
 'value' => $currentDataDiriPendaftar->rapor_semester_5],
+['name'=> 'Rapor Semester 6',
+'key' =>'rapor_semester_6',
+'value' => $currentDataDiriPendaftar->rapor_semester_6],
 ];
 @endphp
 <form action="{{ route('formulir-ppdb.storeDokumenPendaftar') }}" method="POST" class="space-y-6" enctype="multipart/form-data">

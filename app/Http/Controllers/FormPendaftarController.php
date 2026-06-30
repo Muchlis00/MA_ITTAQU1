@@ -106,8 +106,8 @@ class FormPendaftarController extends Controller
     public function storeNilaiRapor(Request $request)
     {
         $request->validate([
-            'nilai_rapor' => 'nullable|array',
-            'nilai_rapor.*.*' => 'nullable|numeric|min:0|max:100',
+            'nilai_rapor' => 'required|array',
+            'nilai_rapor.*.*' => 'required|numeric|min:0|max:100',
         ]);
 
         $dataDiri = DataDiriPendaftar::where('user_id', Auth::id())->first();
@@ -213,20 +213,21 @@ class FormPendaftarController extends Controller
     public function storeDokumenPendaftar(Request $request)
     {
         $request->validate([
-            'ijazah' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
-            'photo' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
-            'akte_kelahiran' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+            'ijazah' => 'required|file|mimes:jpg,jpeg,png|max:2048',
+            'photo' => 'required|file|mimes:jpg,jpeg,png|max:2048',
+            'akte_kelahiran' => 'required|file|mimes:jpg,jpeg,png|max:2048',
             'kip' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
-            'rapor_semester_1' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
-            'rapor_semester_2' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
-            'rapor_semester_3' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
-            'rapor_semester_4' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
-            'rapor_semester_5' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+            'rapor_semester_1' => 'required|file|mimes:jpg,jpeg,png|max:2048',
+            'rapor_semester_2' => 'required|file|mimes:jpg,jpeg,png|max:2048',
+            'rapor_semester_3' => 'required|file|mimes:jpg,jpeg,png|max:2048',
+            'rapor_semester_4' => 'required|file|mimes:jpg,jpeg,png|max:2048',
+            'rapor_semester_5' => 'required|file|mimes:jpg,jpeg,png|max:2048',
+            'rapor_semester_6' => 'required|file|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $updateData = [];
 
-        $possibleFields = ['ijazah', 'photo', 'akte_kelahiran', 'kip', 'rapor_semester_1', 'rapor_semester_2', 'rapor_semester_3', 'rapor_semester_4', 'rapor_semester_5'];
+        $possibleFields = ['ijazah', 'photo', 'akte_kelahiran', 'kip', 'rapor_semester_1', 'rapor_semester_2', 'rapor_semester_3', 'rapor_semester_4', 'rapor_semester_5', 'rapor_semester_6'];
 
         foreach ($possibleFields as $field) {
             if ($request->hasFile($field)) {

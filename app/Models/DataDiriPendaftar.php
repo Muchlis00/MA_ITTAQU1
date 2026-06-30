@@ -37,6 +37,7 @@ class DataDiriPendaftar extends Model
         'rapor_semester_3',
         'rapor_semester_4',
         'rapor_semester_5',
+        'rapor_semester_6',
     ];
 
     public function user()

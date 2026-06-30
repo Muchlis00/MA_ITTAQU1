@@ -118,6 +118,7 @@ class PendaftarPpdbSeeder extends Seeder
                     'semester_3' => $faker->numberBetween(70, 95),
                     'semester_4' => $faker->numberBetween(70, 95),
                     'semester_5' => $faker->numberBetween(70, 95),
+                    'semester_6' => $faker->numberBetween(70, 95),
                 ],
                 'matematika' => [
                     'semester_1' => $faker->numberBetween(65, 95),
@@ -125,6 +126,7 @@ class PendaftarPpdbSeeder extends Seeder
                     'semester_3' => $faker->numberBetween(65, 95),
                     'semester_4' => $faker->numberBetween(65, 95),
                     'semester_5' => $faker->numberBetween(65, 95),
+                    'semester_6' => $faker->numberBetween(65, 95),
                 ],
                 'ipa' => [
                     'semester_1' => $faker->numberBetween(70, 95),
@@ -132,6 +134,7 @@ class PendaftarPpdbSeeder extends Seeder
                     'semester_3' => $faker->numberBetween(70, 95),
                     'semester_4' => $faker->numberBetween(70, 95),
                     'semester_5' => $faker->numberBetween(70, 95),
+                    'semester_6' => $faker->numberBetween(70, 95),
                 ],
                 'ips' => [
                     'semester_1' => $faker->numberBetween(65, 95),
@@ -139,6 +142,7 @@ class PendaftarPpdbSeeder extends Seeder
                     'semester_3' => $faker->numberBetween(65, 95),
                     'semester_4' => $faker->numberBetween(65, 95),
                     'semester_5' => $faker->numberBetween(65, 95),
+                    'semester_6' => $faker->numberBetween(65, 95),
                 ],
                 'bahasa_inggris' => [
                     'semester_1' => $faker->numberBetween(70, 95),
@@ -146,6 +150,7 @@ class PendaftarPpdbSeeder extends Seeder
                     'semester_3' => $faker->numberBetween(70, 95),
                     'semester_4' => $faker->numberBetween(70, 95),
                     'semester_5' => $faker->numberBetween(70, 95),
+                    'semester_6' => $faker->numberBetween(70, 95),
                 ],
             ];
 
@@ -171,6 +176,7 @@ class PendaftarPpdbSeeder extends Seeder
                 'rapor_semester_3' => 'example/rapot.jpg',
                 'rapor_semester_4' => 'example/rapot.jpg',
                 'rapor_semester_5' => 'example/rapot.jpg',
+                'rapor_semester_6' => 'example/rapot.jpg',
             ]);
 
             /*
