@@ -20,7 +20,7 @@ class LandingpageController extends Controller
         return view('welcome', [
             'isPeriodActive' => $activePeriod ? true : false,
             'activePeriod' => $activePeriod,
-            'informasiPembayaran' => $activePeriod?->detail_pembayaran->first()?->detail_pembayaran ?? null,
+            'informasiPembayaran' => $activePeriod?->detail_pembayaran->first() ?? null,
             'agreementContent' => $activePeriod?->agreement->first()?->content ?? null,
             'orientasi' => $activePeriod?->orientasi ?? collect()
         ]);

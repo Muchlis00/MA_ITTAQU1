@@ -207,7 +207,7 @@ for ($j = 0; $j < $jumlahWali; $j++) {
             STATUS PEMBAYARAN 
             */
             $statusPembayaran = match ($paymentStatus) {
-                'verified' => $faker->randomElement(['Lunas', '40%']),
+                'verified' => $faker->randomElement(['Lunas', '50%']),
                 default => 'Belum Lunas',
             };
 

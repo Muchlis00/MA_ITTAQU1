@@ -10,7 +10,16 @@ class InformasiPembayaran extends Model
     protected $fillable = [
         "id_periode",
         "created_by",
-        "detail_pembayaran"
+        "detail_pembayaran",
+        "biaya_administrasi",
+        "biaya_atribut",
+        "minimal_pembayaran_pertama",
+        "potongan_lunas",
+    ];
+
+    protected $casts = [
+        'biaya_administrasi' => 'array',
+        'biaya_atribut' => 'array',
     ];
     public function periode()
     {

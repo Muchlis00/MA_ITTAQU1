@@ -33,7 +33,7 @@
                                 required>
                                 <option value="">Pilih Status Pembayaran</option>
                                 <!-- <option value="Belum Lunas">Belum Lunas</option> -->
-                                <option value="40%">40%</option>
+                                <option value="50%">50%</option>
                                 <option value="Lunas">Lunas</option>
                             </select>
                         </div>

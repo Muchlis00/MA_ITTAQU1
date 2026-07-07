@@ -8,9 +8,63 @@
             <h2 class="text-2xl font-bold leading-tight text-gray-900">Rincian Pembayaran</h2>
             <div>Periode PPDB: {{ date('F Y', strtotime($currentPeriode->startDate)) . ' - ' . date('F Y', strtotime($currentPeriode->endDate)) }}</div>
         </div>
+        @php
+            $gender = strtolower($currentDataDiriPendaftar->gender ?? '');
+            $isPutri = str_contains($gender, 'perempuan') || str_contains($gender, 'putri');
+            $isPutra = str_contains($gender, 'laki') || str_contains($gender, 'putra');
+            
+            $info = $informasiPembayaran;
+            $administrasi = ($info && !empty($info->biaya_administrasi)) ? $info->biaya_administrasi : [
+                ["jumlah" => 100000], ["jumlah" => 300000], ["jumlah" => 300000], 
+                ["jumlah" => 300000], ["jumlah" => 100000], ["jumlah" => 100000], ["jumlah" => 60000]
+            ];
+            $atribut = ($info && !empty($info->biaya_atribut)) ? $info->biaya_atribut : [
+                ["putra" => 200000, "putri" => 200000],
+                ["putra" => 200000, "putri" => 200000],
+                ["putra" => 25000, "putri" => 25000],
+                ["putra" => 0, "putri" => 150000],
+                ["putra" => 25000, "putri" => 25000],
+                ["putra" => 90000, "putri" => 90000]
+            ];
+            
+            $total_administrasi = collect($administrasi)->sum('jumlah');
+            $total_atribut_putra = collect($atribut)->sum('putra');
+            $total_atribut_putri = collect($atribut)->sum('putri');
+            $grand_total_putra = $total_administrasi + $total_atribut_putra;
+            $grand_total_putri = $total_administrasi + $total_atribut_putri;
+            
+            $min_pembayaran = $info ? $info->minimal_pembayaran_pertama : 50;
+            $potongan_lunas = $info ? $info->potongan_lunas : 150000;
+        @endphp
+
+        @if($isPutra)
+        <div class="mb-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg text-blue-900 shadow-sm">
+            <div class="flex items-center gap-2 font-bold mb-1">
+                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span>Informasi Pembayaran (Siswa Putra)</span>
+            </div>
+            <p class="text-sm">
+                Total Biaya: <strong>Rp. {{ number_format($grand_total_putra, 0, ',', '.') }},-</strong><br>
+                Minimal Pembayaran Pertama ({{ $min_pembayaran }}%): <strong>Rp. {{ number_format($grand_total_putra * ($min_pembayaran / 100), 0, ',', '.') }},-</strong><br>
+                Pembayaran LUNAS (Mendapat Potongan Rp. {{ number_format($potongan_lunas, 0, ',', '.') }}): <strong class="text-green-700">Rp. {{ number_format($grand_total_putra - $potongan_lunas, 0, ',', '.') }},-</strong>
+            </p>
+        </div>
+        @elseif($isPutri)
+        <div class="mb-6 p-4 bg-pink-50 border-l-4 border-pink-500 rounded-r-lg text-pink-900 shadow-sm">
+            <div class="flex items-center gap-2 font-bold mb-1">
+                <svg class="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span>Informasi Pembayaran (Siswi Putri)</span>
+            </div>
+            <p class="text-sm">
+                Total Biaya: <strong>Rp. {{ number_format($grand_total_putri, 0, ',', '.') }},-</strong><br>
+                Minimal Pembayaran Pertama ({{ $min_pembayaran }}%): <strong>Rp. {{ number_format($grand_total_putri * ($min_pembayaran / 100), 0, ',', '.') }},-</strong><br>
+                Pembayaran LUNAS (Mendapat Potongan Rp. {{ number_format($potongan_lunas, 0, ',', '.') }}): <strong class="text-green-700">Rp. {{ number_format($grand_total_putri - $potongan_lunas, 0, ',', '.') }},-</strong>
+            </p>
+        </div>
+        @endif
+
         <div>
-            {!! $informasiPembayaran->detail_pembayaran ?? null !!}
-            {{-- {{ optional($informasiPembayaran)->detail_pembayaran }} --}}
+            @include('partials.rincian-pembayaran-table', ['info' => $informasiPembayaran])
         </div>
     </div>
     <form action={{ route('formulir-ppdb.storePembayaran') }} enctype="multipart/form-data" method="POST" class="space-y-6">

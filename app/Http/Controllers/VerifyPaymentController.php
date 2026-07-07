@@ -41,7 +41,7 @@ class VerifyPaymentController extends Controller
     public function updateStatus($id, Request $request)
     {
         $request->validate([
-            'status_pembayaran' => 'required|in:Belum Lunas,40%,Lunas',
+            'status_pembayaran' => 'required|in:Belum Lunas,50%,Lunas',
             'catatan' => 'nullable|string|max:255'
         ]);
 
@@ -55,7 +55,7 @@ class VerifyPaymentController extends Controller
 
         PembayaranPpdb::where('id', $id)->update($updateData);
 
-        if (in_array($request->status_pembayaran, ['Lunas', '40%'], true)) {
+        if (in_array($request->status_pembayaran, ['Lunas', '50%'], true)) {
             Mail::to($pembayaran->user->email)->send(new PaymentVerifiedMail(
                 $pembayaran->user
             ));

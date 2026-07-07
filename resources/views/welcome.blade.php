@@ -293,7 +293,7 @@
                                     <h3 class="text-xl font-semibold text-green-800 mb-4 flex items-center">
                                         <i class="fas fa-money-bill-wave mr-2"></i> Informasi Pembayaran
                                     </h3>
-                                    {!! $informasiPembayaran !!}
+                                    @include('partials.rincian-pembayaran-table', ['info' => $informasiPembayaran])
                                 </div>
                             </div>
                             @else
