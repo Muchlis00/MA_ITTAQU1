@@ -22,10 +22,9 @@
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- II. BIAYA ADMINISTRASI MADRASAH -->
                     <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
                         <div class="flex justify-between items-center border-b pb-3 mb-4">
-                            <h3 class="text-lg font-bold text-gray-900">II. Biaya Administrasi Madrasah</h3>
+                            <h3 class="text-lg font-bold text-gray-900">Biaya Administrasi Madrasah</h3>
                             <button type="button" onclick="addAdministrasiRow()" class="bg-blue-100 hover:bg-blue-200 text-blue-800 text-xs font-semibold py-1.5 px-3 rounded flex items-center transition">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                                 Tambah Item
@@ -42,16 +41,14 @@
                                     </tr>
                                 </thead>
                                 <tbody id="administrasi-tbody" class="divide-y divide-gray-200">
-                                    <!-- Dynamic rows will be inserted here -->
                                 </tbody>
                             </table>
                         </div>
                     </div>
 
-                    <!-- III. BIAYA ATRIBUT SISWA / SISWI -->
                     <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
                         <div class="flex justify-between items-center border-b pb-3 mb-4">
-                            <h3 class="text-lg font-bold text-gray-900">III. Biaya Atribut Siswa / Siswi</h3>
+                            <h3 class="text-lg font-bold text-gray-900"> Biaya Atribut Siswa / Siswi</h3>
                             <button type="button" onclick="addAtributRow()" class="bg-blue-100 hover:bg-blue-200 text-blue-800 text-xs font-semibold py-1.5 px-3 rounded flex items-center transition">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                                 Tambah Item
@@ -76,9 +73,8 @@
                     </div>
                 </div>
 
-                <!-- IV. CONFIG / KETERANGAN -->
                 <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-                    <h3 class="text-lg font-bold text-gray-900 border-b pb-3 mb-4">IV. Pengaturan Pembayaran & Diskon</h3>
+                    <h3 class="text-lg font-bold text-gray-900 border-b pb-3 mb-4">Pengaturan Pembayaran & Diskon</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label for="minimal_pembayaran_pertama" class="block text-sm font-medium text-gray-700">Pembayaran Pertama Minimal (%)</label>

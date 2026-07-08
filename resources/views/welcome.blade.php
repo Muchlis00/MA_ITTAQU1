@@ -288,11 +288,9 @@
                         
                         <div class="p-4 md:p-6">
                             @if($isPeriodActive)
-                            <div class="prose max-w-4xl mx-auto">
-                                <div class="bg-green-50 p-4 md:p-6 rounded-lg mb-6 border border-green-100">
-                                    <h3 class="text-xl font-semibold text-green-800 mb-4 flex items-center">
-                                        <i class="fas fa-money-bill-wave mr-2"></i> Informasi Pembayaran
-                                    </h3>
+                            <div class="prose max-w-8xl mx-auto">
+                                <div class="p-4 md:p-6 rounded-lg mb-6 border border-green-100">
+                                    
                                     @include('partials.rincian-pembayaran-table', ['info' => $informasiPembayaran])
                                 </div>
                             </div>

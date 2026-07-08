@@ -30,13 +30,12 @@
 @endphp
 
 <div class="space-y-6">
-    <!-- II. BIAYA ADMINISTRASI MADRASAH -->
     <div class="overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm">
         <table class="min-w-full divide-y divide-gray-200 text-sm">
             <thead class="bg-gray-50">
                 <tr>
                     <th colspan="3" class="px-4 py-3 text-left font-bold text-gray-900 border-b border-gray-200 bg-gray-100 uppercase tracking-wider">
-                        II. BIAYA ADMINISTRASI MADRASAH :
+                        BIAYA ADMINISTRASI MADRASAH :
                     </th>
                 </tr>
                 <tr class="text-left text-xs font-semibold text-gray-500 border-b border-gray-200 uppercase">
@@ -61,13 +60,12 @@
         </table>
     </div>
 
-    <!-- III. BIAYA ATRIBUT SISWA / SISWI -->
     <div class="overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm">
         <table class="min-w-full divide-y divide-gray-200 text-sm">
             <thead class="bg-gray-50">
                 <tr>
                     <th colspan="4" class="px-4 py-3 text-left font-bold text-gray-900 border-b border-gray-200 bg-gray-100 uppercase tracking-wider">
-                        III. BIAYA ATRIBUT SISWA / SISWI :
+                        BIAYA ATRIBUT SISWA / SISWI :
                     </th>
                 </tr>
                 <tr class="text-left text-xs font-semibold text-gray-500 border-b border-gray-200 uppercase">
@@ -99,7 +97,6 @@
         </table>
     </div>
 
-    <!-- GRAND TOTAL TABLE -->
     <div class="overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm">
         <table class="min-w-full divide-y divide-gray-200 text-sm">
             <tbody class="divide-y divide-gray-200">
@@ -112,7 +109,6 @@
         </table>
     </div>
 
-    <!-- CONFIG / RULES -->
     <div class="mt-4 p-4 bg-yellow-50 border border-yellow-100 rounded-lg text-sm text-gray-700 space-y-1 shadow-sm">
         <div><strong>Keterangan :</strong></div>
         <ul class="list-disc pl-5 space-y-1 font-medium">
