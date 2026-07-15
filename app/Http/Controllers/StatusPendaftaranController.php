@@ -29,6 +29,13 @@ class StatusPendaftaranController extends Controller
     public function index()
     {
         $pendaftarPPDB = PendaftarPpdb::where('user_id', Auth::user()->id)->with('periode')->first();
+
+        if (!$pendaftarPPDB) {
+            return redirect()
+                ->route('formulir-ppdb.dataPendaftar')
+                ->with('failed', 'Silahkan mengisi pendaftaran terlebih dahulu dimulai dari mengisikan data pendaftar.');
+        }
+
         $pembayaranPPDB = PembayaranPpdb::where('user_id', Auth::user()->id)->get();
         $orientasi = Orientasi::where('id_periode', $pendaftarPPDB->id_periode)->get();
         $isVerified = $this->isUserVerified();
@@ -39,16 +46,23 @@ class StatusPendaftaranController extends Controller
         return view('status-pendaftaran.index', compact('pendaftarPPDB', 'pembayaranPPDB', 'orientasi', 'isVerified', 'dataDiri', 'informasiPembayaran'));
     }
    public function tandaBukti()
-{
-    $user = Auth::user();
-    $currentPeriode = PeriodePPDB::where('startDate', '<=', Carbon::now())
-            ->where('endDate', '>=', Carbon::now())
-            ->firstOrFail();
-    $currentDataDiriPendaftar = DataDiriPendaftar::where('user_id', Auth::id())->first();
-    $kepsek = User::where('role','kepsek')->first();
+    {
+        $user = Auth::user();
+
+        $pendaftar = PendaftarPpdb::where('user_id', $user->id)->first();
+        if (!$pendaftar) {
+            return redirect()
+                ->route('formulir-ppdb.dataPendaftar')
+                ->with('failed', 'Silahkan mengisi pendaftaran terlebih dahulu dimulai dari mengisikan data pendaftar.');
+        }
+
+        $currentPeriode = PeriodePPDB::where('startDate', '<=', Carbon::now())
+                ->where('endDate', '>=', Carbon::now())
+                ->firstOrFail();
+        $currentDataDiriPendaftar = DataDiriPendaftar::where('user_id', Auth::id())->first();
+        $kepsek = User::where('role','kepsek')->first();
     
-    return view('status-pendaftaran.tandaBukti', compact('user','currentPeriode','currentDataDiriPendaftar','kepsek'));
-    
-}
+        return view('status-pendaftaran.tandaBukti', compact('user','currentPeriode','currentDataDiriPendaftar','kepsek'));
+    }
 
 }

@@ -92,12 +92,20 @@ class FormPendaftarController extends Controller
             ->where('endDate', '>=', Carbon::now())
             ->firstOrFail();
         $currentUser = Auth::user();
+
+        $pendaftar = PendaftarPpdb::where('user_id', Auth::id())->first();
+        if (!$pendaftar) {
+            return redirect()
+                ->route('formulir-ppdb.dataPendaftar')
+                ->with('failed', 'Silahkan mengisi pendaftaran terlebih dahulu dimulai dari mengisikan data pendaftar.');
+        }
+
         $currentDataDiriPendaftar = DataDiriPendaftar::where('user_id', Auth::id())->first();
 
         if (!$currentDataDiriPendaftar) {
             return redirect()
                 ->route('formulir-ppdb.dataPendaftar')
-                ->with('failed', 'Silakan isi Data Pendaftar terlebih dahulu');
+                ->with('failed', 'Silahkan mengisi pendaftaran terlebih dahulu dimulai dari mengisikan data pendaftar.');
         }
 
         return view('form-pendaftar.nilai-rapor', compact('currentPeriode', 'currentUser', 'currentDataDiriPendaftar'));
@@ -133,10 +141,18 @@ class FormPendaftarController extends Controller
             ->where('endDate', '>=', Carbon::now())
             ->first();
         if (!$currentPeriode) {
-        return redirect()->route('dashboard')
-        ->with('error', 'Tidak ada periode pendaftaran yang sedang aktif saat ini');
-}
+            return redirect()->route('dashboard')
+                ->with('error', 'Tidak ada periode pendaftaran yang sedang aktif saat ini');
+        }
         $currentUser = Auth::user();
+
+        $pendaftar = PendaftarPpdb::where('user_id', Auth::id())->first();
+        if (!$pendaftar) {
+            return redirect()
+                ->route('formulir-ppdb.dataPendaftar')
+                ->with('failed', 'Silahkan mengisi pendaftaran terlebih dahulu dimulai dari mengisikan data pendaftar.');
+        }
+
         $currentDataDiriPendaftar = DataDiriPendaftar::where('user_id', Auth::id())->first() ?? new DataDiriPendaftar();
         $currentDataAyah = WaliPendaftar::where(['data_diri_pendaftar_id' => $currentDataDiriPendaftar->id, 'gender' => 'Laki-Laki'])->first() ?? new WaliPendaftar();
         $currentDataIbu = WaliPendaftar::where(['data_diri_pendaftar_id' => $currentDataDiriPendaftar->id, 'gender' => 'Perempuan'])->first() ?? new WaliPendaftar();
@@ -206,6 +222,14 @@ class FormPendaftarController extends Controller
             ->where('endDate', '>=', Carbon::now())
             ->firstOrFail();
         $currentUser = Auth::user();
+
+        $pendaftar = PendaftarPpdb::where('user_id', Auth::id())->first();
+        if (!$pendaftar) {
+            return redirect()
+                ->route('formulir-ppdb.dataPendaftar')
+                ->with('failed', 'Silahkan mengisi pendaftaran terlebih dahulu dimulai dari mengisikan data pendaftar.');
+        }
+
         $currentDataDiriPendaftar = DataDiriPendaftar::where('user_id', Auth::id())->first();
 
         return view('form-pendaftar.dokumen-pendaftar', compact('currentPeriode', 'currentUser', 'currentDataDiriPendaftar'));
@@ -260,6 +284,14 @@ class FormPendaftarController extends Controller
             ->where('endDate', '>=', Carbon::now())
             ->firstOrFail();
         $currentUser = Auth::user();
+
+        $pendaftar = PendaftarPpdb::where('user_id', Auth::id())->first();
+        if (!$pendaftar) {
+            return redirect()
+                ->route('formulir-ppdb.dataPendaftar')
+                ->with('failed', 'Silahkan mengisi pendaftaran terlebih dahulu dimulai dari mengisikan data pendaftar.');
+        }
+
         $currentDataDiriPendaftar = DataDiriPendaftar::where('user_id', Auth::id())->first();
         $currentWali = new stdClass();
         $currentWali->father = WaliPendaftar::where([
@@ -324,6 +356,14 @@ class FormPendaftarController extends Controller
             ->where('endDate', '>=', Carbon::now())
             ->firstOrFail();
         $currentUser = Auth::user();
+
+        $pendaftar = PendaftarPpdb::where('user_id', Auth::id())->first();
+        if (!$pendaftar) {
+            return redirect()
+                ->route('formulir-ppdb.dataPendaftar')
+                ->with('failed', 'Silahkan mengisi pendaftaran terlebih dahulu dimulai dari mengisikan data pendaftar.');
+        }
+
         $currentDataDiriPendaftar = DataDiriPendaftar::where('user_id', Auth::id())->first();
         $currentPembayaran = PembayaranPpdb::where(['id_periode' => $currentPeriode->id_periode, 'verification_status' => ['pending', 'verified']])->where('user_id', Auth::id())->get();
         $informasiPembayaran = InformasiPembayaran::where('id_periode', $currentPeriode->id_periode)->first();
