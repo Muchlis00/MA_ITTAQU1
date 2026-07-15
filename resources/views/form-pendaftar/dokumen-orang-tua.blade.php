@@ -23,7 +23,7 @@ $formFields = [
 
             @foreach ($formFields as $field)
             <div class="flex flex-row items-center gap-4">
-                <label for={{ $field['key'] }} class="w-32 whitespace-nowrap text-sm font-medium text-gray-700">{{ $field['name'] }}</label>
+                <label for={{ $field['key'] }} class="w-32 whitespace-nowrap text-sm font-medium text-gray-700">{{ $field['name'] }} <span class="required">*</span></label>
                 <input type="file" accept="image/*" name={{ $field['key'] }} id={{ $field['key'] }}
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                 @if ($field['value'])

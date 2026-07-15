@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->dateTime('datetime');
             $table->string('kegiatan');
-            $table->string('keterangan');
+            $table->string('keterangan')->nullable();
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('id_periode');
             $table->timestamps();

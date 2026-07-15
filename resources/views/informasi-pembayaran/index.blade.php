@@ -1,4 +1,9 @@
 <x-app-layout>
+    <style>
+.required {
+    color: red;
+}
+</style>
 @if(session()->has('success'))
     <script>
         alert("Data berhasil disimpan!");
@@ -11,6 +16,12 @@
             <h2 class="text-2xl font-bold text-gray-900 mb-6">Informasi Pembayaran PPDB</h2>
             
             <form class="space-y-6" method="POST" action="{{ route('informasi-pembayaran.store') }}">
+                <div class="mb-4">
+    <p class="text-sm text-gray-600">
+        <span class="required">*</span>
+        Menandakan kolom yang wajib diisi.
+    </p>
+</div>
                 @csrf
                 <div class="bg-gray-50 p-4 rounded-md border border-gray-200 flex items-center">
                     <label for="id_periode" class="w-32 block text-sm font-medium text-gray-700">Periode PPDB</label>
@@ -24,7 +35,7 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
                         <div class="flex justify-between items-center border-b pb-3 mb-4">
-                            <h3 class="text-lg font-bold text-gray-900">Biaya Administrasi Madrasah</h3>
+                            <h3 class="text-lg font-bold text-gray-900">Biaya Administrasi Madrasah <span class="required">*</span></h3>
                             <button type="button" onclick="addAdministrasiRow()" class="bg-blue-100 hover:bg-blue-200 text-blue-800 text-xs font-semibold py-1.5 px-3 rounded flex items-center transition">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                                 Tambah Item
@@ -48,7 +59,7 @@
 
                     <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
                         <div class="flex justify-between items-center border-b pb-3 mb-4">
-                            <h3 class="text-lg font-bold text-gray-900"> Biaya Atribut Siswa / Siswi</h3>
+                            <h3 class="text-lg font-bold text-gray-900"> Biaya Atribut Siswa / Siswi <span class="required">*</span></h3>
                             <button type="button" onclick="addAtributRow()" class="bg-blue-100 hover:bg-blue-200 text-blue-800 text-xs font-semibold py-1.5 px-3 rounded flex items-center transition">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                                 Tambah Item
@@ -66,7 +77,6 @@
                                     </tr>
                                 </thead>
                                 <tbody id="atribut-tbody" class="divide-y divide-gray-200">
-                                    <!-- Dynamic rows will be inserted here -->
                                 </tbody>
                             </table>
                         </div>
@@ -74,12 +84,8 @@
                 </div>
 
                 <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-                    <h3 class="text-lg font-bold text-gray-900 border-b pb-3 mb-4">Pengaturan Pembayaran & Diskon</h3>
+                    <h3 class="text-lg font-bold text-gray-900 border-b pb-3 mb-4">Diskon <span class="required">*</span></h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="minimal_pembayaran_pertama" class="block text-sm font-medium text-gray-700">Pembayaran Pertama Minimal (%)</label>
-                            <input type="number" name="minimal_pembayaran_pertama" id="minimal_pembayaran_pertama" min="0" max="100" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
-                        </div>
                         <div>
                             <label for="potongan_lunas" class="block text-sm font-medium text-gray-700">Potongan Pembayaran Lunas (Rp)</label>
                             <input type="number" name="potongan_lunas" id="potongan_lunas" min="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
@@ -98,25 +104,8 @@
 </div>
 
 <script>
-    // Default data from the image to use if no record exists in the database
-    const defaultAdministrasi = [
-        {nama: "Masa Ta'aruf Siswa Madrasah (MATSAMA) / MOS", jumlah: 100000},
-        {nama: "Pengembangan Madrasah", jumlah: 300000},
-        {nama: "Buku LKS semua mapel semester ganjil", jumlah: 300000},
-        {nama: "Outbound Siswa", jumlah: 300000},
-        {nama: "Kegiatan Siswa 1 tahun", jumlah: 100000},
-        {nama: "Infaq bulan Juli 2023", jumlah: 100000},
-        {nama: "Sampul Raport", jumlah: 60000}
-    ];
-
-    const defaultAtribut = [
-        {nama: "Seragam Olahraga", putra: 200000, putri: 200000},
-        {nama: "Jaz Almamater", putra: 200000, putri: 200000},
-        {nama: "Dasi 1 buah", putra: 25000, putri: 25000},
-        {nama: "Jilbab 3 buah (abu-abu, batik, pramuka)", putra: 0, putri: 150000},
-        {nama: "Bedge dan lokasi 3 buah", putra: 25000, putri: 25000},
-        {nama: "Kain batik", putra: 90000, putri: 90000}
-    ];
+    const defaultAdministrasi = [];
+    const defaultAtribut = [];
 
     let adminIndex = 0;
     let atributIndex = 0;
@@ -215,15 +204,12 @@
                 renderAdministrasi(infoAdm);
                 renderAtribut(infoAtr);
 
-                document.querySelector("#minimal_pembayaran_pertama").value = data?.minimal_pembayaran_pertama ?? 50;
                 document.querySelector("#potongan_lunas").value = data?.potongan_lunas ?? 150000;
             })
             .catch(error => {
                 console.error('There was a problem with the fetch operation:', error);
-                // Fallback to defaults on error or empty state
                 renderAdministrasi(defaultAdministrasi);
                 renderAtribut(defaultAtribut);
-                document.querySelector("#minimal_pembayaran_pertama").value = 50;
                 document.querySelector("#potongan_lunas").value = 150000;
             });
     }

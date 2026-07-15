@@ -1,4 +1,9 @@
 <x-app-layout>
+    <style>
+        .required {
+    color: red;
+}
+        </style>
     @if(session()->has('success'))
     <script>
         alert("Data berhasil disimpan!");
@@ -32,7 +37,12 @@
             <div class="bg-white shadow-md rounded-lg p-6">
                 <h2 class="text-2xl font-bold text-gray-900">Formulir Pendaftaran Siswa</h2>
                 <div class="text-sm text-gray-700 mb-4">Periode PPDB: {{ date('F Y', strtotime($currentPeriode->startDate)) . ' - ' . date('F Y', strtotime($currentPeriode->endDate)) }}</div>
-
+ <div class="mb-4">
+    <p class="text-sm text-gray-600">
+        <span class="required">*</span>
+        Menandakan kolom yang wajib diisi.
+    </p>
+</div>
                 <div class="mb-8">
                     <div class="flex items-center justify-between">
                         @foreach ($steps as $index => $step)

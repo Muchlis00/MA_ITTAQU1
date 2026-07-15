@@ -1,4 +1,9 @@
 <x-app-layout>
+    <style>
+.required {
+    color: red;
+}
+</style>
 @if(session()->has('success'))
     <script>
         alert("Data berhasil diubah!");
@@ -11,6 +16,13 @@
                     <h2 class="text-2xl font-semibold mb-4">Edit Jadwal Orientasi</h2>
                 </div>
                 <form action="{{ route('orientasi.update', $orientasi->id) }}" method="POST">
+                    
+<div class="mb-4">
+    <p class="text-sm text-gray-600">
+        <span class="required">*</span>
+        Menandakan kolom yang wajib diisi.
+    </p>
+</div>
                     @csrf
                     @method('PUT')
                     <div class="mb-4">
@@ -22,16 +34,16 @@
                         </select>
                     </div>
                     <div class="mb-4">
-                        <label for="datetime_start" class="block text-sm font-medium text-gray-700">Mulai</label>
+                        <label for="datetime_start" class="block text-sm font-medium text-gray-700">Mulai<span class="required">*</span></label>
                         <input value="{{$orientasi->datetime_start}}" type="datetime-local" name="datetime_start" id="datetime_start" class="mt-1 p-2 w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div class="mb-4">
-                        <label for="datetime_end" class="block text-sm font-medium text-gray-700">Selesai</label>
+                        <label for="datetime_end" class="block text-sm font-medium text-gray-700">Selesai<span class="required">*</span></label>
                         <input value="{{$orientasi->datetime_end}}" type="datetime-local" name="datetime_end" id="datetime_end" class="mt-1 p-2 w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500">
                     </div>
 
                     <div class="mb-4">
-                        <label for="kegiatan" class="block text-sm font-medium text-gray-700">Kegiatan</label>
+                        <label for="kegiatan" class="block text-sm font-medium text-gray-700">Kegiatan<span class="required">*</span></label>
                         <input value="{{$orientasi->kegiatan}}" type="text" name="kegiatan" id="kegiatan" class="mt-1 p-2 w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div class="mb-4">

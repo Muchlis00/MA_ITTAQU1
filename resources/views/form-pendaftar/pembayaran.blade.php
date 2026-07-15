@@ -14,18 +14,8 @@
             $isPutra = str_contains($gender, 'laki') || str_contains($gender, 'putra');
             
             $info = $informasiPembayaran;
-            $administrasi = ($info && !empty($info->biaya_administrasi)) ? $info->biaya_administrasi : [
-                ["jumlah" => 100000], ["jumlah" => 300000], ["jumlah" => 300000], 
-                ["jumlah" => 300000], ["jumlah" => 100000], ["jumlah" => 100000], ["jumlah" => 60000]
-            ];
-            $atribut = ($info && !empty($info->biaya_atribut)) ? $info->biaya_atribut : [
-                ["putra" => 200000, "putri" => 200000],
-                ["putra" => 200000, "putri" => 200000],
-                ["putra" => 25000, "putri" => 25000],
-                ["putra" => 0, "putri" => 150000],
-                ["putra" => 25000, "putri" => 25000],
-                ["putra" => 90000, "putri" => 90000]
-            ];
+            $administrasi = ($info && !empty($info->biaya_administrasi)) ? $info->biaya_administrasi : [];
+            $atribut = ($info && !empty($info->biaya_atribut)) ? $info->biaya_atribut : [];
             
             $total_administrasi = collect($administrasi)->sum('jumlah');
             $total_atribut_putra = collect($atribut)->sum('putra');
@@ -33,11 +23,12 @@
             $grand_total_putra = $total_administrasi + $total_atribut_putra;
             $grand_total_putri = $total_administrasi + $total_atribut_putri;
             
-            $min_pembayaran = $info ? $info->minimal_pembayaran_pertama : 50;
-            $potongan_lunas = $info ? $info->potongan_lunas : 150000;
+            $min_pembayaran = ($info && $info->minimal_pembayaran_pertama !== null) ? $info->minimal_pembayaran_pertama : 50;
+            $potongan_lunas = ($info && $info->potongan_lunas !== null) ? $info->potongan_lunas : 0;
+            $hasData = !empty($administrasi) || !empty($atribut);
         @endphp
 
-        @if($isPutra)
+        @if($hasData && $isPutra)
         <div class="mb-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg text-blue-900 shadow-sm">
             <div class="flex items-center gap-2 font-bold mb-1">
                 <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -45,11 +36,13 @@
             </div>
             <p class="text-sm">
                 Total Biaya: <strong>Rp. {{ number_format($grand_total_putra, 0, ',', '.') }},-</strong><br>
-                Minimal Pembayaran Pertama ({{ $min_pembayaran }}%): <strong>Rp. {{ number_format($grand_total_putra * ($min_pembayaran / 100), 0, ',', '.') }},-</strong><br>
-                Pembayaran LUNAS (Mendapat Potongan Rp. {{ number_format($potongan_lunas, 0, ',', '.') }}): <strong class="text-green-700">Rp. {{ number_format($grand_total_putra - $potongan_lunas, 0, ',', '.') }},-</strong>
+                Minimal Pembayaran Pertama ({{ $min_pembayaran }}%): <strong>Rp. {{ number_format($grand_total_putra * ($min_pembayaran / 100), 0, ',', '.') }},-</strong>
+                @if($potongan_lunas > 0)
+                <br>Pembayaran LUNAS (Mendapat Potongan Rp. {{ number_format($potongan_lunas, 0, ',', '.') }}): <strong class="text-green-700">Rp. {{ number_format($grand_total_putra - $potongan_lunas, 0, ',', '.') }},-</strong>
+                @endif
             </p>
         </div>
-        @elseif($isPutri)
+        @elseif($hasData && $isPutri)
         <div class="mb-6 p-4 bg-pink-50 border-l-4 border-pink-500 rounded-r-lg text-pink-900 shadow-sm">
             <div class="flex items-center gap-2 font-bold mb-1">
                 <svg class="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -57,8 +50,10 @@
             </div>
             <p class="text-sm">
                 Total Biaya: <strong>Rp. {{ number_format($grand_total_putri, 0, ',', '.') }},-</strong><br>
-                Minimal Pembayaran Pertama ({{ $min_pembayaran }}%): <strong>Rp. {{ number_format($grand_total_putri * ($min_pembayaran / 100), 0, ',', '.') }},-</strong><br>
-                Pembayaran LUNAS (Mendapat Potongan Rp. {{ number_format($potongan_lunas, 0, ',', '.') }}): <strong class="text-green-700">Rp. {{ number_format($grand_total_putri - $potongan_lunas, 0, ',', '.') }},-</strong>
+                Minimal Pembayaran Pertama ({{ $min_pembayaran }}%): <strong>Rp. {{ number_format($grand_total_putri * ($min_pembayaran / 100), 0, ',', '.') }},-</strong>
+                @if($potongan_lunas > 0)
+                <br>Pembayaran LUNAS (Mendapat Potongan Rp. {{ number_format($potongan_lunas, 0, ',', '.') }}): <strong class="text-green-700">Rp. {{ number_format($grand_total_putri - $potongan_lunas, 0, ',', '.') }},-</strong>
+                @endif
             </p>
         </div>
         @endif
@@ -79,7 +74,7 @@
         <div class="bg-gray-50 p-4 rounded-md flex flex-col gap-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="flex flex-row items-center gap-4">
-                    <label for="bukti_pembayaran" class="w-48 whitespace-nowrap text-sm font-medium text-gray-700">Bukti Pembayaran</label>
+                    <label for="bukti_pembayaran" class="w-48 whitespace-nowrap text-sm font-medium text-gray-700">Bukti Pembayaran <span class="required">*</span></label>
                     <input type="file" accept="image/*" name="bukti_pembayaran" id="bukti_pembayaran"
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
 

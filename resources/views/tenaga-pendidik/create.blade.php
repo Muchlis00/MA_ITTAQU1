@@ -1,5 +1,10 @@
 @extends('layouts.navbar')
 @section('content')
+<style>
+.required {
+    color: red;
+}
+</style>
 <div class="container">
     @if(session()->has('success'))
     <script>
@@ -7,22 +12,28 @@
     </script>
     @endif
     <h1>Tambah Guru</h1>
+    <div class="mb-4">
+    <p class="text-sm text-gray-600">
+        <span class="required">*</span>
+        Menandakan kolom yang wajib diisi.
+    </p>
+</div>
     <form action="{{ route('tenaga-pendidik.store') }}" method="POST">
         @csrf
         <div class="mb-3">
-            <label for="nip" class="form-label">NIP</label>
+            <label for="nip" class="form-label">NIP</label><span id="required" class="required">*</span>
             <input type="number" name="nip" class="form-control" id="nip" maxlength="16" minlength="16" required>
         </div>
         <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
+            <label for="email" class="form-label">Email</label><span id="required" class="required">*</span>
             <input type="email" name="email" class="form-control" id="email" required>
         </div>
         <div class="mb-3">
-            <label for="nama_guru" class="form-label">Nama </label>
+            <label for="nama_guru" class="form-label">Nama </label><span id="required" class="required">*</span>
             <input type="text" text-transform="lowercase" name="nama_guru" class="form-control" id="nama_guru" required>
         </div>
          <div class="mb-3">
-            <label for="tempat_guru">Tempat Lahir</label>
+            <label for="tempat_guru">Tempat Lahir</label><span id="required" class="required">*</span>
             <input
                 type="text"
                 id="tempat_guru"
@@ -33,18 +44,18 @@
             <div id="city-suggestions" class="suggestions"></div>
         </div>
         <div class="mb-3">
-            <label for="tgl_guru" class="form-label">Tanggal Lahir</label>
+            <label for="tgl_guru" class="form-label">Tanggal Lahir</label><span id="required" class="required">*</span>
             <input type="date" name="tgl_guru" class="form-control" id="tgl_guru" required>
         </div>
         <div class="mb-3">
-            <label for="jk_guru">Jenis kelamin</label>
+            <label for="jk_guru">Jenis kelamin</label><span id="required" class="required">*</span>
             <select name="jk_guru" id="jk_guru" class="form-control" required>
                 <option value="Laki-Laki">Laki-laki</option>
                 <option value="Perempuan">Perempuan</option>
             </select>
         </div>
         <div class="mb-3">
-            <label for="jabatan" class="form-label">Jabatan</label>
+            <label for="jabatan" class="form-label">Jabatan</label><span id="required" class="required">*</span>
             <select name="jabatan" id="jabatan" class="form-control" required>
                 <option value="Guru">Guru</option>
                 <option value="Kepsek">Kepsek</option>

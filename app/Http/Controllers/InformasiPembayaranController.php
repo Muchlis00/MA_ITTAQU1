@@ -27,7 +27,6 @@ class InformasiPembayaranController extends Controller
             'biaya_atribut.*.nama' => 'required|string|max:255',
             'biaya_atribut.*.putra' => 'required|numeric|min:0',
             'biaya_atribut.*.putri' => 'required|numeric|min:0',
-            'minimal_pembayaran_pertama' => 'required|integer|min:0|max:100',
             'potongan_lunas' => 'required|numeric|min:0',
         ]);
 
@@ -38,7 +37,6 @@ class InformasiPembayaranController extends Controller
             'detail_pembayaran' => $request->detail_pembayaran ?? '',
             'biaya_administrasi' => $request->biaya_administrasi ?? [],
             'biaya_atribut' => $request->biaya_atribut ?? [],
-            'minimal_pembayaran_pertama' => $request->minimal_pembayaran_pertama,
             'potongan_lunas' => $request->potongan_lunas,
             'created_by' => Auth::id(),
         ]);

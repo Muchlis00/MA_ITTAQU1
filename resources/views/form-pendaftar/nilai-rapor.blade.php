@@ -5,7 +5,7 @@
     <form action="{{ route('formulir-ppdb.storeNilaiRapor') }}" method="POST" class="space-y-6">
         @csrf
 
-        <h3 class="text-lg font-semibold text-gray-700 mb-4">Nilai Rapor (6 Semester)</h3>
+        <h3 class="text-lg font-semibold text-gray-700 mb-4">Nilai Rapor (6 Semester) </h3>
 
         <div class="bg-gray-50 p-4 rounded-md">
             @php
@@ -32,7 +32,7 @@
                     <tbody class="bg-white">
                         @foreach ($mapelList as $key => $label)
                             <tr>
-                                <td class="px-3 py-2 border text-sm text-gray-700 whitespace-nowrap">{{ $label }}</td>
+                                <td class="px-3 py-2 border text-sm text-gray-700 whitespace-nowrap">{{ $label }}<span class="required">*</span></td>
                                 @for ($s = 1; $s <= 6; $s++)
                                     <td class="px-3 py-2 border">
                                         <input

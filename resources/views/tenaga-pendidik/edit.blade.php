@@ -1,5 +1,11 @@
+
 @extends('layouts.navbar')
 @section('content')
+<style>
+.required {
+    color: red;
+}
+</style>
 <div class="container">
     @if(session()->has('success'))
     <div class="alert alert-success" role="alert">
@@ -12,21 +18,26 @@
     <form action="{{ route('tenaga-pendidik.update', $tenagaPendidik->id_pendidik) }}" method="POST">
         @csrf
         @method('PUT')
-
+<div class="mb-4">
+    <p class="text-sm text-gray-600">
+        <span class="required">*</span>
+        Menandakan kolom yang wajib diisi.
+    </p>
+</div>
         <div class="mb-3">
-            <label for="nip" class="form-label">NIP</label>
+            <label for="nip" class="form-label">NIP</label><span class="required">*</span>
             <input type="text" name="nip" class="form-control" id="nip" value="{{ $tenagaPendidik->nip }}" required>
         </div>
 
         <div class="mb-3">
-            <label for="nama_guru" class="form-label">Nama Guru</label>
+            <label for="nama_guru" class="form-label">Nama Guru</label><span class="required">*</span>
             <input type="text" name="nama_guru" class="form-control" id="nama_guru" value="{{ $tenagaPendidik->nama_guru }}" required>
         </div>
 
 
         <div class="mb-3">
             
-            <label for="tempat_guru">Tempat Lahir</label>
+            <label for="tempat_guru">Tempat Lahir</label><span class="required">*</span>
             <input
                 type="text"
                 id="tempat_guru"
@@ -39,12 +50,12 @@
         </div>
 
         <div class="mb-3">
-            <label for="tgl_guru" class="form-label">Tanggal Lahir Guru</label>
+            <label for="tgl_guru" class="form-label">Tanggal Lahir Guru</label><span class="required">*</span>
             <input type="date" name="tgl_guru" class="form-control" id="tgl_guru" value="{{ $tenagaPendidik->tgl_guru }}" required>
         </div>
 
         <div class="mb-3">
-            <label for="jk_guru" class="form-label">Jenis Kelamin Guru</label>
+            <label for="jk_guru" class="form-label">Jenis Kelamin Guru</label><span class="required">*</span>
             <select name="jk_guru" id="jk_guru" class="form-control" required>
                 <option value="Laki-Laki" {{ $tenagaPendidik->jk_guru == 'Laki-Laki' ? 'selected' : '' }}>Laki-laki</option>
                 <option value="Perempuan" {{ $tenagaPendidik->jk_guru == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
@@ -52,7 +63,7 @@
         </div>
 
         <div class="mb-3">
-            <label for="jabatan" class="form-label">Jabatan Guru</label>
+            <label for="jabatan" class="form-label">Jabatan Guru</label><span class="required">*</span>
             <select name="jabatan" id="jabatan" class="form-control" required>
                 <option value="Guru" {{ $tenagaPendidik->jabatan == 'Guru' ? 'selected' : '' }}>Guru</option>
                 <option value="Kepsek" {{ $tenagaPendidik->jabatan == 'Kepsek' ? 'selected' : '' }}>Kepsek</option>

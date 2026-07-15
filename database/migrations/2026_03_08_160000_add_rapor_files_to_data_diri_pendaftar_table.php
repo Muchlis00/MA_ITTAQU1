@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('data_diri_pendaftar', function (Blueprint $table) {
-            $table->string('rapor_semester_1')->nullable()->after('nilai_rapor');
-            $table->string('rapor_semester_2')->nullable()->after('rapor_semester_1');
-            $table->string('rapor_semester_3')->nullable()->after('rapor_semester_2');
-            $table->string('rapor_semester_4')->nullable()->after('rapor_semester_3');
-            $table->string('rapor_semester_5')->nullable()->after('rapor_semester_4');
+            $table->string('rapor_semester_1')->after('nilai_rapor');
+            $table->string('rapor_semester_2')->after('rapor_semester_1');
+            $table->string('rapor_semester_3')->after('rapor_semester_2');
+            $table->string('rapor_semester_4')->after('rapor_semester_3');
+            $table->string('rapor_semester_5')->after('rapor_semester_4');
         });
     }
 

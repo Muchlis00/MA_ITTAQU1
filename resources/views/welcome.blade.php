@@ -246,35 +246,50 @@
                         </div>
                         
                         <div class="p-4 md:p-6">
-                            @if($isPeriodActive)
-                            <div class="prose max-w-4xl mx-auto">
-                                <div class="bg-blue-50 p-4 md:p-6 rounded-lg mb-6 border border-blue-100">
-                                    <h3 class="text-xl font-semibold text-blue-800 mb-4 flex items-center">
-                                        <i class="fas fa-file-alt mr-2"></i> Persyaratan Umum
-                                    </h3>
-                                    {!! $agreementContent !!}
-                                </div>
-                            </div>
-                            @else
-                            <div class="h-full flex items-center justify-center">
-                                <div class="text-center py-8">
-                                    <i class="fas fa-calendar-times text-4xl text-gray-400 mb-4"></i>
-                                    <p class="text-gray-500 text-lg">Pendaftaran belum dibuka</p>
-                                    @php
-                                        $nextPeriod = \App\Models\PeriodePPDB::where('startDate', '>', now())
-                                            ->orderBy('startDate', 'asc')
-                                            ->first();
-                                    @endphp
-                                    @if($nextPeriod)
-                                    <p class="text-gray-600 mt-2 text-sm">
-                                        <i class="far fa-clock mr-1"></i> 
-                                        Pendaftaran akan dibuka: {{ \Carbon\Carbon::parse($nextPeriod->startDate)->translatedFormat('d F Y') }}
-                                    </p>
-                                    @endif
-                                </div>
-                            </div>
-                            @endif
-                        </div>
+    @if($isPeriodActive)
+
+        @if(!empty(trim(strip_tags($agreementContent))))
+            <div class="prose max-w-8xl mx-auto">
+                <div class="bg-blue-50 p-4 md:p-6 rounded-lg mb-6 border border-blue-100">
+                    <h3 class="text-xl font-semibold text-blue-800 mb-4 flex items-center">
+                        <i class="fas fa-file-alt mr-2"></i> Persyaratan Umum
+                    </h3>
+
+                    {!! $agreementContent !!}
+                </div>
+            </div>
+        @else
+            <div class="p-6 text-center text-gray-500 bg-gray-50 rounded-lg border border-gray-200">
+    <svg class="w-12 h-12 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+    </svg>
+    <p class="text-lg font-medium">Informasi pendaftaran belum tersedia</p>
+</div>
+        @endif
+
+    @else
+        <div class="h-full flex items-center justify-center">
+            <div class="text-center py-8">
+                <i class="fas fa-calendar-times text-4xl text-gray-400 mb-4"></i>
+                <p class="text-gray-500 text-lg">Pendaftaran belum dibuka</p>
+
+                @php
+                    $nextPeriod = \App\Models\PeriodePPDB::where('startDate', '>', now())
+                        ->orderBy('startDate', 'asc')
+                        ->first();
+                @endphp
+
+                @if($nextPeriod)
+                <p class="text-gray-600 mt-2 text-sm">
+                    <i class="far fa-clock mr-1"></i>
+                    Pendaftaran akan dibuka:
+                    {{ \Carbon\Carbon::parse($nextPeriod->startDate)->translatedFormat('d F Y') }}
+                </p>
+                @endif
+            </div>
+        </div>
+    @endif
+</div>
                     </div>
                 </section>
 
@@ -356,12 +371,12 @@
                                     </table>
                                 </div>
                             @else
-                                <div class="h-full flex items-center justify-center">
-                                    <div class="text-center py-8 text-gray-500">
-                                        <i class="fas fa-info-circle text-4xl mb-4"></i>
-                                        <p class="text-lg">Jadwal orientasi belum tersedia</p>
-                                    </div>
-                                </div>
+                            <div class="p-6 text-center text-gray-500 bg-gray-50 rounded-lg border border-gray-200">
+    <svg class="w-12 h-12 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+    </svg>
+    <p class="text-lg font-medium">Jadwal Orientasi belum tersedia</p>
+</div>
                             @endif
                         </div>
                     </div>
@@ -531,7 +546,7 @@
             updateSlide();
         }
 
-        setInterval(nextSlide, 10000);
+        setInterval(nextSlide, 15000);
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowLeft') prevSlide();

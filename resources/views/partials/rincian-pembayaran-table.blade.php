@@ -1,22 +1,7 @@
-@php
-    $administrasi = ($info && !empty($info->biaya_administrasi)) ? $info->biaya_administrasi : [
-        ["nama" => "Masa Ta'aruf Siswa Madrasah (MATSAMA) / MOS", "jumlah" => 100000],
-        ["nama" => "Pengembangan Madrasah", "jumlah" => 300000],
-        ["nama" => "Buku LKS semua mapel semester ganjil", "jumlah" => 300000],
-        ["nama" => "Outbound Siswa", "jumlah" => 300000],
-        ["nama" => "Kegiatan Siswa 1 tahun", "jumlah" => 100000],
-        ["nama" => "Infaq bulan Juli 2023", "jumlah" => 100000],
-        ["nama" => "Sampul Raport", "jumlah" => 60000]
-    ];
 
-    $atribut = ($info && !empty($info->biaya_atribut)) ? $info->biaya_atribut : [
-        ["nama" => "Seragam Olahraga", "putra" => 200000, "putri" => 200000],
-        ["nama" => "Jaz Almamater", "putra" => 200000, "putri" => 200000],
-        ["nama" => "Dasi 1 buah", "putra" => 25000, "putri" => 25000],
-        ["nama" => "Jilbab 3 buah (abu-abu, batik, pramuka)", "putra" => 0, "putri" => 150000],
-        ["nama" => "Bedge dan lokasi 3 buah", "putra" => 25000, "putri" => 25000],
-        ["nama" => "Kain batik", "putra" => 90000, "putri" => 90000]
-    ];
+@php
+    $administrasi = ($info && !empty($info->biaya_administrasi)) ? $info->biaya_administrasi : [];
+    $atribut = ($info && !empty($info->biaya_atribut)) ? $info->biaya_atribut : [];
 
     $total_administrasi = collect($administrasi)->sum('jumlah');
     $total_atribut_putra = collect($atribut)->sum('putra');
@@ -25,11 +10,20 @@
     $grand_total_putra = $total_administrasi + $total_atribut_putra;
     $grand_total_putri = $total_administrasi + $total_atribut_putri;
 
-    $min_pembayaran = $info ? $info->minimal_pembayaran_pertama : 50;
-    $potongan_lunas = $info ? $info->potongan_lunas : 150000;
+    $min_pembayaran = ($info && $info->minimal_pembayaran_pertama !== null) ? $info->minimal_pembayaran_pertama : 50;
+    $potongan_lunas = ($info && $info->potongan_lunas !== null) ? $info->potongan_lunas : 0;
 @endphp
 
+@if(empty($administrasi) && empty($atribut))
+<div class="p-6 text-center text-gray-500 bg-gray-50 rounded-lg border border-gray-200">
+    <svg class="w-12 h-12 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+    </svg>
+    <p class="text-lg font-medium">Informasi pembayaran belum tersedia</p>
+</div>
+@else
 <div class="space-y-6">
+    @if(!empty($administrasi))
     <div class="overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm">
         <table class="min-w-full divide-y divide-gray-200 text-sm">
             <thead class="bg-gray-50">
@@ -48,8 +42,8 @@
                 @foreach($administrasi as $index => $item)
                 <tr class="hover:bg-gray-50 transition duration-150">
                     <td class="px-4 py-2.5 text-center border-r border-gray-200 font-medium text-gray-500">{{ $index + 1 }}</td>
-                    <td class="px-4 py-2.5 border-r border-gray-200 font-medium">{{ $item['nama'] }}</td>
-                    <td class="px-4 py-2.5 text-right font-semibold">Rp. {{ number_format($item['jumlah'], 0, ',', '.') }},-</td>
+                    <td class="px-4 py-2.5 border-r border-gray-200 font-medium">{{ $item['nama'] ?? '-' }}</td>
+                    <td class="px-4 py-2.5 text-right font-semibold">Rp. {{ number_format($item['jumlah'] ?? 0, 0, ',', '.') }},-</td>
                 </tr>
                 @endforeach
                 <tr class="bg-gray-50 font-bold border-t-2 border-gray-300 text-gray-900">
@@ -59,7 +53,9 @@
             </tbody>
         </table>
     </div>
+    @endif
 
+    @if(!empty($atribut))
     <div class="overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm">
         <table class="min-w-full divide-y divide-gray-200 text-sm">
             <thead class="bg-gray-50">
@@ -79,12 +75,12 @@
                 @foreach($atribut as $index => $item)
                 <tr class="hover:bg-gray-50 transition duration-150">
                     <td class="px-4 py-2.5 text-center border-r border-gray-200 font-medium text-gray-500">{{ $index + 1 }}</td>
-                    <td class="px-4 py-2.5 border-r border-gray-200 font-medium">{{ $item['nama'] }}</td>
-                    <td class="px-4 py-2.5 text-right border-r border-gray-200 font-semibold {{ $item['putra'] == 0 ? 'text-gray-400 text-center' : '' }}">
-                        {{ $item['putra'] == 0 ? '-' : 'Rp. ' . number_format($item['putra'], 0, ',', '.') . ',-' }}
+                    <td class="px-4 py-2.5 border-r border-gray-200 font-medium">{{ $item['nama'] ?? '-' }}</td>
+                    <td class="px-4 py-2.5 text-right border-r border-gray-200 font-semibold {{ ($item['putra'] ?? 0) == 0 ? 'text-gray-400 text-center' : '' }}">
+                        {{ ($item['putra'] ?? 0) == 0 ? '-' : 'Rp. ' . number_format($item['putra'], 0, ',', '.') . ',-' }}
                     </td>
-                    <td class="px-4 py-2.5 text-right font-semibold {{ $item['putri'] == 0 ? 'text-gray-400 text-center' : '' }}">
-                        {{ $item['putri'] == 0 ? '-' : 'Rp. ' . number_format($item['putri'], 0, ',', '.') . ',-' }}
+                    <td class="px-4 py-2.5 text-right font-semibold {{ ($item['putri'] ?? 0) == 0 ? 'text-gray-400 text-center' : '' }}">
+                        {{ ($item['putri'] ?? 0) == 0 ? '-' : 'Rp. ' . number_format($item['putri'], 0, ',', '.') . ',-' }}
                     </td>
                 </tr>
                 @endforeach
@@ -96,7 +92,9 @@
             </tbody>
         </table>
     </div>
+    @endif
 
+    @if(!empty($administrasi) || !empty($atribut))
     <div class="overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm">
         <table class="min-w-full divide-y divide-gray-200 text-sm">
             <tbody class="divide-y divide-gray-200">
@@ -113,7 +111,11 @@
         <div><strong>Keterangan :</strong></div>
         <ul class="list-disc pl-5 space-y-1 font-medium">
             <li>Pembayaran pertama minimal <strong class="text-blue-700">{{ $min_pembayaran }}%</strong>.</li>
+            @if($potongan_lunas > 0)
             <li>Bagi yang membayar <strong class="text-green-700">LUNAS</strong> mendapat potongan <strong class="text-green-700">Rp. {{ number_format($potongan_lunas, 0, ',', '.') }},-</strong>.</li>
+            @endif
         </ul>
     </div>
+    @endif
 </div>
+@endif

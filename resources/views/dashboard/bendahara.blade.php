@@ -59,6 +59,7 @@
                         <th class="hidden">Status Pendaftaran</th>
                         <th class="px-4 py-2">Pembayaran</th>
                         <th class="px-4 py-2">Status Pembayaran</th>
+                        <th class="px-4 py-2">Uang yang Dibayarkan</th>
                     </tr>
                 </thead>
 
@@ -66,6 +67,42 @@
                     @foreach ($pendaftar as $item)
                     @php
                         $pembayaranItem = $pembayaran->firstWhere('user_id', $item->user_id);
+                        
+                        $gender = strtolower($item->dataDiriPendaftar->gender ?? '');
+                        $isPutri = str_contains($gender, 'perempuan') || str_contains($gender, 'putri');
+                        
+                        $info = $informasiPembayaran ? $informasiPembayaran->firstWhere('id_periode', $item->id_periode) : null;
+                        
+                        $administrasi = ($info && !empty($info->biaya_administrasi)) ? $info->biaya_administrasi : [
+                            ["jumlah" => 100000], ["jumlah" => 300000], ["jumlah" => 300000], 
+                            ["jumlah" => 300000], ["jumlah" => 100000], ["jumlah" => 100000], ["jumlah" => 60000]
+                        ];
+                        $atribut = ($info && !empty($info->biaya_atribut)) ? $info->biaya_atribut : [
+                            ["putra" => 200000, "putri" => 200000],
+                            ["putra" => 200000, "putri" => 200000],
+                            ["putra" => 25000, "putri" => 25000],
+                            ["putra" => 0, "putri" => 150000],
+                            ["putra" => 25000, "putri" => 25000],
+                            ["putra" => 90000, "putri" => 90000]
+                        ];
+                        
+                        $total_administrasi = collect($administrasi)->sum('jumlah');
+                        $total_atribut = $isPutri ? collect($atribut)->sum('putri') : collect($atribut)->sum('putra');
+                        $total_biaya = $total_administrasi + $total_atribut;
+                        
+                        $potongan_lunas = $info ? $info->potongan_lunas : 150000;
+                        
+                        $statusPembayaran = $pembayaranItem->status_pembayaran ?? 'Belum Bayar';
+                        $verificationStatus = $pembayaranItem->verification_status ?? 'Belum Kirim';
+                        
+                        $uangDibayarkan = 0;
+                        if ($verificationStatus === 'verified') {
+                            if ($statusPembayaran === 'Lunas') {
+                                $uangDibayarkan = $total_biaya - $potongan_lunas;
+                            } elseif ($statusPembayaran === '50%') {
+                                $uangDibayarkan = $total_biaya * 0.5;
+                            }
+                        }
                     @endphp
 
                     <tr>
@@ -117,6 +154,7 @@
 
                         <td class="border px-4 py-2">{{ $pembayaranItem->status_pembayaran ?? 'Belum Bayar' }}</td>
                         <td class="border px-4 py-2">{{ $pembayaranItem->verification_status ?? 'Belum Kirim' }}</td>
+                        <td class="border px-4 py-2">Rp. {{ number_format($uangDibayarkan, 0, ',', '.') }}</td>
                     </tr>
                     @endforeach
                 </tbody>

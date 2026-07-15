@@ -1,4 +1,10 @@
 <x-app-layout>
+    <style>
+.required {
+    color: red;
+}
+</style>
+
 @if(session()->has('success'))
     <script>
         alert("Data berhasil disimpan!"); 
@@ -13,6 +19,12 @@
                 <form action="{{ route('orientasi.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-4">
+                        <div class="mb-4">
+    <p class="text-sm text-gray-600">
+        <span class="required">*</span>
+        Menandakan kolom yang wajib diisi.
+    </p>
+</div>
                     <label for="id_periode" class="block text-sm font-medium text-gray-700">Periode PPDB</label>
                     <select value="{{$periodePPDB[0]->id_periode}}" name="id_periode" id="id_periode" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         @foreach ($periodePPDB as $periode )
@@ -21,16 +33,16 @@
                     </select>
                     </div>
                     <div class="mb-4">
-                        <label for="datetime_start" class="block text-sm font-medium text-gray-700">Mulai</label>
+                        <label for="datetime_start" class="block text-sm font-medium text-gray-700">Mulai<span class="required"> *</span></label>
                         <input type="datetime-local" name="datetime_start" id="datetime_start" class="mt-1 p-2 w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div class="mb-4">
-                        <label for="datetime_end" class="block text-sm font-medium text-gray-700">Selesai</label>
+                        <label for="datetime_end" class="block text-sm font-medium text-gray-700">Selesai<span class="required">*</span></label> 
                         <input type="datetime-local" name="datetime_end" id="datetime_end" class="mt-1 p-2 w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500">
                     </div>
 
                     <div class="mb-4">
-                        <label for="kegiatan" class="block text-sm font-medium text-gray-700">Kegiatan</label>
+                        <label for="kegiatan" class="block text-sm font-medium text-gray-700">Kegiatan<span class="required">*</span></label> 
                         <input type="text" name="kegiatan" id="kegiatan" class="mt-1 p-2 w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div class="mb-4">

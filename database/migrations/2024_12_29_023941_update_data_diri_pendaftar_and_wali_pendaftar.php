@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('data_diri_pendaftar', function (Blueprint $table) {
-            $table->string('ijazah')->nullable()->after('previous_school_address');
-            $table->string('photo')->nullable()->after('ijazah');
-            $table->string('akte_kelahiran')->nullable()->after('photo');
+            $table->string('ijazah')->after('previous_school_address');
+            $table->string('photo')->after('ijazah');
+            $table->string('akte_kelahiran')->after('photo');
             $table->string('kip')->nullable()->after('akte_kelahiran');
         });
 

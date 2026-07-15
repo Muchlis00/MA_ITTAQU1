@@ -3,7 +3,7 @@
 @section('form-pendaftar')
 @php
 $formFields = [
-['name'=> 'Ijazah',
+['name'=> 'Ijazah/SKL',
 'key' =>'ijazah',
 'value' => $currentDataDiriPendaftar->ijazah],
 ['name'=> 'Foto',
@@ -44,9 +44,15 @@ $formFields = [
 
             @foreach ($formFields as $field)
             <div class="flex flex-row items-center gap-4">
-                <label for={{ $field['key'] }} class="w-32 whitespace-nowrap text-sm font-medium text-gray-700">{{ $field['name'] }}</label>
-                <input type="file" accept="image/*" name={{ $field['key'] }} id={{ $field['key'] }}
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                <label for={{ $field['key'] }} class="w-32 whitespace-nowrap text-sm font-medium text-gray-700">
+    {{ $field['name'] }}
+    @if($field['key'] != 'kip')
+        <span class="required">*</span>
+    @endif
+</label>
+               <input type="file" accept="image/*" name={{ $field['key'] }} id={{ $field['key'] }}
+    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+    @if($field['key'] != 'kip') required @endif>
                 @if ($field['value'] && $field['value'] !== '-')
 <div class="flex items-center gap-4">
     <div class="max-w-xs">

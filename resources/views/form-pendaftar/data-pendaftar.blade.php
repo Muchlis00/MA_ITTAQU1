@@ -2,6 +2,7 @@
 
 @section('form-pendaftar')
 <style>
+    
 .suggestions {
     border: 1px solid #d1d5db;
     border-top: none;
@@ -50,17 +51,18 @@
             {{ session('error') }}
         </div>
         @endif
+       
         <input type="hidden" name="periode_id" value="{{ $currentPeriode->id_periode }}">
         <input type="hidden" name="user_id" value="{{ $currentUser->id }}">
         <div class="bg-gray-50 p-4 rounded-md">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label for="name" class="block text-sm font-medium text-gray-700">Nama Pendaftar</label>
+                    <label for="name" class="block text-sm font-medium text-gray-700">Nama Pendaftar<span class="required">*</span></label>
                     <input type="text" name="name" id="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" autocomplete="off" value="{{ $currentUser->name }}">
                 </div>
 
                 <div>
-                    <label for="gender" class="block text-sm font-medium text-gray-700">Jenis Kelamin</label>
+                    <label for="gender" class="block text-sm font-medium text-gray-700">Jenis Kelamin<span class="required">*</span></label>
                     <select value="{{$currentDataDiriPendaftar->gender}}" autocomplete="off" name="gender" id="gender" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         <option value="Laki-Laki">Laki-laki</option>
                         <option value="Perempuan">Perempuan</option>
@@ -88,7 +90,7 @@
                     </datalist>
                 </div> -->
             <div class="relative mb-3">
-            <label for="place_of_birth">Tempat Lahir</label>
+            <label for="place_of_birth">Tempat Lahir<span class="required">*</span></label>
             <input
                 type="text"
                 id="place_of_birth"
@@ -102,22 +104,22 @@
             <div id="city-suggestions" class="suggestions"></div>
              </div>
                 <div>
-                    <label for="date_of_birth" class="block text-sm font-medium text-gray-700">Tanggal Lahir</label>
+                    <label for="date_of_birth" class="block text-sm font-medium text-gray-700">Tanggal Lahir<span class="required">*</span></label>
                     <input value="{{$currentDataDiriPendaftar->date_of_birth}}" autocomplete="off" type="date" name="date_of_birth" id="date_of_birth" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" min="{{ now()->subYears(21)->format('Y-m-d')}}">
                 </div>
 
                 <div>
-                    <label for="nisn" class="block text-sm font-medium text-gray-700">Nomor NISN</label>
+                    <label for="nisn" class="block text-sm font-medium text-gray-700">Nomor NISN<span class="required">*</span></label>
                     <input value="{{$currentDataDiriPendaftar->nisn}}" autocomplete="off" type="text" maxlength="10" name="nisn" id="nisn" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                 </div>
 
                 <div>
-                    <label for="phone" class="block text-sm font-medium text-gray-700">No. Telepon Pendaftar</label>
+                    <label for="phone" class="block text-sm font-medium text-gray-700">No. Telepon Pendaftar<span class="required">*</span></label>
                     <input value="{{$currentDataDiriPendaftar->phone}}" autocomplete="off" type="tel" maxlength="13" name="phone" id="phone" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                 </div>
 
                 <div class="relative">
-                    <label for="domisili" class="block text-sm font-medium text-gray-700">Domisili</label>
+                    <label for="domisili" class="block text-sm font-medium text-gray-700">Domisili<span class="required">*</span></label>
                     <input
                         type="text"
                         id="domisili"
@@ -131,11 +133,11 @@
                 </div>
 
                 <div>
-                    <label for="child_number" class="block text-sm font-medium text-gray-700">Anak ke</label>
+                    <label for="child_number" class="block text-sm font-medium text-gray-700">Anak ke<span class="required">*</span></label>
                     <input value="{{$currentDataDiriPendaftar->child_number}}" autocomplete="off" type="number" name="child_number" id="child_number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                 </div>
                 <div>
-                    <label for="sibling" class="block text-sm font-medium text-gray-700">Jumlah Saudara</label>
+                    <label for="sibling" class="block text-sm font-medium text-gray-700">Jumlah Saudara<span class="required">*</span></label>
                     <input value="{{$currentDataDiriPendaftar->sibling}}" autocomplete="off" type="number" name="sibling" id="sibling" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                 </div>
             </div>
@@ -144,13 +146,13 @@
         <div class="bg-gray-50 p-4 rounded-md">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label for="previous_school_name" class="block text-sm font-medium text-gray-700">Nama Sekolah Asal</label>
+                    <label for="previous_school_name" class="block text-sm font-medium text-gray-700">Nama Sekolah Asal<span class="required">*</span></label>
                     <input value="{{$currentDataDiriPendaftar->previous_school_name}}" type="text" name="previous_school_name" id="previous_school_name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" autocomplete="off">
                     <ul id="school-suggestions" class="border border-gray-300 rounded-md mt-1 hidden max-h-48 overflow-y-auto"></ul>
                 </div>
 
                 <div>
-                    <label for="previous_school_address" class="block text-sm font-medium text-gray-700">Alamat Sekolah Asal</label>
+                    <label for="previous_school_address" class="block text-sm font-medium text-gray-700">Alamat Sekolah Asal<span class="required">*</span></label>
                     <input value="{{$currentDataDiriPendaftar->previous_school_address}}" type="text" name="previous_school_address" id="previous_school_address" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" autocomplete="off">
                     <!-- <textarea name="previous_school_address" id="previous_school_address" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" autocomplete="off">{{ $currentDataDiriPendaftar->previous_school_address }}</textarea> -->
                 </div>

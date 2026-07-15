@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('data_diri_pendaftar', function (Blueprint $table) {
-            $table->string('rapor_semester_6')->nullable()->after('rapor_semester_5');
+            $table->string('rapor_semester_6')->after('rapor_semester_5');
         });
     }
 

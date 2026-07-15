@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('data_diri_pendaftar', function (Blueprint $table) {
-            $table->json('nilai_rapor')->nullable()->after('kip');
+            $table->json('nilai_rapor')->after('kip');
         });
     }
 

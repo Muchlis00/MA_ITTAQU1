@@ -83,6 +83,38 @@
                     <div class="flow-root">
                         <ul role="list" class="-mb-8">
                             @foreach($pembayaranPPDB as $index => $pembayaran)
+                            @php
+                                $gender = strtolower($dataDiri->gender ?? '');
+                                $isPutri = str_contains($gender, 'perempuan') || str_contains($gender, 'putri');
+                                
+                                $administrasi = ($informasiPembayaran && !empty($informasiPembayaran->biaya_administrasi)) ? $informasiPembayaran->biaya_administrasi : [
+                                    ["jumlah" => 100000], ["jumlah" => 300000], ["jumlah" => 300000], 
+                                    ["jumlah" => 300000], ["jumlah" => 100000], ["jumlah" => 100000], ["jumlah" => 60000]
+                                ];
+                                $atribut = ($informasiPembayaran && !empty($informasiPembayaran->biaya_atribut)) ? $informasiPembayaran->biaya_atribut : [
+                                    ["putra" => 200000, "putri" => 200000],
+                                    ["putra" => 200000, "putri" => 200000],
+                                    ["putra" => 25000, "putri" => 25000],
+                                    ["putra" => 0, "putri" => 150000],
+                                    ["putra" => 25000, "putri" => 25000],
+                                    ["putra" => 90000, "putri" => 90000]
+                                ];
+                                
+                                $total_administrasi = collect($administrasi)->sum('jumlah');
+                                $total_atribut = $isPutri ? collect($atribut)->sum('putri') : collect($atribut)->sum('putra');
+                                $total_biaya = $total_administrasi + $total_atribut;
+                                
+                                $potongan_lunas = $informasiPembayaran ? $informasiPembayaran->potongan_lunas : 150000;
+                                
+                                $uangDibayarkan = 0;
+                                if ($pembayaran->verification_status === 'verified') {
+                                    if ($pembayaran->status_pembayaran === 'Lunas') {
+                                        $uangDibayarkan = $total_biaya - $potongan_lunas;
+                                    } elseif ($pembayaran->status_pembayaran === '50%') {
+                                        $uangDibayarkan = $total_biaya * 0.5;
+                                    }
+                                }
+                            @endphp
                             <li>
                                 <div class="relative pb-8">
                                     @if(!$loop->last)
@@ -124,6 +156,9 @@
                                                 </p>
                                                 <p class="mt-1 text-xs text-gray-500">
                                                     Status Pembayaran: {{ $pembayaran->status_pembayaran }}
+                                                </p>
+                                                <p class="mt-1 text-xs text-gray-500">
+                                                    Uang yang Dibayarkan: <span class="font-semibold text-gray-900">Rp. {{ number_format($uangDibayarkan, 0, ',', '.') }}</span>
                                                 </p>
                                             </div>
                                             <div class="whitespace-nowrap text-right text-sm text-gray-500">

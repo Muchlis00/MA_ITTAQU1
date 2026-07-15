@@ -1,4 +1,9 @@
 <x-app-layout>
+    <style>
+.required {
+    color: red;
+}
+</style>
 @if(session()->has('success'))
     <script>
         alert("Data berhasil disimpan!"); 
@@ -11,6 +16,12 @@
                 <h2 class="text-2xl font-bold text-gray-900">Persyaratan Pendaftaran</h2>
                 <div class="bg-gray-50 p-4 rounded-md">
                     <form class="space-y-6 flex flex-col" method="POST" action="{{ route('agreement.store') }}">
+                        <div class="mb-4">
+    <p class="text-sm text-gray-600">
+        <span class="required">*</span>
+        Menandakan kolom yang wajib diisi.
+    </p>
+</div>
                         @csrf
                         <div class="flex items-center">
                             <label for="id_periode" class="w-32  block text-sm font-medium text-gray-700">Periode PPDB</label>
@@ -22,7 +33,7 @@
                         </div>
 
                         <div class="flex items-center">
-                            <label for="content" class="w-32  block text-sm font-medium text-gray-700">Persyaratan</label>
+                            <label for="content" class="w-32  block text-sm font-medium text-gray-700">Persyaratan  <span class="required">*</span></label>
                             <div class="w-full">
                                 <textarea name="content" id="content" class="pell-editor"></textarea>
                             </div>

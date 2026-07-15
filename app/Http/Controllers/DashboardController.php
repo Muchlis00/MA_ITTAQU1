@@ -107,6 +107,11 @@ $belumMengisiFormulir = $statusCount['belum_mengisi'];
             ];
         }
 
+        $informasiPembayaran = null;
+        if ($role == 'bendahara') {
+            $informasiPembayaran = \App\Models\InformasiPembayaran::all();
+        }
+
         $data = array_merge([
     'periodeList' => $periodeList,
     'selectedPeriode' => $periodeFilter,
@@ -118,6 +123,7 @@ $belumMengisiFormulir = $statusCount['belum_mengisi'];
     'pendaftarSelesaiCount' => $pendaftarSelesaiCount,
     'menungguVerifikasiCount' => $menungguVerifikasiCount,
     'perluPerbaikanCount' => $perluPerbaikanCount,
+    'informasiPembayaran' => $informasiPembayaran,
 ], $charts);
 
         if (view()->exists("dashboard.{$role}")) {

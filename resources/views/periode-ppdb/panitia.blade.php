@@ -1,5 +1,10 @@
 @extends('layouts.navbar')
 @section('content')
+<style>
+.required {
+    color: red;
+}
+</style>
 <div class="container-fluid">
 
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -68,13 +73,19 @@
                 </div>
                 <div class="modal-body">
                     <div class="container">
+                        <div class="mb-4">
+    <p class="text-sm text-gray-600">
+        <span class="required">*</span>
+        Menandakan kolom yang wajib diisi.
+    </p>
+</div>
                         <form action="{{ route('penentuan-panitia-bendahara.store') }}" method="POST">
                             @csrf
                             <input id="user_id" type="hidden" name="user_id" value="">
                             <input type="hidden" name="periode_id" value="{{$periode->id_periode}}">
                             
                             <div class="form-group mb-3">
-                                <label for="name" class="form-label">Nama Guru</label>
+                                <label for="name" class="form-label">Nama Guru</label><span id="required" class="required">*</span>
                                 <div class="dropdown">
                                     <input
                                         type="text"
@@ -93,7 +104,7 @@
                             </div>
                             
                             <div class="form-group mb-3">
-                                <label for="jabatan" class="form-label">Jabatan</label>
+                                <label for="jabatan" class="form-label">Jabatan</label><span id="required" class="required">*</span>
                                 <select name="jabatan" id="jabatan" class="form-control" required>
                                     <option value="">-- Pilih Jabatan --</option>
                                     <option value="Panitia">Panitia</option>

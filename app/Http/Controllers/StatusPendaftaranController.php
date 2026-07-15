@@ -33,7 +33,10 @@ class StatusPendaftaranController extends Controller
         $orientasi = Orientasi::where('id_periode', $pendaftarPPDB->id_periode)->get();
         $isVerified = $this->isUserVerified();
 
-        return view('status-pendaftaran.index', compact('pendaftarPPDB', 'pembayaranPPDB', 'orientasi', 'isVerified'));
+        $dataDiri = \App\Models\DataDiriPendaftar::where('user_id', Auth::user()->id)->first();
+        $informasiPembayaran = \App\Models\InformasiPembayaran::where('id_periode', $pendaftarPPDB->id_periode)->first();
+
+        return view('status-pendaftaran.index', compact('pendaftarPPDB', 'pembayaranPPDB', 'orientasi', 'isVerified', 'dataDiri', 'informasiPembayaran'));
     }
    public function tandaBukti()
 {

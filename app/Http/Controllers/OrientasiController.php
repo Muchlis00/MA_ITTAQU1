@@ -22,7 +22,7 @@ class OrientasiController extends Controller
             'datetime_start' => 'required',
             'datetime_end' => 'required',
             'kegiatan' => 'required',
-            'keterangan' => 'required',
+            'keterangan' => 'nullable',
         ]);
         Orientasi::create([
             'id_periode' => $request->id_periode,
@@ -60,7 +60,7 @@ class OrientasiController extends Controller
             'datetime_start' => 'required',
             'datetime_end' => 'required',
             'kegiatan' => 'required',
-            'keterangan' => 'required',
+            'keterangan' => 'nullable',
         ]);
         $orientasi = Orientasi::find($id);
         $orientasi->update([
