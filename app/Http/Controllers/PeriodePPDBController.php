@@ -7,6 +7,8 @@ use App\Models\PeriodePPDB;
 use App\Models\PendaftarPpdb;
 use App\Models\PembayaranPpdb;
 use App\Models\User;
+use App\Exports\PendaftarPpdbExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PeriodePPDBController extends Controller
 {
@@ -69,113 +71,14 @@ class PeriodePPDBController extends Controller
         return view('periode-ppdb.panitia', compact('periode'));
     }
 
-    public function exportPdf($id_periode)
+    public function exportExcel($id_periode)
     {
         $periode = PeriodePPDB::findOrFail($id_periode);
 
-        $pendaftar = PendaftarPpdb::with('dataDiriPendaftar')
-            ->where('id_periode', $id_periode)
-            ->get();
-        $domisiliTerbanyak = $pendaftar
-    ->pluck('dataDiriPendaftar.domisili')
-    ->filter()
-    ->countBy()
-    ->sortDesc()
-    ->take(1);    
+        $safeName = preg_replace('/[^A-Za-z0-9_-]/', '_', $periode->name);
 
-    $sekolahTerbanyak = $pendaftar
-    ->pluck('dataDiriPendaftar.previous_school_name')
-    ->filter()
-    ->countBy()
-    ->sortDesc()
-    ->take(1);
+$fileName = "PPDB_{$safeName}_" . date('Y-m-d') . ".xlsx";
 
-        $pembayaran = PembayaranPpdb::where('id_periode', $id_periode)->get();
-
-        $statusCount = [
-            'menunggu_verifikasi' => 0,
-            'selesai' => 0,
-            'perlu_perbaikan' => 0,
-            'belum_mengisi' => 0
-        ];
-
-        foreach ($pendaftar as $item) {
-
-            $payment = $pembayaran->firstWhere('user_id', $item->user_id);
-
-            $formStatus = $item->verification_status ?? null;
-            $paymentStatus = $payment->verification_status ?? null;
-
-            $status = $this->getDashboardStatus($formStatus, $paymentStatus);
-
-            $statusCount[$status]++;
-        }
-
-        $totalPendaftar = $pendaftar->count();
-        $totalPend = $statusCount['menunggu_verifikasi'];
-        $totalRejec = $statusCount['perlu_perbaikan'];
-        $totalaccount = $statusCount['belum_mengisi'];
-        $totalSelesai = $statusCount['selesai'];
-
-        // Gender
-        $genL = $pendaftar->filter(function ($p) {
-            return optional($p->dataDiriPendaftar)->gender == 'Laki-Laki';
-        })->count();
-
-        $genP = $pendaftar->filter(function ($p) {
-            return optional($p->dataDiriPendaftar)->gender == 'Perempuan';
-        })->count();
-
-        // KIP
-        $kip = $pendaftar->filter(function ($p) {
-            return optional($p->dataDiriPendaftar)->kip &&
-                   optional($p->dataDiriPendaftar)->kip != '-';
-        })->count();
-
-        $nokip = $pendaftar->filter(function ($p) {
-            return optional($p->dataDiriPendaftar)->kip == '-';
-        })->count();
-
-        $kepsek = User::where('role','kepsek')->first();
-
-        return view('periode-ppdb.exportPdf', compact(
-    'kepsek',
-    'periode',
-    'totalPendaftar',
-    'totalPend',
-    'totalRejec',
-    'totalaccount',
-    'totalSelesai',
-    'kip',
-    'nokip',
-    'genL',
-    'genP',
-    'domisiliTerbanyak',
-    'sekolahTerbanyak'
-));
-    }
-
-    private function getDashboardStatus($formStatus, $paymentStatus)
-    {
-        if (is_null($formStatus) && is_null($paymentStatus)) {
-            return 'belum_mengisi';
-        }
-
-        if ($formStatus === 'verified' && $paymentStatus === 'verified') {
-            return 'selesai';
-        }
-
-        if ($formStatus === 'rejected' || $paymentStatus === 'rejected') {
-            return 'perlu_perbaikan';
-        }
-
-        if (
-            ($formStatus === 'pending' && $paymentStatus === 'pending') ||
-            ($formStatus === 'verified' && $paymentStatus === 'pending')
-        ) {
-            return 'menunggu_verifikasi';
-        }
-
-        return 'belum_mengisi';
+        return Excel::download(new PendaftarPpdbExport($periode), $fileName);
     }
 }

@@ -35,7 +35,7 @@ Route::middleware(['auth', 'verified', 'role:kepsek'])->group(function () {
     Route::resource('periode-ppdb', PeriodePPDBController::class);
     Route::resource('panitia-ppdb', PanitiaPPDBController::class);
     Route::resource('bendahara-ppdb', BendaharaPPDBController::class);
-    Route::get('/periode-ppdb/exportPdf/{id}', [PeriodePPDBController::class, 'exportPdf'])->name('periode-ppdb.exportPdf');
+    Route::get('/periode-ppdb/exportExcel/{id}', [PeriodePPDBController::class, 'exportExcel'])->name('periode-ppdb.exportExcel');
 });
 
 // pendaftar

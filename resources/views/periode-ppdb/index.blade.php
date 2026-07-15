@@ -54,9 +54,9 @@
             Panitia & Bendahara
         </a>
 
-        <a href="{{ route('periode-ppdb.exportPdf', $ppdb->id_periode) }}"
-           class="btn btn-secondary btn-sm mt-2">
-            Export PDF
+        <a href="{{ route('periode-ppdb.exportExcel', $ppdb->id_periode) }}"
+           class="btn btn-success btn-sm mt-2">
+            <i class="fas fa-file-excel"></i> Export Excel
         </a>
     </div>
 </td>
