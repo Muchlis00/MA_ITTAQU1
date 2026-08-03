@@ -29,9 +29,31 @@ class PendaftarPpdbExport implements FromCollection, WithHeadings, WithMapping, 
 
     public function collection()
     {
-        return PendaftarPpdb::with(['user', 'dataDiriPendaftar', 'dataDiriPendaftar.wali'])
+        $pendaftars = PendaftarPpdb::with(['user', 'dataDiriPendaftar', 'dataDiriPendaftar.wali'])
             ->where('id_periode', $this->periode->id_periode)
             ->get();
+
+        // Sort: verified first, then perbaikan (rejected), then tidak mendaftar (belum mengisi)
+        // Within each group, sort A-Z by name
+        return $pendaftars->sortBy(function ($pendaftar) {
+            $payment = $this->pembayaran->firstWhere('user_id', $pendaftar->user_id);
+            $formStatus = $pendaftar->verification_status ?? null;
+            $paymentStatus = $payment->verification_status ?? null;
+            $dashboardStatus = $this->getDashboardStatus($formStatus, $paymentStatus);
+
+            // Priority: selesai (verified) = 1, menunggu_verifikasi = 2, perlu_perbaikan = 3, belum_mengisi = 4
+            $priority = match ($dashboardStatus) {
+                'selesai' => 1,
+                'menunggu_verifikasi' => 2,
+                'perlu_perbaikan' => 3,
+                'belum_mengisi' => 4,
+                default => 5,
+            };
+
+            $name = strtolower(optional($pendaftar->user)->name ?? 'zzz');
+
+            return $priority . '_' . $name;
+        })->values();
     }
 
     public function headings(): array
